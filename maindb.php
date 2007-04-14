@@ -5,6 +5,9 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
+// Mimimized Main Page to be displayed on a
+// Dreambox Digital SAT-Receiver using Tuxweather
+//
 ////////////////////////////////////////////////////
 	include("weatherInclude.php");
 	$lang="de";
