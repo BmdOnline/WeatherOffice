@@ -1,0 +1,2 @@
+This version of JpGraph was stripped to reduce download size.
+For a full blown version see http://www.aditus.nu/jpgraph !

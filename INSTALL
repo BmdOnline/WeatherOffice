@@ -1,0 +1,34 @@
+INSTALLATION of WeatherOffice
+=============================
+
+This document contains a very rough installation guide of WeatherOffice. The project is at the
+beginning, so you can expect much more documentation and help in further versions.
+
+Visit http://www.sourceforge.net/projects/weatheroffice for more information
+
+Requirements
+============
+Apache >= 2.0
+PHP >= 4.3
+mysql > 4.x
+JpGraph 1.x for PHP 4.x or JpGraph 2.x for PHP 5.x from http://www.aditus.nu/jpgraph
+open2300 from http://open2300.sourceforge.net
+
+Installation
+============
+* Be sure Apache is running and PHP is working
+* Be sure mysql is running and contains an open2300 database with some weather data
+* Unpack WeatherOffice to a directory accessible from your browser via your Apache installation
+* Copy weatherDataInclude-dist.php to weatherDataInclude.php and edit the values at top of the file
+* Copy logo-dist.html to logo.html. This page is shown in the left top corner and can contain anything you want
+* Point your browser to the URL pointing to index.php of WeatherOffice. You should see the main screen showing
+  the last measured data as Current Values
+
+Known Issues
+============
+* No automatic installation routine
+* German and English language support only
+* Some PHP warning messages when accessing some graphs via JpGraph
+
+
+

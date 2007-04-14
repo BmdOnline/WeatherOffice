@@ -1,0 +1,13 @@
+Weather Office Release Notes
+============================
+
+Version 0.2 - 2006-11-30
+========================
+* Initial Version for SourceFORGE
+
+Version 0.3 - 2006-12-02
+========================
+* Embedded stripped version of jpgraph. 
+* Graphs in Weather Office should work now out of the box.
+* jpGraph 2.1.4 for php5
+* jpGraph 1.20.5 for php4

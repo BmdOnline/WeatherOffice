@@ -1,0 +1,123 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+	<title>Weather</title>
+	<link rel="stylesheet" href="woffice.css">
+	</head>
+	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
+			
+<?PHP
+////////////////////////////////////////////////////
+//
+// WeatherOffice
+//
+// http://www.sourceforge.net/projects/weatheroffice
+//
+////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// getDay
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getWeek($day, $month, $year, $showVal, $text)
+{
+	$wbegin = getdate(strtotime("-6 days", mktime(0, 0, 0, $month, $day, $year)));
+	$begin = convertTimestamp($wbegin['mday'], $wbegin['mon'], $wbegin['year'], 0, 0, 0);
+	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
+	
+	// Header
+	$prevBegin = getdate(strtotime("-13 days", mktime(0, 0, 0, $month, $day, $year)));
+	$prevEnd   = getdate(strtotime("-7 days", mktime(0, 0, 0, $month, $day, $year)));
+	$nextBegin = getdate(strtotime("+1 day", mktime(0, 0, 0, $month, $day, $year)));
+	$nextEnd   = getdate(strtotime("+7 days", mktime(0, 0, 0, $month, $day, $year)));
+		
+	echo "<a name=\"top\"></a>";
+	echo "<center>";
+	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} bis {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
+	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} bis {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
+	echo "</center>";
+	
+	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
+	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+	$num = mysql_num_rows($result);
+	if ($num == 0)
+	{
+		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem 28.11.2005 verf&uuml;gbar.";
+		return $num;
+	}
+	
+	// Statistics
+	$stat=statArray($result, $num, $wbegin['mday'], $begin, $end);
+		
+	echo "<h2>{$text['weekly_overview']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h2><p>";
+	links($showVal, $text);
+	
+	// Graphen
+	graphs("week", "{$text['graphs']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.", $begin, $end, $text);
+	
+	// Average Table	
+	echo "<a name=\"avg\"></a>";
+	echo "<h3>{$text['avg_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";
+	valueTable($stat, "avg", "--", "--", "--", $text);
+
+	// Minimalwerte Table
+	echo "<a name=\"minimal\"></a>";
+	echo "<hr><h3>{$text['min_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";	
+	valueTimeDateTable($stat, "min", "minTime", "minDate", $text);
+
+	// Maximalwerte Table
+	echo "<a name=\"maximal\"></a>";
+	echo "<hr><h3>{$text['max_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";	
+	valueTimeDateTable($stat, "max", "maxTime", "maxDate", $text);
+	
+	echo "<a name=\"all\"></a>";
+	if($showVal == "true")
+	{
+		// All Values Table Header
+	
+		echo "<hr><h3>{$text['all_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";	
+		tableHeader($text);
+	
+		// All Values Table
+		printTableRows($result);
+		tableFooter($text);
+	}
+	else
+	{
+		echo "<hr><a href=\"weekly.php?showVal=true&day=$day&month=$month&year=$year#all\">{$text['show_all_values']}</a>";
+	}
+	
+	echo "<hr><center>";
+	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} bis {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
+	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} bis {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
+	echo "</center>";
+	
+ 	mysql_free_result($result);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// MAIN
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+//
+// Data in weather (as stored by mysql2300)
+//
+// timestamp: uniqe bigint(14) in format YYYYMMDDhhmmss
+//
+//////////////////////////////////////////////////////////////////////
+include("weatherInclude.php");
+
+$showVal = $_REQUEST["showVal"];
+$day =     $_REQUEST["day"];
+$month = $_REQUEST["month"]; 
+$year =  $_REQUEST["year"];
+
+
+getWeek($day, $month, $year, $showVal, $text);
+
+mysql_close();
+?>
