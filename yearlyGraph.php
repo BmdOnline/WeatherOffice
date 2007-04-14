@@ -11,7 +11,7 @@
 	$dispyear =  $_REQUEST["year"];
 	
 
-	$graph = new Graph(800, 400, "auto");
+	$graph = new Graph(800, 400, "auto",  86400);
 	$graph->SetMargin(50,150,10,90);
 	$graph->SetScale("datlin");
 	$graph->SetY2Scale( "lin");
@@ -80,25 +80,25 @@
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
 	$lineplot1->SetColor("yellow");
-	$lineplot1->SetWeight(2);
-	$lineplot1->SetLegend($text['min']);
+	$lineplot1->SetWeight($LineThickness);
+	$lineplot1->SetLegend($text['min'] . " " . $text['temp']);
 	$graph->Add($lineplot1);
 	
 	$lineplot2=new LinePlot($ydata2, $xdata);
 	$lineplot2->SetColor("green");
-	$lineplot2->SetWeight(2);
-	$lineplot2->SetLegend($text['avg']);
+	$lineplot2->SetWeight($LineThickness);
+	$lineplot2->SetLegend($text['avg'] . " " . $text['temp']);
 	$graph->Add($lineplot2);
 	
 	$lineplot3=new LinePlot($ydata3, $xdata);
 	$lineplot3->SetColor("red");
-	$lineplot3->SetWeight(2);
-	$lineplot3->SetLegend($text['max']);
+	$lineplot3->SetWeight($LineThickness);
+	$lineplot3->SetLegend($text['max'] . " " . $text['temp']);
 	$graph->Add($lineplot3);
 	
 	$lineplot4=new LinePlot($ydata4, $xdata);
 	$lineplot4->SetColor("blue");
-	$lineplot4->SetWeight(2);
+	$lineplot4->SetWeight($LineThickness);
 	$lineplot4->SetLegend($text['precipitation']);
 	$graph->AddY2($lineplot4);	
 

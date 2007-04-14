@@ -7,7 +7,7 @@
 //
 ////////////////////////////////////////////////////
 	include("weatherInclude.php");
-	
+	$lang="de";
 	$query = "select max(timestamp) from weather";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$timestamp = mysql_result($result, 0);
@@ -28,16 +28,19 @@
 	$windkmh = $values['windspeed']*3.6;
 	$bftTxt = beaufort($values['windspeed'], $lang);
 		
-	$heatIdx = heatIndex($values['temp_out'], $values['rel_hum_out']);
-	$heatIdxIn = heatIndex($values['temp_in'], $values['rel_hum_in']);
+	$heatIdx = heatIndex($values['temp_out'], $values['rel_hum_out'], $text);
+	$heatIdxIn = heatIndex($values['temp_in'], $values['rel_hum_in'], $text);
 
 	$diff = tendency($timestamp);
+	
+	$comfTxt = comfortText($values['temp_in'], $values['rel_hum_in'], $text);
 	
 	echo "Messwerte fuer den $day.$month.$year $hour:$minute in $STATION_NAME\n\n";
 	
 	// Temperatur und Feuchte
 	echo "Temperatur        $values[temp_out]C  Innen: $values[temp_in]C\n";
 	echo "Feuchtigkeit      $values[rel_hum_out]%   Innen: $values[rel_hum_in]%\n";
+	echo "Komfort             $comfTxt\n";
 	echo "Taupunkt           $values[dewpoint]C\n";
 
 	echo "\n";
@@ -60,7 +63,7 @@
 	// Niederschlag
 	echo "Regen Stunde    $values[rain_1h] mm\n";
 	echo "Regen Heute      $values[rain_24h] mm\n";
-	echo "Regen Gesamt   $values[rain_total] mm\n";
+	echo "Regen Gesamt   $values[rain_total] mm";
 	
 	mysql_close();
 ?>

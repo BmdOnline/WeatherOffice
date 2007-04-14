@@ -74,6 +74,7 @@ $GLOBALS['text'] = array (
   'avg' => 'Mittel',      
   'min' => 'Min',   
   'max' => 'Max',
+  'temp' => 'Temp',  
   'temp_out' => 'Temp Aus.',
   'temp_in' => 'Temp In.',
   'hum_out' => 'Feucht Aus.',
@@ -117,6 +118,17 @@ $GLOBALS['text'] = array (
   'west' => 'Westen',
   'northwest' => 'Nord-West',
   'unknown' => 'Unbekannt',
+  'comfort' => 'Komfort',
+  'comfy' => 'Behaglich',
+  'still_comfy' => 'Noch behaglich',
+  'awkward' => 'Unbehaglich',
+  'awkwardly_wet' => 'Unbehablich feucht',
+  'awkwardly_dry' => 'Unbehaglich trocken',
+  'sun_position' => 'Sonnenstand',
+  'sun_rise' => 'Sonnenaufgang',
+  'sun_down' => 'Sonnenuntergang',
+  'climagraph' => 'Klimagraph',
+  'avg_temp' => 'Temperaturmittel'
   );
 
 // Now, also define alternative imgs for our use

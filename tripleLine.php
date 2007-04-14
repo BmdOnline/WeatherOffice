@@ -49,7 +49,7 @@ include ("jpgraphSetup.php");
 	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$num = mysql_num_rows($result);
 
-	$graph = new Graph(1080, 500, "auto");
+	$graph = new Graph(1080, 500);
 	$graph->SetMargin(50,190,10,90);
 	$graph->SetScale("datlin");
 	$graph->SetY2Scale( "lin");
@@ -129,20 +129,20 @@ include ("jpgraphSetup.php");
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
 	$lineplot1->SetColor("blue");
-	$lineplot1->SetWeight(2);
+	$lineplot1->SetWeight($LineThickness);
 	$lineplot1->SetLegend(getLegend($col1));
 	$graph->Add($lineplot1);
 	
 	$lineplot2=new LinePlot($ydata2, $xdata);
 	$lineplot2->SetColor("green");
-	$lineplot2->SetWeight(2);
+	$lineplot2->SetWeight($LineThickness);
 	$lineplot2->SetLegend(getLegend($col2));
 
 	$graph->Add($lineplot2);
 	
 	$lineplot3=new LinePlot($ydata3, $xdata);
 	$lineplot3->SetColor("red");
-	$lineplot3->SetWeight(2);
+	$lineplot3->SetWeight($LineThickness);
 	$lineplot3->SetLegend("Luftfeuchte");
 	$graph->AddY2($lineplot3);
 	

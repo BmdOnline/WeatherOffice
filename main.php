@@ -1,11 +1,35 @@
 <?PHP
 ////////////////////////////////////////////////////
 //
-// WeatherOffice
+// WeatherOffice 
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
 ////////////////////////////////////////////////////
+include "weatherInclude.php";
+
+function testComp($compWoffice)
+{
+	echo "$compWoffice";
+	//Die Session initialisieren
+	$ch = curl_init($compWoffice . "/main.php");
+	$fp = fopen("/tmp/compWoffice.txt", "w");
+
+	//Session Optionen setzen
+	curl_setopt($ch, CURLOPT_FILE, $fp);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+
+	//Ausführen der Aktionen
+	curl_exec($ch);
+
+	//Session beenden
+	curl_close($ch);
+	fclose($fp);
+	
+	$fp = fopen("/tmp/compWoffice.txt", "r");
+	fclose($fp);
+}
+
 	echo "<html>";
 	echo "<head>";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html;charset=iso-8859-1\">";
@@ -14,8 +38,6 @@
 	echo "<link rel=\"stylesheet\" href=\"woffice.css\">";
 	echo "</head>";
 	echo "<body bgcolor=\"#d6e5ca\" marginheight=\"25\" marginwidth=\"20\" topmargin=\"25\" leftmargin=\"0\">";
-
-	include("weatherInclude.php");
 	
 	$query = "select max(timestamp) from weather";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
@@ -40,6 +62,11 @@
 	$diff = tendency($timestamp);
 
 	$hrmin = hourMinute($hour, $minute, $text);
+	
+	$comfTxt = comfortText($values['temp_in'], $values['rel_hum_in'], $text);
+	
+	//testComp($COMP_WOFFICE);
+	
 	echo "<h2>{$text['current_values']} {$text['for_date']} $day.$month.$year in <span id=\"location\">$STATION_NAME</span>,
 {$text['measured_at']} $hrmin</h2>";
 	
@@ -124,6 +151,27 @@
 	echo "<td colspan=\"3\">$values[rain_total] mm</td>";
 	echo "</tr>";
 
+	if(phpMajorVersion()  < 5)
+	{
+	 require_once('sunriseSunset.php');
+	 }
+	 
+	  $sunRise = date_sunrise(time(), SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
+	  $sunDown = date_sunset(time(), SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
+      
+	  echo "<tr>";
+	  echo "<td colspan=\"4\"><b>{$text['sun_position']}</b></td>";
+	  echo "</tr>";
+	  echo "<tr>";
+  	  echo "<td>{$text['sun_rise']}</td>";
+	  echo "<td colspan=\"3\">$sunRise{$text['uhr']}</td>";
+	  echo "</tr>";
+	  echo "<tr>";
+	  echo "<td>{$text['sun_down']}</td>";
+	  echo "<td colspan=\"3\">$sunDown{$text['uhr']}</td>";
+	  echo "</tr>";
+	
+	
 	// Indoor
 	echo "<tr>";
 	echo "<td colspan=\"4\"><b>{$text['indoor']}</b></td>";
@@ -138,7 +186,11 @@
 	echo "<td colspan=\"1\">$values[rel_hum_in] %</td>";
 	displayTendency($diff['rel_hum_in'],"%%/h", $text); 
 	echo "</tr>";
-	
+	echo "<tr>";
+	echo "<td>{$text['comfort']}</td>";
+	echo "<td colspan=\"3\">$comfTxt</td>";
+	echo "</tr>";
+
 	if($values['temp_in'] >= 27)
 	{
 		$heatIdxIn = heatIndex($values['temp_in'], $values['rel_hum_in'], $text);
@@ -148,7 +200,7 @@
 		echo "</tr>";
 	}
 	
-	// Ende
+	// End
 	echo "</table>";
 	
 	mysql_close();

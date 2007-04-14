@@ -17,6 +17,7 @@
 	include "weatherInclude.php";
 
 	echo "<h1>Weather Office $WeatherOfficeVersion - {$text['weatherstation_in']} $STATION_NAME</h1>";
+	echo "<p><b>Lat:</b> $STATION_LAT <b>Lon:</b> $STATION_LON</h2>"
 ?>
 	</body>
 </head>

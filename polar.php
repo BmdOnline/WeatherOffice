@@ -28,7 +28,7 @@
 	$height = 425;
 	$margin = 40;
 
-	$graph = new PolarGraph($width, $height, "auto");
+	$graph = new PolarGraph($width, $height);
 	$graph->SetScale('lin');
 	$graph->SetMargin($margin, $margin, $margin, $margin);
 

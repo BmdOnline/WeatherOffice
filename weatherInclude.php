@@ -10,7 +10,10 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.3";
+   $WeatherOfficeVersion="0.3.05-dev";
+   
+   // Thicknes of Lines in plots
+   $LineThickness=2.0;
    
    // Retreive Language
    $gl=array();
@@ -37,6 +40,11 @@
    
    $now = time();
   
+ function phpMajorVersion()
+ {
+ 	$version = explode('.', phpversion());
+ 	return (int)$version[0];
+ }
    
 function hourMinute($hour, $minute, $text)
 {
@@ -174,22 +182,13 @@ function beaufort($windspeed, $lang)
 							 17.5, 21.1, 24.7, 28.8, 32.9);
 	
 	$bft = 0;
-	while ($windspeed >= $bftLim[$bft])
+	while ($bft < count($bftLim) && $windspeed >= $bftLim[$bft])
 	{
 		$bft++;
 	}
-	
+	   
 	$txt = $bft . " bft - " . $bftTxt[$bft];
 	return $txt;
-}
-
-function langMittel($month)
-{
-	$mittelTemp = array(-1.4, 0.1, 4.0, 8.0, 12.8, 15.9, 17.9, 17.1, 13.8, 8.9, 3.5, -0.5);
-	$mittelRain   = array(60, 55, 62, 88, 128, 157, 144, 155, 97, 69, 76, 65);
-	$mittel['temp'] = $mittelTemp[$month -1];
-	$mittel['rain'] = $mittelRain[$month -1];
-	return $mittel;
 }
 
 function valueTable($stat, $value, $day, $month, $year, $text)
@@ -266,7 +265,7 @@ function dayLink($day, $month, $year)
  
 function statArray($result, $num, $day, $startTime, $stopTime)
 {
-	$minimalCacheRows = 100;
+	$minimalCacheRows = 200;
 
 	if($num > $minimalCacheRows)
 	{
@@ -338,8 +337,12 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 		
 	mysql_data_seek($result, 0);
 		
+	$currentRow = 0;	
+		
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	{	
+		$currentRow++;
+	
 		foreach ($cols as $column)
 		{		
 			$value[$column] = $row[$column];
@@ -351,9 +354,10 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 			$rowMonth[$column] = substr($row["timestamp"], 4, 2);
 			$rowYear[$column] = substr($row["timestamp"], 0, 4);
 			//echo "rowDay $rowDay, curDay $curDay<br>";
-			if($rowDay[$column] != $curDay[$column])
+			if($rowDay[$column] != $curDay[$column] || $currentRow == $num)
 			{
-				// neuer Tag!!!
+				// neuer Tag !!!
+				// Oder aber die letzte Row passiert am ersten Tag des Monats
 				
 				// Berechne Durchschnitt, min und max speichern
 			
@@ -1057,6 +1061,97 @@ function languages()
 	'zu' => 'Zulu' );
 
 	return $a_languages;
+}
+
+function comfortText($temp, $hum, $text)
+{
+	// Comfort: If Temperature/Humidity combo is in the area spanned by the x/y points, the temperature is comfy
+	// Return value of contains: 0 means point is not in area
+	$xpoints = array( 17.7, 22.3, 24.4, 18.6);
+	$ypoints = array( 75, 63, 35, 38);
+	$npoints = 4;
+	if(contains($temp, $hum, $xpoints, $ypoints, $npoints) == 0)
+	{
+		// Sill comfortable in this area:
+		$xpoints = array(16, 16.9, 20.5, 24.8, 27, 25.8, 19.9, 17);
+		$ypoints = array(75, 87, 80, 62, 32, 19, 19.9, 38);
+		$npoints = 8;
+		if(contains($temp, $hum, $xpoints, $ypoints, $npoints) == 0)
+		{
+			// Awkward
+			if($hum > 75)
+			{
+				$comfyText=$text['awkwardly_wet'];
+			}
+			else if($hum < 25)
+			{
+				$comfyText=$text['awkwardly_dry'];
+			}
+			else
+			{
+				$comfyText=$text['awkward'];
+			}
+		}
+		else
+		{
+			// Still comfy
+			$comfyText=$text['still_comfy'];
+		}
+	}
+	else
+	{
+		// Comfy
+		$comfyText=$text['comfy'];
+	}
+	return $comfyText;
+}
+
+function contains($x, $y, $xpoints, $ypoints, $npoints)
+{
+	$wn = 0;
+	
+	$x1 = $xpoints[$npoints - 1];
+	$y1 = $ypoints[$npoints - 1];
+
+	$x2 = $xpoints[0];
+	$y2 = $ypoints[0];
+
+	$startUeber = $y1 >= $y ? true : false;
+
+	for ($i=1; $i< $npoints; $i++)
+	{
+		$endUeber = $y2 >= $y ? true : false;
+
+		if ($startUeber != $endUeber)
+		{
+			if (($y2 - $y) * ($x2 - $x1) <= ($y2 - $y1) * ($x2 - $x))
+			{
+				if ($endUeber)
+				{
+					$wn++;
+				}
+			}
+			else
+			{
+				if (!$endUeber)
+				{
+					$wn--;
+				}
+			}
+		}
+
+		$startUeber = $endUeber;
+
+		$y1 = $y2;
+
+		$x1 = $x2;
+
+		$x2 = $xpoints[$i];
+
+		$y2 = $ypoints[$i];
+	}
+
+	return ($wn);
 }
 
 ?>

@@ -24,7 +24,7 @@
 	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$num = mysql_num_rows($result);
 
-	$graph = new Graph(900, 300, "auto");
+	$graph = new Graph(900, 300);
 	$graph->SetMargin(50,10,10,90);
 	$graph->SetScale("datlin");
 	
@@ -102,7 +102,7 @@
 	
 	$lineplot=new LinePlot($ydata, $xdata);
 	$lineplot->SetColor("blue");
-	$lineplot->SetWeight(2);
+	$lineplot->SetWeight($LineThickness);
 	$graph->Add($lineplot);
 	$graph->SetShadow();
 	$graph->Stroke();

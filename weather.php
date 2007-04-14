@@ -183,6 +183,12 @@ include("weatherInclude.php");
 	echo "</form>";
 	
 	//
+	// Climagraph
+	//
+	echo "<p><hr><a href=\"clima.php\" target=\"main\">{$text['climagraph']}</a>";
+
+	
+	//
 	// Range
 	//
 	echo "<p><hr><b>{$text['range']}</b></p>";

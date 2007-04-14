@@ -6,7 +6,7 @@
 	</head>
 	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
 			
-<?PHP
+<?PHP 
 ////////////////////////////////////////////////////
 //
 // WeatherOffice
@@ -70,7 +70,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	links($showVal, $text);
 	
 	// Gasteiger Text
-	$mittel = langMittel($month);
+	$mittel = longTermAverage($month);
 	$avgTemp = $stat["temp_out"]['avg'];
 	$avgTempDiff = abs($avgTemp -  $mittel['temp']);
 	if($avgTemp >= $mittel['temp'])
@@ -94,7 +94,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	    // german
 	    printf("<p>Die <b>mittlere Temperatur</b> im %s hat <b>%2.2f C</b> betragen.<br>", $monthName, $avgTemp);
 	    printf("Damit war der Monat <b> um %2.2f C %s </b> als im langj&auml;hrigen Mittel von %2.2f C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-	    printf("<a href=\"http://ro-wetter.dyndns.org/klimamittel.php\" target=\"_blank\">(mehr dazu)</a><br>");
+	    printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(mehr dazu)</a><br>");
 	    printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f C</b> gemessen.<br>",
 	    	dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
 	    printf("Die <b>niedrigste Temperatur</b> trat am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f C</b> auf.<br>",
@@ -140,7 +140,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 			dayLink(substr($stat["rel_pressure"]['maxDate'], 5, 2), $month, $year),
 			substr($stat["rel_pressure"]['maxTime'], 0, 5),
 			$stat["rel_pressure"]['max']);
-		printf("Der <b>niedrigste Luftdurck</b> kam am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f hPa</b> vor.<br>",
+		printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f hPa</b> vor.<br>",
 			dayLink(substr($stat["rel_pressure"]['minDate'], 8, 2), $month, $year),
 			dayLink(substr($stat["rel_pressure"]['minDate'], 5, 2), $month, $year),
 			substr($stat["rel_pressure"]['minTime'], 0, 5),
@@ -153,7 +153,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 		// English version
 		printf("<p>The <b>average temperature</b> was <b>%2.2f C</b> in %s.<br>", $avgTemp, $monthName);
 		printf("This means it was <b> by %2.2f C %s </b> then in the long-time average of %2.2f C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-		printf("<a href=\"http://ro-wetter.dyndns.org/klimamittel.php\" target=\"_blank\">(read more)</a><br>");
+		printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(read more)</a><br>");
 		printf("The <b>highest temperature</b> was measured on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f C</b>.<br>",
 			dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
 		printf("The <b>lowest temperature</b> appeared on <b>%s.%s</b> at <b>%s</b> and was <b>%2.2f C</b>.<br>",
