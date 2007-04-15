@@ -12,7 +12,9 @@ include("weatherInclude.php");
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
 <head>
-<title>Weather Office Home</title>
+<?php
+echo "<title>Weather Office Home - $STATION_NAME</title>";
+?>
 <meta name="author" content="Mathias Zuckermann">
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 <META HTTP-EQUIV="Refresh" CONTENT="300">  
