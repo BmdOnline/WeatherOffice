@@ -78,6 +78,12 @@ function getYear($dispyear, $text)
 				
 	echo "</tr>";
 	
+	$sum['temp_out_avg'] = 0;
+	$sum['temp_out_long_avg'] = 0;
+	$sum['rain'] = 0;
+	$sum['rain_long_avg'] = 0;	
+	$numMonth=0;
+
 	while($dispyear == $year )
 	{
 	
@@ -91,13 +97,14 @@ function getYear($dispyear, $text)
 	   if ($num > 0)
 	   {
 	     $stat=statArray($result, $num, $day, $begin, $end);
-
+	     $numMonth++;
 	     echo "<tr>";
 	     
   	     printf ("<td><a href=\"monthly.php?yearMonth=%d%d\">%s</a></td>",$year,$month,monthName($month, $text)); 
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["min"]);	     
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["max"]);
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["avg"]);
+
 
 	     $mittel = longTermAverage($month);
   	     $avgTemp = $mittel['temp'];
@@ -110,6 +117,9 @@ function getYear($dispyear, $text)
 			printf ("<td>%.1f</td>", $devTemp);
 
 	     printf ("<td>%.1f</td>", $avgTemp);
+
+	     $sum['temp_out_avg']      += $stat["temp_out"]["avg"];
+	     $sum['temp_out_long_avg'] += $avgTemp;
 	     
 	     $avgRain = $mittel['rain'];
 	     $devRain = $stat["rain_total"]['max'] - $stat["rain_total"]['min'] - $avgRain;
@@ -125,6 +135,9 @@ function getYear($dispyear, $text)
 			printf ("<td>%.1f</td>", $devRain);
 
 	     printf ("<td>%.1f</td>", $avgRain);
+	     
+	     $sum['rain'] += $stat["rain_total"]['max'] - $stat["rain_total"]['min'];
+   	     $sum['rain_long_avg'] += $avgRain;
 	     
            printf ("<td>%.1f </td>",$stat["windspeed"]["avg"]* 3.6);	     
 	     printf ("<td>%.1f </td>",$stat["windspeed"]["max"]* 3.6);
@@ -159,6 +172,43 @@ function getYear($dispyear, $text)
 	   $year  = $nextDay['year'];
 	   
    	   mysql_free_result($result);
+
+	}
+
+	if($numMonth>0)
+	{
+		$temp_out_avg = $sum['temp_out_avg'] / $numMonth;
+		$temp_out_long_avg = $sum['temp_out_long_avg'] / $numMonth;
+
+		printf ("<tr></tr><tr><td>${text['total']}<td><td></td>");
+		
+		printf ("<td>%.1f </td>",$temp_out_avg);
+		
+	        $devTemp = $temp_out_avg-$temp_out_long_avg;
+	     	if ($devTemp > 0)
+		     printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devTemp);
+	        else if ($devTemp < 0)
+	     	     printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devTemp);
+	        else
+		     printf ("<td>%.1f</td>", $devTemp);
+		
+	        printf ("<td>%.1f</td>", $temp_out_long_avg);		
+		
+		$devRain = $sum['rain'] - $sum['rain_long_avg'];	
+		
+  	        printf ("<td>%.1f</td>", $sum['rain']);
+		     
+		if ($devRain > 0)
+		     printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
+	        else if ($devRain < 0)
+	     	     printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devRain);
+	        else
+		     printf ("<td>%.1f</td>", $devRain);
+
+	        printf ("<td>%.1f</td>", $sum['rain_long_avg']);
+	 
+		
+		printf ("</tr>");
 
 	}
 
