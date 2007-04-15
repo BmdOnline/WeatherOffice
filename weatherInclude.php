@@ -10,7 +10,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.3.05-dev";
+   $WeatherOfficeVersion="0.3.06-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=2.0;
@@ -570,13 +570,13 @@ function graphs($type, $title, $begin, $end, $text)
 	echo "<a name=\"graph\"</a>";
 	echo "<hr><h3>$title</h3><p>";	
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=Temperatur/Taupunkt/Luftfeuchte&unit1=C&unit2=C&unit3=%&type=$type\">";
+	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=Temperatur/Taupunkt/Luftfeuchte&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=Temperatur Aussen/Innen/Luftfeuchte Innen&unit1=C&unit2=C&unit3=%&type=$type\">";
+	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=Temperatur Aussen/Innen/Luftfeuchte Innen&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
 
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=Luftdruck&unit=hPa&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=Windgeschwindigkeit&unit=km/h&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=Windrichtung&unit=&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=Windrichtung&unit=%B0&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=Regen 1h&unit=mm&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=Regen 24h&unit=mm&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=Regen gesamt&unit=mm&type=$type\">";

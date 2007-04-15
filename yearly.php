@@ -32,14 +32,14 @@ function getYear($dispyear, $text)
 	echo "<Table border=\"1\" spaceing=\"5\" >";
 	echo "<tr>";
 	echo "<td><b>{$text['date']}</b></td>";
-	echo "<td colspan=\"3\"><b>{$text['temp_out']} °C </b></td>";	
+	echo "<td colspan=\"3\"><b>{$text['temp_out']} &deg;C </b></td>";	
 	echo "<td><b>{$text['precipitation']}</b></td>";			
 	echo "<td colspan=\"2\"><b>{$text['wind']} km/h </b></td>";
 	echo "<td colspan=\"1\"><b>{$text['wind']}</b></td>";	
 	echo "<td colspan=\"3\"><b>{$text['hum_out']} % </b></td>";
 	echo "<td colspan=\"3\"><b>{$text['pressure']} hPa </b></td>";
 	echo "<td></td>";				
-	echo "<td colspan=\"3\"><b>{$text['temp_in']} °C </b></td>";
+	echo "<td colspan=\"3\"><b>{$text['temp_in']} &deg;C </b></td>";
 	echo "<td colspan=\"3\"><b>{$text['hum_in']} % </b></td>";
 	echo "</tr>";
 	

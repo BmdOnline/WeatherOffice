@@ -78,8 +78,8 @@ function testComp($compWoffice)
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['temperature']}</td>";
-	echo "<td><span id=\"tempout\">$values[temp_out] C</span></td>";
-	displayTendency($diff['temp_out'],"C/h", $text); 
+	echo "<td><span id=\"tempout\">$values[temp_out] &deg;C</span></td>";
+	displayTendency($diff['temp_out'],"&deg;C/h", $text); 
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['humidity']}</td>";
@@ -88,8 +88,8 @@ function testComp($compWoffice)
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['dewpoint']}</td>";
-	echo "<td>$values[dewpoint] C</td>";
-	displayTendency($diff['dewpoint'],"C/h", $text); 
+	echo "<td>$values[dewpoint] &deg;C</td>";
+	displayTendency($diff['dewpoint'],"&deg;C/h", $text); 
 	echo "</tr>";
 	
 	if($values['temp_out'] >= 27)
@@ -112,8 +112,8 @@ function testComp($compWoffice)
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['windchill']}</td>";
-	echo "<td>$values[wind_chill] C</td>";
-      displayTendency($diff['wind_chill'],"C/h", $text); 
+	echo "<td>$values[wind_chill] &deg;C</td>";
+      displayTendency($diff['wind_chill'],"&deg;C/h", $text); 
   	echo "</tr>";
 
 	// Air Pressure
@@ -178,8 +178,8 @@ function testComp($compWoffice)
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['temperature']}</td>";
-	echo "<td colspan=\"1\">$values[temp_in] C</td>";
-	displayTendency($diff['temp_in'],"C/h", $text); 
+	echo "<td colspan=\"1\">$values[temp_in] &deg;C</td>";
+	displayTendency($diff['temp_in'],"&deg;C/h", $text); 
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['humidity']}</td>";
