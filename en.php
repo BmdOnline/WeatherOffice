@@ -128,7 +128,8 @@ $GLOBALS['text'] = array (
   'sun_rise' => 'Sunrise',
   'sun_down' => 'Sunset',
   'climagraph' => 'Climagraph',
-  'avg_temp' => 'Average Temperature'
+  'avg_temp' => 'Average Temperature',
+  'avg_prec' => 'Average Precipitation'  
   );
 
 // Now, also define alternative imgs for our use

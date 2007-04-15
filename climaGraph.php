@@ -8,7 +8,27 @@
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
 
-	$graph = new Graph(800, 400, "auto", 86400);
+	if(array_key_exists("col",$_REQUEST))
+	   $col = $_REQUEST["col"];
+	else
+	   $col = "temp_out";
+
+	if(array_key_exists("avg",$_REQUEST))
+	   $numAvg = $_REQUEST["avg"];
+	else
+	   $numAvg = 10;	   
+
+	if(array_key_exists("title",$_REQUEST))
+	   $title = $_REQUEST["title"];
+	else
+	   $title = $text['avg_temp'];
+
+	if(array_key_exists("unit",$_REQUEST))
+	   $unit = $_REQUEST["unit"];
+	else
+	   $unit = "°C";
+
+	$graph = new Graph(800, 300, "auto", 86400);
 	
 	$query = "select max(timestamp) from weather";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
@@ -22,10 +42,10 @@
 		
 	$graph ->xaxis->scale-> SetDateFormat( 'd.m');
 	
-	$graph->title->Set($text['avg_temp']);
+	$graph->title->Set($title);
 	
 	$graph->yaxis->SetColor("green");
-	$graph->yaxis->title->Set("°C");
+	$graph->yaxis->title->Set($unit);
 	//$graph->y2axis->title->Set("mm");
 	//$graph->y2axis->SetColor("blue");
 	$graph->xaxis->SetLabelAngle(90);
@@ -51,7 +71,6 @@
 	
 	$idx  = 0;
 	$idx2 = 0;
-	$numAvg = 10;
 	$avg = 0;
 	$yearNum = -1;
 	$lastYear = 0;
@@ -79,8 +98,11 @@
 	   {
 	     $stat=statArray($result, $num, $day, $begin, $end);
 
-	     $ydata2[$idx] = $stat["temp_out"]["min"];
-
+	      if($col == "rain_total")	
+		     $ydata2[$idx] = $stat["rain_total"]["max"] - $stat["rain_total"]["min"];
+	       else
+	     	 $ydata2[$idx] = $stat[$col]["avg"];
+	     
  	     $xdata[$yearNum][$idx2] =  mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], 0);
 
 	     if($idx < $numAvg)
