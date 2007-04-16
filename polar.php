@@ -16,7 +16,7 @@
 	$totalNumValues = 0;
 	$plotMarkNum = 0;
 
-	function FCallback($aVal) {
+	function PlaceMarkCallback($aVal) {
 	    global $plotMarkNum, $totalNumValues;
 
 	    $plotMarkNum++;
@@ -108,7 +108,7 @@
 		$i++;
 	}
 
-	$totalNumValues = $idx;
+	$totalNumValues = $idx/2;
 
 	mysql_free_result($result);
 	mysql_close();
@@ -117,7 +117,7 @@
 	$p = new PolarPlot($data);
 	$p->mark->SetType(MARK_FILLEDCIRCLE);
 	$p->SetWeight(0);
-	$p->mark->SetCallback("FCallback");
+	$p->mark->SetCallback("PlaceMarkCallback");
 	
 
 	// Add Directions
