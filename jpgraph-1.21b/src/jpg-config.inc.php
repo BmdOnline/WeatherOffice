@@ -195,7 +195,7 @@ DEFINE("CACHE_FILE_MOD",0664);
 // built in Arc(). Bresenham gives better visual apperance of circles 
 // but is more CPU intensive and slower then the built in Arc() function
 // in GD. Turned off by default for speed
-DEFINE("USE_BRESENHAM",false);
+DEFINE("USE_BRESENHAM",true);
 
 // Special file name to indicate that we only want to calc
 // the image map in the call to Graph::Stroke() used

@@ -13,6 +13,17 @@
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
 	
+	$totalNumValues = 0;
+	$plotMarkNum = 0;
+
+	function PlaceMarkCallback($aVal) {
+	    global $plotMarkNum, $totalNumValues;
+
+	    $plotMarkNum++;
+	    $color=255*$plotMarkNum/$totalNumValues;
+	    return array(3,"",array($color,$color,255-$color));
+	} 
+
 	$begin =  $_REQUEST["begin"];
 	$end =    $_REQUEST["end"];
 	$col =   $_REQUEST["col"];
@@ -102,12 +113,22 @@
 		$i++;
 	}
 	
+	$totalNumValues = $i;
+
 	mysql_free_result($result);
 	mysql_close();
 	
 	$lineplot=new LinePlot($ydata, $xdata);
 	$lineplot->SetColor("blue");
 	$lineplot->SetWeight($LineThickness);
+
+	if($col == "wind_angle" || $col == "windspeed")
+	{
+  	  $lineplot->mark->SetCallback("PlaceMarkCallback");
+   	  $lineplot->mark->SetType(MARK_FILLEDCIRCLE);
+ 	  $lineplot->SetWeight(0); 
+	}
+
 	$graph->Add($lineplot);
 	$graph->SetShadow();
 	$graph->Stroke();

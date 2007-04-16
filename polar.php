@@ -13,6 +13,17 @@
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
 	
+	$totalNumValues = 0;
+	$plotMarkNum = 0;
+
+	function FCallback($aVal) {
+	    global $plotMarkNum, $totalNumValues;
+
+	    $plotMarkNum++;
+	    $color=255*$plotMarkNum/$totalNumValues;
+	    return array(3,"",array($color,$color,255-$color));
+	} 
+
 	$begin =  $_REQUEST["begin"];
 	$end =    $_REQUEST["end"];
 	$col1 =   $_REQUEST["col1"];
@@ -97,6 +108,8 @@
 		$i++;
 	}
 
+	$totalNumValues = $i;
+
 	mysql_free_result($result);
 	mysql_close();
 
@@ -104,6 +117,7 @@
 	$p = new PolarPlot($data);
 	$p->mark->SetType(MARK_FILLEDCIRCLE);
 	$p->SetWeight(0);
+	$p->mark->SetCallback("FCallback");
 	
 
 	// Add Directions

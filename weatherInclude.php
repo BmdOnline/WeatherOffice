@@ -15,10 +15,10 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.4";
+   $WeatherOfficeVersion="0.4.01-dev";
    
    // Thicknes of Lines in plots
-   $LineThickness=2.0;
+   $LineThickness=1.0;
    
    // Retreive Language
    $gl=array();
@@ -582,11 +582,10 @@ function graphs($type, $title, $begin, $end, $text)
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=Luftdruck&unit=hPa&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=Windgeschwindigkeit&unit=km/h&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=Windrichtung&unit=%B0&type=$type\">";
+	echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=Windverteilung&unit=km/h&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=Regen 1h&unit=mm&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=Regen 24h&unit=mm&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=Regen gesamt&unit=mm&type=$type\">";
-
-	echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=Windverteilung&unit=km/h&type=$type\">";
 
 	
 	echo "<br><a href=\"#top\">{$text['to_top']}</a>";
