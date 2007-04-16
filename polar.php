@@ -108,7 +108,7 @@
 		$i++;
 	}
 
-	$totalNumValues = $i;
+	$totalNumValues = $idx;
 
 	mysql_free_result($result);
 	mysql_close();

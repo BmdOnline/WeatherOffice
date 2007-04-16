@@ -12,6 +12,8 @@
 //
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
+	include("jpgraph_scatter.php");	
+
 	
 	$totalNumValues = 0;
 	$plotMarkNum = 0;
@@ -113,23 +115,31 @@
 		$i++;
 	}
 	
-	$totalNumValues = $i;
+	$totalNumValues = $idx;
 
 	mysql_free_result($result);
 	mysql_close();
 	
-	$lineplot=new LinePlot($ydata, $xdata);
-	$lineplot->SetColor("blue");
-	$lineplot->SetWeight($LineThickness);
-
 	if($col == "wind_angle" || $col == "windspeed")
 	{
-  	  $lineplot->mark->SetCallback("PlaceMarkCallback");
-   	  $lineplot->mark->SetType(MARK_FILLEDCIRCLE);
- 	  $lineplot->SetWeight(0); 
+	  $scatplot= new ScatterPlot($ydata, $xdata);	  
+	  $scatplot->SetColor("blue");
+  	  $scatplot->mark->SetCallback("PlaceMarkCallback");
+   	  $scatplot->mark->SetType(MARK_FILLEDCIRCLE);
+	  
+	  if($col == "windspeed")
+	     $scatplot->SetImpuls();
+	  $graph->Add($scatplot);
 	}
-
-	$graph->Add($lineplot);
+	else
+	{
+	  $lineplot=new LinePlot($ydata, $xdata);	
+	  $lineplot->SetColor("blue");
+	  $lineplot->SetWeight($LineThickness);
+	  $graph->Add($lineplot);
+	}
+	
 	$graph->SetShadow();
 	$graph->Stroke();
+
 ?>
