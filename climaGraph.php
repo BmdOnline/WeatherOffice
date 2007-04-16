@@ -5,6 +5,11 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
+// Copyright (C) 04/2007 Mathias Zuckermann &
+//			 Bernhard Heibler
+//
+// See COPYING for license info
+//
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
 

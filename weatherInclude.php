@@ -5,12 +5,17 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
+// Copyright (C) 04/2007 Mathias Zuckermann &
+//			 Bernhard Heibler
+//
+// See COPYING for license info
+//
 ////////////////////////////////////////////////////
 // 29.11.05 - created this header
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.3.06-dev";
+   $WeatherOfficeVersion="0.4";
    
    // Thicknes of Lines in plots
    $LineThickness=2.0;

@@ -5,6 +5,11 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
+// Copyright (C) 04/2007 Mathias Zuckermann &
+//			 Bernhard Heibler
+//
+// See COPYING for license info
+//
 ////////////////////////////////////////////////////
 // Declare all text strings that we need,
 // in English.
@@ -127,7 +132,7 @@ $GLOBALS['text'] = array (
   'sun_position' => 'Position of the sun',
   'sun_rise' => 'Sunrise',
   'sun_down' => 'Sunset',
-  'climagraph' => 'Climagraph',
+  'climagraph' => 'Climate graph',
   'avg_temp' => 'Average Temperature',
   'avg_prec' => 'Average Precipitation',
   'long_avg' => 'Long. Avg.',

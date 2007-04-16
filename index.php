@@ -5,6 +5,11 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
+// Copyright (C) 04/2007 Mathias Zuckermann &
+//			 Bernhard Heibler
+//
+// See COPYING for license info
+//
 ////////////////////////////////////////////////////
 include("weatherInclude.php");
 ?>
@@ -15,7 +20,6 @@ include("weatherInclude.php");
 <?php
 echo "<title>Weather Office Home - $STATION_NAME</title>";
 ?>
-<meta name="author" content="Mathias Zuckermann">
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 <META HTTP-EQUIV="Refresh" CONTENT="300">  
 <link rel="stylesheet" href="woffice.css">

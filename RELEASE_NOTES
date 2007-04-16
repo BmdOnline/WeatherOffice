@@ -11,3 +11,16 @@ Version 0.3 - 2006-12-02
 * Graphs in Weather Office should work now out of the box.
 * jpGraph 2.1.4 for php5
 * jpGraph 1.20.5 for php4
+
+Version 0.4 - 2006-12-02
+========================
+* Local sunrise and sundown times displayed
+  -> Requires stetup of STATION_LAN and STATION_LON in weatherDataInclude.php
+* User config for longtime average clima values (former version used values from Rosenheim DVD Station)
+  -> Requires setup of longTermAverage function in weatherDataInclude.ph
+  -> See also http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm for your local values
+* Update jpGraph for php4 to 1.21b to solve daylight saving time time shift problem
+* Comfort level display for indoor clima
+* New overall clima graphs
+* Included long term deviations to yearly table
+* Serveral small bugfixes (spelling, language)
