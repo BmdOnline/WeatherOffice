@@ -778,6 +778,7 @@ function tendency($timestamp)
 	$query = "select * from weather where timestamp>$starttime and timestamp<$stoptime";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$oldValues = mysql_fetch_assoc($result);
+	$numRows = mysql_num_rows($result);
 	mysql_free_result($result);
 
 	$query = "select * from weather where timestamp=$timestamp";
@@ -786,11 +787,14 @@ function tendency($timestamp)
 	mysql_free_result($result);
 
 	
+	if($numRows > 0)
 	foreach($oldValues as $key => $value)
 	{
 	   $diff[$key] = $curValues[$key] - $value;
 	   //echo "$key $value<BR>";
 	}
+	else
+	  $diff=0;
 	
 	return $diff;
 }
