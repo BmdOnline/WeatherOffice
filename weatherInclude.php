@@ -15,7 +15,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.4.01-dev";
+   $WeatherOfficeVersion="0.4.02-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -1161,5 +1161,21 @@ function contains($x, $y, $xpoints, $ypoints, $npoints)
 
 	return ($wn);
 }
+
+function rainbowColor($idx)
+{
+	if($idx < 25)
+		return array(255,$idx*10.2,0);
+	else if($idx < 50)
+		return array(255-(($idx-25)*10.2),255,0);
+  else if($idx < 75)
+		return array(0,255-(($idx-50)*10.2),($idx-50)*10.2);
+  else if ($idx <= 100)
+		return array(($idx-75)*10.2,0,255);
+	else
+	  return array(0,0,0);
+}
+
+
 
 ?>

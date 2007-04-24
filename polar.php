@@ -18,10 +18,9 @@
 
 	function PlaceMarkCallback($aVal) {
 	    global $plotMarkNum, $totalNumValues;
-
 	    $plotMarkNum++;
-	    $color=255*$plotMarkNum/$totalNumValues;
-	    return array(3,"",array($color,$color,255-$color));
+	    $idx=100*$plotMarkNum/$totalNumValues;
+ 	    return array(3,"",rainbowColor($idx));
 	} 
 
 	$begin =  $_REQUEST["begin"];
