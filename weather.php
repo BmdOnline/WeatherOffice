@@ -66,7 +66,7 @@ include("weatherInclude.php");
 	// Daily Overview
 	//
 	echo "<hr><p><b>{$text['daily_overview']}</b></p>";
-	echo "<form action = \"daily.php\" method=\"post\" target=\"main\">";
+	echo "<form action = \"daily.php\" method=\"get\" target=\"main\">";
 	echo "<select name=\"day\">";
 	
 	for($i=1; $i<=31; $i++)
@@ -125,7 +125,7 @@ include("weatherInclude.php");
 	// Monthly Overview
 	//
 	echo "<p><hr><b>{$text['monthly_overview']}</b></p>";
-	echo "<form action = \"monthly.php\" method = \"post\" target=\"main\">";
+	echo "<form action = \"monthly.php\" method = \"get\" target=\"main\">";
 	echo "<select name=\"yearMonth\">";
 
 	$today = getdate();
@@ -162,7 +162,7 @@ include("weatherInclude.php");
 	// Yearly Overview
 	//
 	echo "<p><hr><b>{$text['yearly_overview']}</b></p>";
-	echo "<form action = \"yearly.php\" method = \"post\" target=\"main\">";
+	echo "<form action = \"yearly.php\" method = \"get\" target=\"main\">";
 	echo "<select name=\"year\">";
 
 	$today = getdate();
@@ -197,7 +197,7 @@ include("weatherInclude.php");
 	// Range
 	//
 	echo "<p><hr><b>{$text['range']}</b></p>";
-	echo "<form action = \"freeInput.php\" method=\"post\" target=\"main\">";
+	echo "<form action = \"freeInput.php\" method=\"get\" target=\"main\">";
 	echo "<select name=\"beginDay\">";
 	
 	for($i=1; $i<=31; $i++)
