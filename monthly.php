@@ -68,8 +68,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	$tomorrow = getdate(strtotime("+1 day", mktime(0, 0, 0, $today['mon'], $today['mday'], $today['year'])));
 	if($today['year'] == $year && $today['mon'] == $month && $tomorrow['mon'] == $month)
 	{
-		printf("<h3><font color=\"red\">Vorl&auml;ufig bis zum %d.%d.%d.", $today['mday'], $today['mon'], $today['year']);
-		echo "<font color=\"black\"></h3>";
+	   printf("<h3><font color=\"red\">Vorl&auml;ufig bis zum %d.%d.%d.</font></h3>", $today['mday'], $today['mon'], $today['year']);
 	}
 	
 	links($showVal, $text);
