@@ -44,9 +44,8 @@ echo "<title>Weather Office Home - $STATION_NAME</title>";
    </frameset>
    <noframes>
        <body>
-         <p>You need a browser that supports frame to veiw this page.</p>
+         <p>You need a browser that supports frame to view this page.</p>
       </body>
    </noframes>
 </frameset>
-<body>
 </html>
