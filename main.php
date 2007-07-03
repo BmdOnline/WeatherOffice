@@ -161,6 +161,10 @@ function testComp($compWoffice)
 	 require_once('sunriseSunset.php');
 	 }
 	 
+	 $prevTime = strtotime("-1 day", mktime($hour, $minute, $second, $month, $day, $year));
+	 $sunRiseYesterday = date_sunrise($prevTime, SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
+	 $sunDownYesterday = date_sunset($prevTime, SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
+	  
 	  $sunRise = date_sunrise(time(), SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
 	  $sunDown = date_sunset(time(), SUNFUNCS_RET_STRING, $STATION_LAT, $STATION_LON, 90+5/6, date("O")/100);
       
@@ -169,11 +173,13 @@ function testComp($compWoffice)
 	  echo "</tr>";
 	  echo "<tr>";
   	  echo "<td>{$text['sun_rise']}</td>";
-	  echo "<td colspan=\"3\">$sunRise{$text['uhr']}</td>";
+	  echo "<td colspan=\"1\">$sunRise{$text['uhr']}</td>";
+	  echo "<td colspan=\"2\">{$text['yesterday']} $sunRiseYesterday{$text['uhr']}</td>";
 	  echo "</tr>";
 	  echo "<tr>";
 	  echo "<td>{$text['sun_down']}</td>";
-	  echo "<td colspan=\"3\">$sunDown{$text['uhr']}</td>";
+	  echo "<td colspan=\"1\">$sunDown{$text['uhr']}</td>";
+	  echo "<td colspan=\"2\">{$text['yesterday']} $sunDownYesterday{$text['uhr']}</td>";
 	  echo "</tr>";
 	
 	

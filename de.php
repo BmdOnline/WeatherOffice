@@ -136,7 +136,8 @@ $GLOBALS['text'] = array (
   'avg_temp' => 'Temperaturmittel',
   'avg_prec' => 'Niederschlagsmittel',
   'long_avg' => 'Lang. Mittel',
-  'total' => 'Gesamt'    
+  'total' => 'Gesamt',    
+  'yesterday' => 'Gestern'    
   );
 
 // Now, also define alternative imgs for our use
