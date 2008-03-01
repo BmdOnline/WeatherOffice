@@ -8,6 +8,8 @@
 // Copyright (C) 04/2007 Mathias Zuckermann &
 //			 Bernhard Heibler
 //
+// English Translation Steve Chamberlin
+//
 // See COPYING for license info
 //
 ////////////////////////////////////////////////////
@@ -16,22 +18,37 @@ include ("jpgraphSetup.php");
 	
 	function getLegend($col)
 	{
+		global $text;
+		
 		switch($col)
         	{
 			case 'temp_out':
-				return("Aussentemperatur");
+				return( $text['outside_temperature'] );
 				break;
 
 			case 'dewpoint':
-				return("Taupunkt");
+				return( $text['dewpoint'] );
 				break;
 
 			case 'temp_in':
-				return("Innentemperatur");
+				return( $text['inside_temperature']);
+				break;
+				
+			case 'wind_chill':
+				return( $text['windchill'] );
 				break;
 
+			case 'rel_hum_in':
+				return( $text['inside_humidity'] );
+				break;
+
+			case 'rel_hum_out':
+				return( $text['outside_humidity'] );
+				break;
+				
+
 			default:
-				return("Unbekannt");
+				return( $text['undefined'] );
 	        }
 	}
 
@@ -66,17 +83,17 @@ include ("jpgraphSetup.php");
 	switch($type)
 	{
 		case "day":
-			$title = $titleStr . " am " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
 			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
 			break;
 			
 		case "24":
-			$title = "24h " . $titleStr . " am " . $day . "." . $month . "." . $year;
+			$title = "24h " . $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
 			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
 			break;
 
 		case "week":
-			$title = $titleStr . " in der Woche vom " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['in_the_week_from'] . " " . $day . "." . $month . "." . $year;
 			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
 			break;
 			
@@ -86,7 +103,7 @@ include ("jpgraphSetup.php");
 			break;
 			
 		case "free":
-			$title = $titleStr . " im Zeitraum vom " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['in_the_period_from'] . " " . $day . "." . $month . "." . $year;
 			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
 			break;
 			
@@ -148,7 +165,7 @@ include ("jpgraphSetup.php");
 	$lineplot3=new LinePlot($ydata3, $xdata);
 	$lineplot3->SetColor("red");
 	$lineplot3->SetWeight($LineThickness);
-	$lineplot3->SetLegend("Luftfeuchte");
+	$lineplot3->SetLegend(getLegend($col3));
 	$graph->AddY2($lineplot3);
 	
 	$graph->SetShadow();

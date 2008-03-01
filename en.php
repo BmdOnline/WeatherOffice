@@ -8,6 +8,8 @@
 // Copyright (C) 04/2007 Mathias Zuckermann &
 //			 Bernhard Heibler
 //
+// English Translation Steve Chamberlin
+//
 // See COPYING for license info
 //
 ////////////////////////////////////////////////////
@@ -32,6 +34,7 @@ $GLOBALS['text'] = array (
   'dewpoint' => 'Dewpoint',
   'wind' => 'Wind',
   'speed' => 'Speed',
+  'windspeed' => 'Windspeed',  
   'windchill' => 'Windchill',
   'for' => 'for',
   'for_date' => 'for',
@@ -106,6 +109,8 @@ $GLOBALS['text'] = array (
   'windspeed_table' => 'Windspeed (m/s)',
   'windangle_table' => 'Wind Angle (&deg;)',
   'windchill_table' => 'Wind Chill (&deg;C)',
+  'winddir' => 'Wind Direction',
+  'winddist' => 'Wind Distribution',  
   'airpressure_table' => 'Airpressure (hPa)',
   'rain1h_table' => 'Rain 1h (mm)',
   'rain24h_table' => 'Rain 24h (mm)',
@@ -137,7 +142,17 @@ $GLOBALS['text'] = array (
   'avg_prec' => 'Average Precipitation',
   'long_avg' => 'Long. Avg.',
   'total' => 'Total',       
-  'yesterday' => 'Yesterday'       
+  'yesterday' => 'Yesterday', 
+  'at' => '',
+  'in_the_week_from' => 'in the week from',
+  'in_the_period_from' => 'in the period from',
+  'east_char' => 'E',
+  'outside_temperature' => 'Outside Temperature',
+  'inside_temperature' => 'Inside Temperature',
+  'inside_humidity' => 'Inside Humidity',
+  'outside_humidity' => 'Outside Humidity',
+  'precipitation' => 'Precipitation',  
+  'undefined' => 'Undefined'
   );
 
 // Now, also define alternative imgs for our use

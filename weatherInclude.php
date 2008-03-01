@@ -575,17 +575,17 @@ function graphs($type, $title, $begin, $end, $text)
 	echo "<a name=\"graph\"</a>";
 	echo "<hr><h3>$title</h3><p>";	
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=Temperatur/Taupunkt/Luftfeuchte&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
+	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=${text['temperature']}/${text['dewpoint']}/${text['humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=Temperatur Aussen/Innen/Luftfeuchte Innen&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
+	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
 
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=Luftdruck&unit=hPa&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=Windgeschwindigkeit&unit=km/h&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=Windrichtung&unit=%B0&type=$type\">";
-	echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=Windverteilung&unit=km/h&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=Regen 1h&unit=mm&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=Regen 24h&unit=mm&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=Regen gesamt&unit=mm&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=${text['pressure']}&unit=hPa&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=${text['windspeed']}&unit=km/h&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=${text['winddir']}&unit=%B0&type=$type\">";
+	echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=${text['winddist']}&unit=km/h&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=${text['precipitation']} 1h&unit=mm&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=${text['precipitation']} 24h&unit=mm&type=$type\">";
+	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
 
 	
 	echo "<br><a href=\"#top\">{$text['to_top']}</a>";

@@ -8,6 +8,8 @@
 // Copyright (C) 04/2007 Mathias Zuckermann &
 //			 Bernhard Heibler
 //
+// English Translation Steve Chamberlin
+//
 // See COPYING for license info
 //
 ////////////////////////////////////////////////////
@@ -55,15 +57,15 @@
 	switch($type)
 	{
 		case "day":
-			$title = $titleStr . " am " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
 			break;
 
 		case "24":
-			$title = "24h " . $titleStr . " am " . $day . "." . $month . "." . $year;
+			$title = "24h " . $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
 			break;
 
 		case "week":
-			$title = $titleStr . " in der Woche vom " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['in_the_week_from'] . " " . $day . "." . $month . "." . $year;
 			break;
 			
 		case "month":
@@ -71,7 +73,7 @@
 			break;
 			
 		case "free":
-			$title = $titleStr . " im Zeitraum vom " . $day . "." . $month . "." . $year;
+			$title = $titleStr . " " . $text['in_the_period_from'] . " " . $day . "." . $month . "." . $year;
 			break;
 			
 		default:
@@ -127,7 +129,7 @@
 	$tNorth->SetColor('red');
 	$graph->Add($tNorth);
 
-	$tEast = new Text("O");
+	$tEast = new Text($text['east_char']);
 	$tEast->Center($width-$margin,$width - $margin/2, $height/2 - $margin/4);
 	$tEast->SetFont(FF_FONT2, FS_BOLD, 12);
 	$graph->Add($tEast);
