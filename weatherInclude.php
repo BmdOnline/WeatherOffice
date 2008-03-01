@@ -15,7 +15,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.4.03-dev";
+   $WeatherOfficeVersion="0.4.04-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -91,19 +91,19 @@ function heatIndex($temp, $hum, $text)
 
 	if($hiD >= 54)
 	{
-		$hTxt = "<b>Erh&ouml;hte Gefahr!</b>";
+		$hTxt = "<b>${text['extream_danger']}</b>";
 	}
 	else if ($hiD >= 41 && $hiD < 54)
 	{
-		$hTxt = "<b>Gefahr!</b>";
+		$hTxt = "<b>${text['danger']}</b>";
 	}
 	else if($hiD >=32 && $hiD < 41)
 	{
-		$hTxt = "<b>Erh&ouml;hte Vorsicht!</b>";
+		$hTxt = "<b>${text['extream_caution']}</b>";
  	}
 	else if($hiD >27 && $hiD< 32)
 	{
-		$hTxt = "<b>Vorsicht!</b>";
+		$hTxt = "<b>${text['caution']}</b>";
 	}
 	return (sprintf("%2.2f C - %s", $hiD, $hTxt));
 }

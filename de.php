@@ -150,7 +150,11 @@ $GLOBALS['text'] = array (
   'inside_humidity' => 'Innnenfeuchte',
   'outside_humidity' => 'Aussenfeuchte',
   'precipitation' => 'Niederschlag',
-  'undefined' => 'nicht def.'
+  'undefined' => 'nicht def.',
+  'caution' => 'Vorsicht!',
+  'extream_caution' => 'Erh&ouml;hte Vorsicht!', 
+  'danger' => 'Gefahr!',
+  'extream_danger' => 'Erh&ouml;hte Gefahr!',     
   );
 
 // Now, also define alternative imgs for our use
