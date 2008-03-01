@@ -123,24 +123,24 @@
 
 	$tNorth = new Text("N");
 	$tNorth->Center(0,$width, $margin - 15);
-	$tNorth->SetFont(FF_ARIAL, FS_BOLD, 12);
+	$tNorth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tNorth->SetColor('red');
 	$graph->Add($tNorth);
 
 	$tEast = new Text("O");
 	$tEast->Center($width-$margin,$width - $margin/2, $height/2 - $margin/4);
-	$tEast->SetFont(FF_ARIAL, FS_BOLD, 12);
+	$tEast->SetFont(FF_FONT2, FS_BOLD, 12);
 	$graph->Add($tEast);
 
 	$tSouth = new Text("S");
 	$tSouth->Center(0,$width, $height - $margin);
-	$tSouth->SetFont(FF_ARIAL, FS_BOLD, 12);
+	$tSouth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tSouth->SetColor('green');
 	$graph->Add($tSouth);
 
 	$tWest = new Text("W");
 	$tWest->Center($margin/2,$margin, $height/2 - $margin/4);
-	$tWest->SetFont(FF_ARIAL, FS_BOLD, 12);
+	$tWest->SetFont(FF_FONT2, FS_BOLD, 12);
 	$graph->Add($tWest);
 
 	$graph->axis->ShowAngleLabel(false);

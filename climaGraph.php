@@ -144,7 +144,7 @@
 	$gColors[0] = "green";
 	$gColors[1] = "blue";
 	$gColors[2] = "cyan";
-	$gColors[3] = "orange";
+	$gColors[3] = "magenta";
 	
 
 	while($num < $yearNum)
