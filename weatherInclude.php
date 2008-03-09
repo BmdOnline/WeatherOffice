@@ -15,7 +15,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.5";
+   $WeatherOfficeVersion="0.5.01-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -766,6 +766,18 @@ function diffTime($timestamp, $diff)
 	       $newTime['hours'],$newTime['minutes'],$newTime['seconds']);
 	       
 	return $newtimestamp;
+}
+
+function getStartYearAndMonth(&$year, &$month)
+{
+
+	$query = "select min(timestamp) from weather";
+	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+	$timestamp = mysql_result($result, 0);
+	mysql_free_result($result);
+	
+	$month = substr($timestamp, 4, 2); 
+	$year  = substr($timestamp, 0, 4);
 }
 
 function tendency($timestamp)

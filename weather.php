@@ -130,13 +130,14 @@ include("weatherInclude.php");
 
 	$today = getdate();
 
+	getStartYearAndMonth($firstYear, $firstMonth);
 	
-	for($curYear=$startYear; $curYear <= $today['year']; $curYear++)
+	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{	
 		for($curMonth=1; $curMonth <= 12; $curMonth ++)
 		{
 			$curMonthName=monthName($curMonth, $text);
-			if(($curYear == $startYear && $curMonth < $startMonth) ||
+			if(($curYear == $firstYear && $curMonth < $firstMonth) ||
 			   ($curYear == $today['year'] && $curMonth > $today['mon']))
 			{
 				// Do nothing
@@ -166,10 +167,9 @@ include("weatherInclude.php");
 	echo "<select name=\"year\">";
 
 	$today = getdate();
-	$startMonth = 11;
-	$startYear = 2005;
 	
-	for($curYear=$startYear; $curYear <= $today['year']; $curYear++)
+	
+	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{	
 		if($curYear == $today['year'])
 		{

@@ -69,7 +69,9 @@
 	
 	/*** START DATA QUERY */
 	
-	$nextDay = getdate(strtotime("+ 0 sec", mktime(0, 0, 0, 1, $startMonth, $startYear)));
+	getStartYearAndMonth($firstYear, $firstMonth);
+	
+	$nextDay = getdate(strtotime("+ 0 sec", mktime(0, 0, 0, 1, $firstMonth, $firstYear)));
 	$day   = $nextDay['mday'];
 	$month = $nextDay['mon'];
 	$year  = $nextDay['year'];
@@ -152,7 +154,7 @@
 		$lineplot[$num]=new LinePlot($ydata[$num], $xdata[$num]);
 		$lineplot[$num]->SetColor($gColors[$num % 4]);
 		$lineplot[$num]->SetWeight($LineThickness);
-		$lineplot[$num]->SetLegend($startYear + $num);
+		$lineplot[$num]->SetLegend($firstYear + $num);
 		$graph->Add($lineplot[$num]);
 		$num++;
 	}

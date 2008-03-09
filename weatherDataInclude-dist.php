@@ -14,11 +14,7 @@
    $weatherDatabaseUser= "mySqlUser";
 // Password of database user   
    $weatherDatabasePW  = "mySqlUserPassword";
-   
-// Start year and month of data in the database
-   $startYear=2005;
-   $startMonth=11;
-   
+      
 // Your Weather station name (city)   
    $STATION_NAME = "Hinterdupfing";
 
