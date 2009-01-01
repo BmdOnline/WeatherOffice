@@ -147,12 +147,14 @@
 	$gColors[1] = "blue";
 	$gColors[2] = "cyan";
 	$gColors[3] = "magenta";
-	
+	$gColors[4] = "orange";	
+	$gColors[5] = "darkgreen";	
+	$gColors[6] = "blueviolet";
 
 	while($num < $yearNum)
 	{
 		$lineplot[$num]=new LinePlot($ydata[$num], $xdata[$num]);
-		$lineplot[$num]->SetColor($gColors[$num % 4]);
+		$lineplot[$num]->SetColor($gColors[$num % 7]);
 		$lineplot[$num]->SetWeight($LineThickness);
 		$lineplot[$num]->SetLegend($firstYear + $num);
 		$graph->Add($lineplot[$num]);

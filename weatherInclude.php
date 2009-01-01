@@ -15,7 +15,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="0.5.01-dev";
+   $WeatherOfficeVersion="0.5.02-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;

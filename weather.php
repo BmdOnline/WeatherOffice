@@ -39,7 +39,8 @@
 include("weatherInclude.php");
 
 	$today = getdate();
-
+	getStartYearAndMonth($firstYear, $firstMonth);	
+	
 	//
 	// Webcam
 	//
@@ -68,6 +69,7 @@ include("weatherInclude.php");
 	echo "<hr><p><b>{$text['daily_overview']}</b></p>";
 	echo "<form action = \"daily.php\" method=\"get\" target=\"main\">";
 	echo "<select name=\"day\">";
+	
 	
 	for($i=1; $i<=31; $i++)
 	{
@@ -99,15 +101,15 @@ include("weatherInclude.php");
 	echo "</select>.";
 	echo "<select name=\"year\">";
 
-	for($i=2005; $i<=2008; $i++)
+	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{
-		if($i == $today['year'])
+		if($curYear == $today['year'])
 		{
-			echo "<option value=\"$i\" selected> $i";
+			echo "<option value=\"$curYear\" selected> $curYear";
 		}
 		else
 		{
-			echo "<option value=\"$i\"> $i";
+			echo "<option value=\"$curYear\"> $curYear";
 		}
 	}
 
@@ -128,9 +130,6 @@ include("weatherInclude.php");
 	echo "<form action = \"monthly.php\" method = \"get\" target=\"main\">";
 	echo "<select name=\"yearMonth\">";
 
-	$today = getdate();
-
-	getStartYearAndMonth($firstYear, $firstMonth);
 	
 	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{	
@@ -230,15 +229,15 @@ include("weatherInclude.php");
 	echo "</select>.";
 	echo "<select name=\"beginYear\">";
 
-	for($i=2005; $i<=2008; $i++)
+	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{
-		if($i == $today['year'])
+		if($curYear == $today['year'])
 		{
-			echo "<option value=\"$i\" selected> $i";
+			echo "<option value=\"$curYear\" selected> $curYear";
 		}
 		else
 		{
-			echo "<option value=\"$i\"> $i";
+			echo "<option value=\"$curYear\"> $curYear";
 		}
 	}
 
@@ -276,15 +275,15 @@ include("weatherInclude.php");
 	echo "</select>.";
 	echo "<select name=\"endYear\">";
 
-	for($i=2005; $i<=2008; $i++)
+	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
 	{
-		if($i == $today['year'])
+		if($curYear == $today['year'])
 		{
-			echo "<option value=\"$i\" selected> $i";
+			echo "<option value=\"$curYear\" selected> $curYear";
 		}
 		else
 		{
-			echo "<option value=\"$i\"> $i";
+			echo "<option value=\"$curYear\"> $curYear";
 		}
 	}
 
