@@ -69,7 +69,7 @@
 	
 	/*** START DATA QUERY */
 	
-	getStartYearAndMonth($firstYear, $firstMonth);
+	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 	
 	$nextDay = getdate(strtotime("+ 0 sec", mktime(0, 0, 0, 1, $firstMonth, $firstYear)));
 	$day   = $nextDay['mday'];

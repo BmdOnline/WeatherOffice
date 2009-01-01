@@ -39,7 +39,7 @@
 include("weatherInclude.php");
 
 	$today = getdate();
-	getStartYearAndMonth($firstYear, $firstMonth);	
+	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);	
 	
 	//
 	// Webcam

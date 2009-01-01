@@ -768,7 +768,7 @@ function diffTime($timestamp, $diff)
 	return $newtimestamp;
 }
 
-function getStartYearAndMonth(&$year, &$month)
+function getStartYearAndMonth(&$year, &$month, &$day)
 {
 
 	$query = "select min(timestamp) from weather";
@@ -776,6 +776,7 @@ function getStartYearAndMonth(&$year, &$month)
 	$timestamp = mysql_result($result, 0);
 	mysql_free_result($result);
 	
+	$day   = substr($timestamp, 6, 2);
 	$month = substr($timestamp, 4, 2); 
 	$year  = substr($timestamp, 0, 4);
 }

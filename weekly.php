@@ -47,7 +47,8 @@ function getWeek($day, $month, $year, $showVal, $text)
 	$num = mysql_num_rows($result);
 	if ($num == 0)
 	{
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem 28.11.2005 verf&uuml;gbar.";
+		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
+		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
 		return $num;
 	}
 	
