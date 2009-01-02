@@ -28,7 +28,7 @@
    // Webcam Type "page" or "image"
    //
    $webcamType = "image";
-   $weatherWebcamUrl ="http://zucki.homeip.net/snap.jpg";
+   $weatherWebcamUrl ="http://www.r-kom.de/camps/dom/current.jpg";
     
   
 // This function contains some web links shown on the bottom of the left frame   
@@ -36,7 +36,7 @@ function weatherWebLinks()
 {
 	echo "<hr>";
 	echo "<a href=\"http://weather.homeip.net\" target=\"_blank\">Wetterstation Regensburg</a><br>";
-	echo "<a href=\"http://wetter.homeuix.net\" target=\"_blank\">Wetterstation Neubeuern</a><br>";
+	echo "<a href=\"http://wetter.homeunix.net\" target=\"_blank\">Wetterstation Neubeuern</a><br>";
 }
 
 function longTermAverage($month)
