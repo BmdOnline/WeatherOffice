@@ -26,26 +26,21 @@ echo "<title>Weather Office Home - $STATION_NAME</title>";
 <link rel="microsummary" type="application/x.microsummary+xml" href="summary.php">
 </head>
 
-<frameset rows="*,46" cols="*">
-   <frameset rows="*" cols="220, *">
-      <frameset rows="160, *" cols="1*">
+<frameset rows="*" cols="220, *">
+  <frameset rows="160, *" cols="1*">
          <frame name="logo" scrolling="no"     marginwidth="0" marginheight="0" src="logo.html" noresize frameborder="0">
          <frame name="ctrl" scrolling="auto"   marginwidth="2" marginheight="0" src="weather.php"  noresize frameborder="0">
-      </frameset>
+  </frameset>
 
-      <frameset rows="78, *" cols="1*">
-         <frame name="header" scrolling="no"   marginwidth="10" marginheight="14" src="header.php?lang=<?= $language ?>" noresize frameborder="0">
+  <frameset rows="78, *" cols="1*">
+        <frame name="header" scrolling="no"   marginwidth="10" marginheight="14" src="header.php?lang=<?= $language ?>" noresize frameborder="0">
          <frame name="main" scrolling="auto" marginwidth="10" marginheight="14" src="main.php?lang=<?= $language ?>" noresize frameborder="0">
-      </frameset>
-   </frameset>
-
-   <frameset rows="*" cols="*">
-      <frame name="footer" scrolling="no"   marginwidth="1" marginheight="1" src="footer.php" noresize frameborder="0">
-   </frameset>
+  </frameset>
    <noframes>
        <body>
          <p>You need a browser that supports frame to view this page.</p>
       </body>
    </noframes>
 </frameset>
+
 </html>
