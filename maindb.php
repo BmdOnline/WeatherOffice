@@ -16,8 +16,10 @@
 // Dreambox Digital SAT-Receiver using Tuxweather
 //
 ////////////////////////////////////////////////////
+	$_SERVER["HTTP_ACCEPT_LANGUAGE"]="de";
+	
 	include("weatherInclude.php");
-	$lang="de";
+	
 	$query = "select max(timestamp) from weather";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$timestamp = mysql_result($result, 0);
@@ -44,36 +46,24 @@
 	$diff = tendency($timestamp);
 	
 	$comfTxt = comfortText($values['temp_in'], $values['rel_hum_in'], $text);
-	
-	echo "Messwerte fuer den $day.$month.$year $hour:$minute in $STATION_NAME\n\n";
-	
-	// Temperatur und Feuchte
-	echo "Temperatur        $values[temp_out]C  Innen: $values[temp_in]C\n";
-	echo "Feuchtigkeit      $values[rel_hum_out]%   Innen: $values[rel_hum_in]%\n";
-	echo "Komfort             $comfTxt\n";
-	echo "Taupunkt           $values[dewpoint]C\n";
-
-	echo "\n";
-
-	echo "Windgeschw.      $windkmh km/h ($bftTxt)\n";
-	echo "Windrichtung     $values[wind_direction] ($values[wind_angle])\n";
-	echo "Windkuehle        $values[wind_chill] C\n";
-
-	echo "\n";
-
-	echo "Luftdruck           $values[rel_pressure] hPa\n";
-	
 	$tendName = tendencyName($values['tendency'], $text);
 	$foreName = forecastName($values['forecast'], $text);
 	
-	echo "Tendenz             $tendName -> $foreName\n";
+	$tab="~T205";
+	$tab2="~T380";
 	
-	echo "\n";
-
-	// Niederschlag
-	echo "Regen Stunde    $values[rain_1h] mm\n";
-	echo "Regen Heute      $values[rain_24h] mm\n";
-	echo "Regen Gesamt   $values[rain_total] mm";
+	echo "msgbox  title=\"Wetter in $STATION_NAME $day.$month.$year $hour:$minute\" msg=\"";
+	echo "Temperatur$tab$values[temp_out]C $tab2 Innen: $values[temp_in]C~n";
+	echo "Feuchtigkeit$tab$values[rel_hum_out]% $tab2 Innen: $values[rel_hum_in]%~n";
+	echo "Taupunkt$tab$values[dewpoint]C~n";
+	echo "Windgeschw.$tab$windkmh km/h ($bftTxt)~n";
+	echo "Windrichtung$tab$values[wind_direction] ($values[wind_angle])~n";
+	echo "Windkuehle$tab$values[wind_chill] C~n";
+	echo "Luftdruck$tab$values[rel_pressure] hPa  $tendName->$foreName~n";
+	echo "Regen 1h$tab$values[rain_1h] mm~n";
+	echo "Regen 24h$tab$values[rain_24h] mm~n";
+	echo "Regen Jahr$tab$values[rain_total] mm";	
+	echo "\" timeout=\"180\" select=\"OK\"";
 	
 	mysql_close();
 ?>

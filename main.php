@@ -151,6 +151,9 @@ function testComp($compWoffice)
 	echo "<td>{$text['today']}</td>";
 	echo "<td colspan=\"3\">$values[rain_24h] mm</td>";
 	echo "</tr>";
+	echo "<td>{$text['last_24_hours']}</td>";
+	echo "<td colspan=\"3\">$diff[rain_last24] mm</td>";
+	echo "</tr>";	
 	echo "<tr>";
 	echo "<td>{$text['overall']}</td>";
 	echo "<td colspan=\"3\">$values[rain_total] mm</td>";

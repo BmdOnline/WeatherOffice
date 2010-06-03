@@ -801,10 +801,23 @@ function tendency($timestamp)
 
 	
 	if($numRows > 0)
-	foreach($oldValues as $key => $value)
 	{
-	   $diff[$key] = $curValues[$key] - $value;
-	   //echo "$key $value<BR>";
+		foreach($oldValues as $key => $value)
+		{
+			$diff[$key] = $curValues[$key] - $value;
+			//echo "$key $value<BR>";
+		}
+		
+		$starttime = diffTime($timestamp, "-1445 minutes");
+		$stoptime = diffTime($timestamp, "-1440 minutes");	
+		
+		$query = "select rain_total from weather where timestamp>$starttime and timestamp<$stoptime";
+		$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+		$oldValues = mysql_fetch_assoc($result);
+		$numRows = mysql_num_rows($result);
+		mysql_free_result($result);
+
+		$diff['rain_last24'] = $curValues[rain_total] - $oldValues[rain_total];
 	}
 	else
 	  $diff=0;
