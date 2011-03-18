@@ -293,6 +293,10 @@ include("weatherInclude.php");
 	echo "<input type = \"hidden\" name=\"showVal\" value=\"false\">";
 	echo "</form>";
 
+	// Additional Sensors
+	echo "<p><hr><a href=\"additionalSensors.php?addSensor=false\" target=\"main\">{$text['additionalSensors']}</a></p>";
+	
+	
 	// Weblinks
 	weatherWebLinks();
 ?>

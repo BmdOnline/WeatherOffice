@@ -15,7 +15,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="1.0.1-dev";
+   $WeatherOfficeVersion="1.1.0-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -45,6 +45,19 @@
    
    $now = time();
   
+	function SqlQuery($query, $debug)
+	{
+		if($debug == false)
+			$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+		else
+		{
+			echo $query . "<br>";
+			return true;
+		}	
+		
+		return $result;
+	}
+
  function phpMajorVersion()
  {
  	$version = explode('.', phpversion());

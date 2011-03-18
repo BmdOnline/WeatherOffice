@@ -154,7 +154,8 @@ $GLOBALS['text'] = array (
   'caution' => 'Vorsicht!',
   'extream_caution' => 'Erh&ouml;hte Vorsicht!', 
   'danger' => 'Gefahr!',
-  'extream_danger' => 'Erh&ouml;hte Gefahr!',     
+  'extream_danger' => 'Erh&ouml;hte Gefahr!',    
+  'additionalSensors' => 'Zus&auml;tzliche Sensoren',      
   );
 
 // Now, also define alternative imgs for our use

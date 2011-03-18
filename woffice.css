@@ -15,6 +15,7 @@ p { color: black; font-weight: normal; font-size: 11px; font-family: Verdana, Ar
 samp { color: black; font-style: normal; font-weight: normal; font-size: 11px; font-family: Verdana, Arial, Helvetica }
 strong { color: black; font-style: normal; font-weight: normal; font-size: 18px; font-family: Verdana, Arial, Helvetica }
 td { color: black; font-weight: normal; font-size: 11px; font-family: Verdana, Arial, Helvetica }
+th { color: black; font-weight: bold; font-size: 11px; font-family: Verdana, Arial, Helvetica }
 ul { color: black; font-weight: normal; font-size: 11px; line-height: 14px; font-family: Verdana, Arial, Helvetica }
 
 .logo { height: 87; width: 98 }
