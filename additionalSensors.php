@@ -143,12 +143,13 @@ else
 
 	$newSensorId = GetNextSensorID();
 	
-	SqlQuery("INSERT INTO additionalSensors Values($newSensorId,
+	SqlQuery("INSERT INTO additionalsensors Values($newSensorId,
 						\"$name\", 				
 						\"$filename\", 
 						\"$linenumber\",
 						\"$unit\");", false);
 
+	echo "Sensor \"$name\" hinzugefügt.<br>";
 }
 
 mysql_close();
