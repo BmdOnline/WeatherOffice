@@ -118,8 +118,6 @@
 				$ts = $row["timestamp"];
 				$recTime = substr($ts, 8,2).":".substr($ts,10,2).":".substr($ts,12,2);
 				$recDate  = substr($ts, 0, 4)."-".substr($ts,4,2)."-".substr($ts,6,2);
-				touch("/tmp/recTime_$recTime");
-				touch("/tmp/recDate_$recDate");
 			}
 			else
 			{
