@@ -53,7 +53,7 @@ function GetNextSensorID()
 
 $table = "additionalsensors";
 
-if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table."'")))
+if(TableExists($table))
 {
 
 	$addSensor = $_REQUEST["addSensor"];

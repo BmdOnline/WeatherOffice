@@ -214,6 +214,33 @@ function testComp($compWoffice)
 		echo "</tr>";
 	}
 	
+	// Additional Sensors
+	
+	if(TableExists("additionalsensors"))
+	{
+		echo "<tr>";
+		echo "<td colspan=\"4\"><b>{$text['additionalSensors']}</b></td>";
+		echo "</tr>";
+		echo "<tr>";
+		
+		$result = SqlQuery("select name,filename,linenumber,unit from additionalsensors ORDER BY id", false);
+		$cnt=mysql_num_rows($result);
+		for($i=0; $i<$cnt; $i++)
+		{
+			$name=mysql_result($result, $i, 'name');
+			$filename=mysql_result($result, $i, 'filename');
+			$linenumber=mysql_result($result, $i, 'linenumber');
+			$unit=mysql_result($result, $i, 'unit');
+			$value=GetCurrentSensorValue($filename, $linenumber);
+		
+			echo "<tr>";
+			echo "<td colspan=\"1\">$name</td>";
+			echo "<td colspan=\"3\">$value $unit</td>";
+			echo "</tr>";
+		}
+		mysql_free_result($result);
+	}
+	
 	// End
 	echo "</table>";
 	

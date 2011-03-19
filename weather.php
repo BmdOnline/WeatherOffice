@@ -294,8 +294,11 @@ include("weatherInclude.php");
 	echo "</form>";
 
 	// Additional Sensors
-	echo "<p><hr><a href=\"additionalSensors.php?addSensor=false\" target=\"main\">{$text['additionalSensors']}</a></p>";
 	
+	if(TableExists("additionalsensors"))
+	{
+		echo "<p><hr><a href=\"additionalSensors.php?addSensor=false\" target=\"main\">{$text['additionalSensors']}</a></p>";
+	}
 	
 	// Weblinks
 	weatherWebLinks();

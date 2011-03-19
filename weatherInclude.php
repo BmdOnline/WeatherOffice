@@ -1238,5 +1238,13 @@ function GetCurrentSensorValue($filename, $linenumber)
 	return $value;
 }
 
+function TableExists($table)
+{
+	if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table."'")))
+	{
+		return true;
+	}
 
+	return false;
+}
 ?>
