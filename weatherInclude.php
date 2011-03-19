@@ -600,6 +600,23 @@ function graphs($type, $title, $begin, $end, $text)
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=${text['precipitation']} 24h&unit=mm&type=$type\">";
 	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
 
+	if(TableExists("additionalsensors"))
+	{
+		$result = SqlQuery("select id,name,filename,linenumber,unit from additionalsensors ORDER BY id", false);
+		$cnt=mysql_num_rows($result);
+		for($i=0; $i<$cnt; $i++)
+		{
+			$id=mysql_result($result, $i, 'id');
+			$name=mysql_result($result, $i, 'name');
+			$filename=mysql_result($result, $i, 'filename');
+			$linenumber=mysql_result($result, $i, 'linenumber');
+			$unit=mysql_result($result, $i, 'unit');
+			
+			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=addSensor$i&title=$name&unit=$unit&type=$type\">";
+
+		}
+		mysql_free_result($result);
+	}
 	
 	echo "<br><a href=\"#top\">{$text['to_top']}</a>";
 	echo "<hr>";
