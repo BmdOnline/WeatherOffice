@@ -612,7 +612,7 @@ function graphs($type, $title, $begin, $end, $text)
 			$linenumber=mysql_result($result, $i, 'linenumber');
 			$unit=mysql_result($result, $i, 'unit');
 			
-			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=addSensor$i&title=$name&unit=$unit&type=$type\">";
+			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=as$id&title=$name&unit=$unit&type=$type\">";
 
 		}
 		mysql_free_result($result);

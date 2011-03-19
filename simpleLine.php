@@ -41,7 +41,18 @@
 	
 	$year    = substr($begin, 0, 4);
 
+	$addSensor = false;
+	if(substr($col, 0, 2) == "as")
+	{
+		$addSensor = true;
+		$addSensorNum = substr($col, 2, 1); // Hack: bis stringende abfragen
+		$query = "select value,timestamp from additionalvalues where timestamp >= $begin and timestamp <= $end and id = $addSensorNum order by timestamp";
+	}
+	else
+	{
 	$query = "select $col, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
+	}
+
 	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
 	$num = mysql_num_rows($result);
 
@@ -102,13 +113,30 @@
 	{
 		if(($i % $factor) == 0)
 		{
-			$recTime = $row["rec_time"];
-			$recDate  = $row["rec_date"];
+			if($addSensor == true)
+			{
+				$ts = $row["timestamp"];
+				$recTime = substr($ts, 8,2).":".substr($ts,10,2).":".substr($ts,12,2);
+				$recDate  = substr($ts, 0, 4)."-".substr($ts,4,2)."-".substr($ts,6,2);
+				touch("/tmp/recTime_$recTime");
+				touch("/tmp/recDate_$recDate");
+			}
+			else
+			{
+				$recTime = $row["rec_time"];
+				$recDate  = $row["rec_date"];
+			}
 		
 			$xdata[$idx] = mktime(substr($recTime, 0, 2), substr($recTime, 3, 2), substr($recTime, 6, 2),
 				substr($recDate, 5, 2), substr($recDate, 8, 2), substr($recDate, 0, 4));
-			$ydata[$idx] = $row[$col];
-		
+			if($addSensor == true)
+			{
+				$ydata[$idx] = $row["value"];
+			}
+			else
+			{
+				$ydata[$idx] = $row[$col];
+			}
 			// convert windspeed from m/s to km/h
 			if($col == "windspeed")
 				$ydata[$idx] *= 3.6;
