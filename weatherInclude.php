@@ -1215,6 +1215,28 @@ function rainbowColor($idx)
 	  return array(0,0,0);
 }
 
+function GetCurrentSensorValue($filename, $linenumber)
+{
+	if(file_exists($filename) == false)
+	{
+		$value = "nicht vorhanden";
+	}
+	else
+	{
+		$value = "vorhanden";
+		
+		$handle = fopen($filename, "r");
+		
+		for($i=0; $i<$linenumber; $i++)
+		{
+			$value = fgets($handle);
+		}
+		
+		fclose($handle);
+	}
+	
+	return $value;
+}
 
 
 ?>

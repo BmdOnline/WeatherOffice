@@ -51,30 +51,6 @@ function GetNextSensorID()
 	return $sensorID;
 }
 
-function GetCurrentValue($filename, $linenumber)
-{
-	if(file_exists($filename) == false)
-	{
-		$value = "nicht vorhanden";
-	}
-	else
-	{
-		$value = "vorhanden";
-		
-		$handle = fopen($filename, "r");
-		
-		for($i=0; $i<$linenumber; $i++)
-		{
-			$value = fgets($handle);
-		}
-		
-		fclose($handle);
-	}
-	
-	return $value;
-}
-
-
 $table = "additionalsensors";
 
 if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table."'")))
@@ -104,7 +80,7 @@ if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table."'")))
 			$filename=mysql_result($result, $i, 'filename');
 			$linenumber=mysql_result($result, $i, 'linenumber');
 			$unit=mysql_result($result, $i, 'unit');
-			$value=GetCurrentValue($filename, $linenumber);
+			$value=GetCurrentSensorValue($filename, $linenumber);
 		
 			echo "<tr>";
 			echo "<td>$id</td>";
