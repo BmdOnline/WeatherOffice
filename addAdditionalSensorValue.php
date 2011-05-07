@@ -52,7 +52,14 @@ $ts = GetCurrentTimestamp();
 
 $id=$argv[1];
 
-$result = SqlQuery("select filename, linenumber from additionalsensors where id=\"$id\"", false);
+$result = SqlQuery("select filename, linenumber,Active from additionalsensors where id=\"$id\"", false);
+$active = mysql_result($result, 0, 'Active');
+
+if($active != 1)
+{
+  exit;
+}
+
 $filename = mysql_result($result, 0, 'filename');
 $linenumber = mysql_result($result, 0, 'linenumber');
 

@@ -68,7 +68,8 @@ if(TableExists($table))
 		echo "<th>Datei</th>";
 		echo "<th>Zeilennummer</th>";
 		echo "<th>Aktueller Wert</th>";
-		echo "<th>Einheit</th></tr>";
+		echo "<th>Einheit</th>";
+		echo "<th>Aktiv</th></tr>";
 
 			
 		$result = SqlQuery("select * from $table ORDER BY id", false);
@@ -80,6 +81,7 @@ if(TableExists($table))
 			$filename=mysql_result($result, $i, 'filename');
 			$linenumber=mysql_result($result, $i, 'linenumber');
 			$unit=mysql_result($result, $i, 'unit');
+			$active=mysql_result($result, $i, 'Active');
 			$value=GetCurrentSensorValue($filename, $linenumber);
 		
 			echo "<tr>";
@@ -89,6 +91,7 @@ if(TableExists($table))
 			echo "<td>$linenumber</td>";
 			echo "<td>$value</td>";
 			echo "<td>$unit</td>";
+			echo "<td>$active</td>";
 			echo "</tr>";
 		}
 		mysql_free_result($result);
@@ -130,7 +133,7 @@ if(TableExists($table))
 							\"$name\", 				
 							\"$filename\", 
 							\"$linenumber\",
-							\"$unit\");", false);
+							\"$unit\",1);", false);
 
 		echo "Sensor \"$name\" hinzugefügt.<br>";
 	}

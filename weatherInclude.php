@@ -602,10 +602,13 @@ function graphs($type, $title, $begin, $end, $text)
 
 	if(TableExists("additionalsensors"))
 	{
-		$result = SqlQuery("select id,name,filename,linenumber,unit from additionalsensors ORDER BY id", false);
+		$result = SqlQuery("select id,name,filename,linenumber,unit,Active from additionalsensors ORDER BY id", false);
 		$cnt=mysql_num_rows($result);
 		for($i=0; $i<$cnt; $i++)
 		{
+			$active=mysql_result($result, $i, 'Active');
+			if($active == 1)
+			{
 			$id=mysql_result($result, $i, 'id');
 			$name=mysql_result($result, $i, 'name');
 			$filename=mysql_result($result, $i, 'filename');
@@ -613,7 +616,7 @@ function graphs($type, $title, $begin, $end, $text)
 			$unit=mysql_result($result, $i, 'unit');
 			
 			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=as$id&title=$name&unit=$unit&type=$type\">";
-
+}
 		}
 		mysql_free_result($result);
 	}
