@@ -20,6 +20,30 @@
 //
 ////////////////////////////////////////////////////
 
+function printSpecialDays($stat, $text)
+{
+		$dayFieldList = array('zeroMaxDays','zeroMinDays','summerDays','heatDays','tropicalNights');
+	  $shownItems = 0;
+	    
+	  foreach($dayFieldList as $dayField)
+	  { 
+			if($stat["temp_out"][$dayField] > 0)
+			{
+				if($shownItems == 0)
+					printf("%s ",$text['There was']);
+				else 
+					printf(",<br>");
+				
+				printf("<b>%d %s</b> (%s) (%s)", $stat["temp_out"][$dayField], $text[$dayField], $text[$dayField .'Desc'],  $stat["temp_out"][$dayField. 'Text']);
+												
+				$shownItems++;
+			}
+	  }
+	  
+	  if($shownItems > 0)
+			printf(".<br>");	 
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // getDay
@@ -93,27 +117,23 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	$windAvgTxt = windDir($windAvg, $text);
 	
 	// Language dependent text
-    if($lng == "de")
-    {
-	    // german
-	    printf("<p>Die <b>mittlere Temperatur</b> im %s hat <b>%2.2f &deg;C</b> betragen.<br>", $monthName, $avgTemp);
-	    printf("Damit war der Monat <b> um %2.2f &deg;C %s </b> als im langj&auml;hrigen Mittel von %2.2f &deg;C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-	    printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(mehr dazu)</a><br>");
-	    printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
+  if($lng == "de")
+  {
+		// german
+	  printf("<p>Die <b>mittlere Temperatur</b> im %s hat <b>%2.2f &deg;C</b> betragen.<br>", $monthName, $avgTemp);
+	  printf("Damit war der Monat <b> um %2.2f &deg;C %s </b> als im langj&auml;hrigen Mittel von %2.2f &deg;C ", $avgTempDiff, $wcTxt, $mittel['temp']);
+	  printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(mehr dazu)</a><br>");
+	  printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
 	    	dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
-	    printf("Die <b>niedrigste Temperatur</b> trat am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br>",
+	  printf("Die <b>niedrigste Temperatur</b> trat am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br>",
 			dayLink(substr($stat["temp_out"]['minDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDate'], 5, 2), substr($stat["temp_out"]['minTime'], 0, 5), $stat["temp_out"]['min']);
 		printf("Der <b>w&auml;rmste Tag</b> war der <b>%s.%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",
 			dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
 		printf("Der <b>k&auml;lteste Tag</b> war der <b>%s.%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br>",
 			dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
-		printf("Es gab <b>%d Eistag(e)</b> (H&ouml;chsttemp. h&ouml;chstens 0 &deg;C) (%s),<br>", $stat["temp_out"]['zeroMaxDays'], $stat["temp_out"]['zeroMaxDaysText']);
-		printf("<b>%d Frosttag(e)</b> (Tiefsttemp. h&ouml;chstens 0 &deg;C) (%s),<br>", $stat["temp_out"]['zeroMinDays'], $stat["temp_out"]['zeroMinDaysText']);
-		printf("<b>%d Sommertag(e)</b> (H&ouml;chsttemp. mind. 25 &deg;C) (%s),<br>", $stat["temp_out"]['summerDays'], $stat["temp_out"]['summerDaysText']);
-
-		printf("<b>%d Hitzetag(e)</b> (H&ouml;chsttemp. mind. 30 &deg;C) (%s),<br>", $stat["temp_out"]['heatDays'], $stat["temp_out"]['heatDaysText']);
-		printf("<b>%d Tropenn&auml;cht(e)</b> (Tiefsttemp. mind. 20 &deg;C) (%s).<br>", $stat["temp_out"]['tropicalNights'], $stat["temp_out"]['tropicalNightsText']);
-
+	 
+	  printSpecialDays($stat, $text);
+				  
 		printf("<p>Die <b>Taupunktstemperatur</b> lag im Monatsdurchschnitt bei <b>%2.2f &deg;C</b>.<br>", $stat["dewpoint"]['avg']);		
 		printf("Der <b>h&ouml;chste Taupunkt</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> erreicht.<br>",
 			dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
@@ -166,12 +186,9 @@ function getMonth($month, $year, $showVal, $text, $lng)
 			dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
 		printf("The <b>coldest day</b> was the <b>%s.%s</b> with an average of <b>%2.2f &deg;C</b>.<br>",
 			dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
-		printf("There was <b>%d ice-day(s)</b> (highest temp. max. 0 &deg;C) (%s),<br>", $stat["temp_out"]['zeroMaxDays'], $stat["temp_out"]['zeroMaxDaysText']);
-		printf("<b>%d frost-day(s)</b> (lowest temp. max. 0 &deg;C) (%s),<br>", $stat["temp_out"]['zeroMinDays'], $stat["temp_out"]['zeroMinDaysText']);
-		printf("<b>%d summer-day(s)</b> (highest temp. at least 25 &deg;C) (%s),<br>", $stat["temp_out"]['summerDays'], $stat["temp_out"]['summerDaysText']);
-		printf("<b>%d heat-day(s)</b> (highest temp. at least 30 &deg;C) (%s),<br>", $stat["temp_out"]['heatDays'], $stat["temp_out"]['heatDaysText']);
-		printf("<b>%d tropical night(s)</b> (lowest temp. at least 20 &deg;C) (%s).<br>", $stat["temp_out"]['tropicalNights'], $stat["temp_out"]['tropicalNightsText']);
-
+	 
+		printSpecialDays($stat, $text);
+	 			
 		printf("<p>The <b>dewpoint</b> was in the average of the month at <b>%2.2f &deg;C</b>.<br>", $stat["dewpoint"]['avg']);		
 		printf("The <b>highest dewpoint</b> was reached on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
 			dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
@@ -254,6 +271,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
  	mysql_free_result($result);
  	mysql_close();
 }
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

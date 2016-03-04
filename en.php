@@ -157,7 +157,19 @@ $GLOBALS['text'] = array (
   'extream_caution' => 'Extreme Caution!',   
   'danger' => 'Danger!',
   'extream_danger' => 'Extreme Danger!',   
-  'additionalSensors' => 'Additional Sensors',    
+  'additionalSensors' => 'Additional Sensors', 
+  
+  'zeroMaxDays' => 'ice-day(s)',
+  'zeroMaxDaysDesc' => 'highest temp. max. 0 &deg;C',
+  'zeroMinDays' => 'frost-day(s))',
+  'zeroMinDaysDesc' => 'lowest temp. max. 0 &deg;C',
+  'summerDays' => 'summer-day(s)',
+	'summerDaysDesc' => 'highest temp. at least 25 &deg;C',  
+  'heatDays' => 'heat-day(s)',
+  'heatDaysDesc' => 'highest temp. at least 30 &deg;C',
+  'tropicalNights' => 'tropical night(s)',
+  'tropicalNightsDesc' => 'lowest temp. at least 20 &deg;C',
+  'There was' => 'There was'
   );
 
 // Now, also define alternative imgs for our use
