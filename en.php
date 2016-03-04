@@ -161,7 +161,7 @@ $GLOBALS['text'] = array (
   
   'zeroMaxDays' => 'ice-day(s)',
   'zeroMaxDaysDesc' => 'highest temp. max. 0 &deg;C',
-  'zeroMinDays' => 'frost-day(s))',
+  'zeroMinDays' => 'frost-day(s)',
   'zeroMinDaysDesc' => 'lowest temp. max. 0 &deg;C',
   'summerDays' => 'summer-day(s)',
 	'summerDaysDesc' => 'highest temp. at least 25 &deg;C',  
