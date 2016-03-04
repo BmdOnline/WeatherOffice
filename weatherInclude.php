@@ -850,7 +850,7 @@ function tendency($timestamp)
 		$numRows = mysql_num_rows($result);
 		mysql_free_result($result);
 
-		$diff['rain_last24'] = $curValues[rain_total] - $oldValues[rain_total];
+		$diff['rain_last24'] = $curValues['rain_total'] - $oldValues['rain_total'];
 	}
 	else
 	  $diff=0;
