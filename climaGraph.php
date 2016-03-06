@@ -143,19 +143,24 @@
 
 
 	$gColors = array();
-	$gColors[0] = "green";
-	$gColors[1] = "blue";
-	$gColors[2] = "cyan";
+	$gColors[0] = "maroon";
+	$gColors[1] = "red";
+	$gColors[2] = "purple";
 	$gColors[3] = "magenta";
-	$gColors[4] = "blueviolet";	
-	$gColors[5] = "red";	
-	$gColors[6] = "darkgreen";	
-
+	$gColors[4] = "green";	
+	$gColors[5] = "paleturquoise";	
+	$gColors[6] = "olivedrab";	
+	$gColors[7] = "yellow";	
+	$gColors[8] = "gold";	
+	$gColors[9] = "blue";		
+	$gColors[10] = "teal";		
+	$gColors[11] = "aqua";		
+	$gColors[12] = "orange";			
 
 	while($num < $yearNum)
 	{
 		$lineplot[$num]=new LinePlot($ydata[$num], $xdata[$num]);
-		$lineplot[$num]->SetColor($gColors[$num % 7]);
+		$lineplot[$num]->SetColor($gColors[$num % sizeof($gColors)]);
 		$lineplot[$num]->SetWeight($LineThickness);
 		$lineplot[$num]->SetLegend($firstYear + $num);
 		$graph->Add($lineplot[$num]);

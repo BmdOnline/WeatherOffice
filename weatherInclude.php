@@ -801,6 +801,33 @@ function diffTime($timestamp, $diff)
 	return $newtimestamp;
 }
 
+function diffTimestamps($t1, $t2)
+{
+	$timestamp=$t1;
+	
+	$day    = substr($timestamp, 6, 2);
+	$month  = substr($timestamp, 4, 2);
+	$year   = substr($timestamp, 0, 4);
+	$hour   = substr($timestamp, 8, 2);
+	$minute = substr($timestamp, 10, 2);
+	$second = substr($timestamp, 12, 4);
+	
+	$time1 = mktime($hour, $minute, $second, $month, $day, $year);
+	
+	$timestamp=$t2;
+	
+	$day    = substr($timestamp, 6, 2);
+	$month  = substr($timestamp, 4, 2);
+	$year   = substr($timestamp, 0, 4);
+	$hour   = substr($timestamp, 8, 2);
+	$minute = substr($timestamp, 10, 2);
+	$second = substr($timestamp, 12, 4);
+	
+	$time2 = mktime($hour, $minute, $second, $month, $day, $year);	
+	
+	return $time2 - $time1;
+}
+
 function getStartYearAndMonth(&$year, &$month, &$day)
 {
 
@@ -841,8 +868,8 @@ function tendency($timestamp)
 			//echo "$key $value<BR>";
 		}
 		
-		$starttime = diffTime($timestamp, "-1445 minutes");
-		$stoptime = diffTime($timestamp, "-1440 minutes");	
+		$starttime = diffTime($timestamp, "-1450 minutes");
+		$stoptime = diffTime($timestamp, "-1435 minutes");	
 		
 		$query = "select rain_total from weather where timestamp>$starttime and timestamp<$stoptime";
 		$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());

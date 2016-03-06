@@ -36,6 +36,11 @@
 	$unit =  $_REQUEST["unit"];
 	$type = $_REQUEST["type"];
 	
+	if (ISSET($_REQUEST["gradient"]))
+		$gradient=$_REQUEST["gradient"];
+	else
+		$gradient=0;
+	
 	$day     = substr($begin, 6, 2);
 	$month = substr($begin, 4, 2);
 	
@@ -109,6 +114,9 @@
 	
 	$idx = 0;
 	$i   = 0;
+	
+	$lastValue = -1;
+	
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	{
 		if(($i % $factor) == 0)
@@ -127,10 +135,20 @@
 		
 			$xdata[$idx] = mktime(substr($recTime, 0, 2), substr($recTime, 3, 2), substr($recTime, 6, 2),
 				substr($recDate, 5, 2), substr($recDate, 8, 2), substr($recDate, 0, 4));
+				
 			if($addSensor == true)
 			{
 				$ydata[$idx] = $row["value"];
 			}
+			else if($gradient == 1)
+			{
+				if($i == 0)
+					$ydata[$idx] = 0;
+				else
+					$ydata[$idx] = $row[$col] - $lastValue;
+		
+				$lastValue = $row[$col];
+			}			
 			else
 			{
 				$ydata[$idx] = $row[$col];
@@ -151,13 +169,15 @@
 	
 	if($col == "wind_angle" || $col == "windspeed")
 	{
-	  $scatplot= new ScatterPlot($ydata, $xdata);	  
+	  if($col == "windspeed")	  
+		$scatplot= new LinePlot($ydata, $xdata);	  
+	  else
+		$scatplot= new ScatterPlot($ydata, $xdata);	 
+		
 	  $scatplot->SetColor("blue");
   	  $scatplot->mark->SetCallback("PlaceMarkCallback");
    	  $scatplot->mark->SetType(MARK_FILLEDCIRCLE);
 	  
-	  if($col == "windspeed")
-	     $scatplot->SetImpuls();
 	  $graph->Add($scatplot);
 	}
 	else
