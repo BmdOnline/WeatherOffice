@@ -107,57 +107,64 @@ function testComp($compWoffice)
 	}
 
 	// Wind
-	echo "<tr>";
-	echo "<td colspan=\"4\"><b>{$text['wind']}</b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['speed']}</td>";
-	echo "<td>$windkmh km/h ($bftTxt) ($values[windspeed] m/s) {$text['from']} $values[wind_direction] ($values[wind_angle]) </td>";
-      displayTendency($diff['windspeed'],"km/h", $text); 
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['windchill']}</td>";
-	echo "<td>$values[wind_chill] &deg;C</td>";
-      displayTendency($diff['wind_chill'],"&deg;C/h", $text); 
-  	echo "</tr>";
-
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		echo "<tr>";
+		echo "<td colspan=\"4\"><b>{$text['wind']}</b></td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['speed']}</td>";
+		echo "<td>$windkmh km/h ($bftTxt) ($values[windspeed] m/s) {$text['from']} $values[wind_direction] ($values[wind_angle]) </td>";
+				displayTendency($diff['windspeed'],"km/h", $text); 
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['windchill']}</td>";
+		echo "<td>$values[wind_chill] &deg;C</td>";
+				displayTendency($diff['wind_chill'],"&deg;C/h", $text); 
+		echo "</tr>";
+  }
 	// Air Pressure
-	echo "<tr>";
-	echo "<td colspan=\"4\"><b>{$text['pressure']}</b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['nn_pressure']}</td>";
-	echo "<td>$values[rel_pressure] hPa</td>";
-      displayTendency($diff['rel_pressure'],"hPa/h", $text); 
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['tendency']}</td>";
-	$tendName = tendencyName($values['tendency'], $text);
-	$foreName = forecastName($values['forecast'], $text);
-	echo "<td>$tendName ({$text['forecast']}: $foreName)";
-	echo "</td><td colspan=\"2\"><center>";
-	forecastSymbol($values['forecast']);
-	echo "</center></td></tr>";
-	
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<tr>";
+		echo "<td colspan=\"4\"><b>{$text['pressure']}</b></td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['nn_pressure']}</td>";
+		echo "<td>$values[rel_pressure] hPa</td>";
+				displayTendency($diff['rel_pressure'],"hPa/h", $text); 
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['tendency']}</td>";
+		$tendName = tendencyName($values['tendency'], $text);
+		$foreName = forecastName($values['forecast'], $text);
+		echo "<td>$tendName ({$text['forecast']}: $foreName)";
+		echo "</td><td colspan=\"2\"><center>";
+		forecastSymbol($values['forecast']);
+		echo "</center></td></tr>";
+	}
 	// Precipitation
-	echo "<tr>";
-	echo "<td colspan=\"4\"><b>{$text['precipitation']}</b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['last_hour']}</td>";
-	echo "<td colspan=\"3\">$values[rain_1h] mm</td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['today']}</td>";
-	echo "<td colspan=\"3\">$values[rain_24h] mm</td>";
-	echo "</tr>";
-	echo "<td>{$text['last_24_hours']}</td>";
-	echo "<td colspan=\"3\">$diff[rain_last24] mm</td>";
-	echo "</tr>";	
-	echo "<tr>";
-	echo "<td>{$text['overall']}</td>";
-	echo "<td colspan=\"3\">$values[rain_total] mm</td>";
-	echo "</tr>";
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{
+		echo "<tr>";
+		echo "<td colspan=\"4\"><b>{$text['precipitation']}</b></td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['last_hour']}</td>";
+		echo "<td colspan=\"3\">$values[rain_1h] mm</td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['today']}</td>";
+		echo "<td colspan=\"3\">$values[rain_24h] mm</td>";
+		echo "</tr>";
+		echo "<td>{$text['last_24_hours']}</td>";
+		echo "<td colspan=\"3\">$diff[rain_last24] mm</td>";
+		echo "</tr>";	
+		echo "<tr>";
+		echo "<td>{$text['overall']}</td>";
+		echo "<td colspan=\"3\">$values[rain_total] mm</td>";
+		echo "</tr>";
+	}
 
 	if(phpMajorVersion()  < 5)
 	{
@@ -187,23 +194,26 @@ function testComp($compWoffice)
 	
 	
 	// Indoor
-	echo "<tr>";
-	echo "<td colspan=\"4\"><b>{$text['indoor']}</b></td>";
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['temperature']}</td>";
-	echo "<td colspan=\"1\">$values[temp_in] &deg;C</td>";
-	displayTendency($diff['temp_in'],"&deg;C/h", $text); 
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['humidity']}</td>";
-	echo "<td colspan=\"1\">$values[rel_hum_in] %</td>";
-	displayTendency($diff['rel_hum_in'],"%%/h", $text); 
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td>{$text['comfort']}</td>";
-	echo "<td colspan=\"3\">$comfTxt</td>";
-	echo "</tr>";
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<tr>";
+		echo "<td colspan=\"4\"><b>{$text['indoor']}</b></td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['temperature']}</td>";
+		echo "<td colspan=\"1\">$values[temp_in] &deg;C</td>";
+		displayTendency($diff['temp_in'],"&deg;C/h", $text); 
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['humidity']}</td>";
+		echo "<td colspan=\"1\">$values[rel_hum_in] %</td>";
+		displayTendency($diff['rel_hum_in'],"%%/h", $text); 
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td>{$text['comfort']}</td>";
+		echo "<td colspan=\"3\">$comfTxt</td>";
+		echo "</tr>";
+	}
 
 	if($values['temp_in'] >= 27)
 	{

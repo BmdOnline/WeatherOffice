@@ -12,10 +12,26 @@
 //
 ////////////////////////////////////////////////////
 // 29.11.05 - created this header
+
+	 // Define Some Constants that can be used in Config File
+
+	 define('DISPLAY_ROOM_INFO', 0x1);
+	 define('DISPLAY_WIND_INFO', 0x2);
+   define('DISPLAY_RAIN_INFO', 0x4);
+   define('DISPLAY_PRES_INFO', 0x8);
+   
+   $ConfDisplay = 0xffffffff;
+   
+   function SetDisplayValues($newValue)
+   {
+			global $ConfDisplay;			
+			$ConfDisplay = $newValue;
+   }
+
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="1.1.1-dev";
+   $WeatherOfficeVersion="1.1.2-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -44,6 +60,16 @@
        or die("Auswahl der Datenbank fehlgeschlagen<br>");
    
    $now = time();
+   
+  function isDisplayEnabled($item)
+	{
+		global $ConfDisplay;
+		
+		if($item & $ConfDisplay)
+			return true;
+		else
+			return false;
+	}
   
 	function SqlQuery($query, $debug)
 	{
@@ -209,6 +235,41 @@ function beaufort($windspeed, $lang)
 	return $txt;
 }
 
+function getTableColumns()
+{
+	$cols = array("temp_in");
+	
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		array_push($cols,"temp_out");
+	}
+	array_push($cols,"dewpoint");
+	
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		array_push($cols,"rel_hum_in");
+	}
+	
+	array_push($cols,"rel_hum_out");
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		array_push($cols,"windspeed", "wind_angle","wind_chill");
+	}
+	
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		array_push($cols,"rel_pressure");
+	}
+	
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{
+		array_push($cols, "rain_1h", "rain_24h", "rain_total");
+	}
+			
+	return $cols;
+}
+
 function valueTable($stat, $value, $day, $month, $year, $text)
 {
 	tableHeader($text);
@@ -216,8 +277,7 @@ function valueTable($stat, $value, $day, $month, $year, $text)
 	printf("<td>$day.$month.$year</td>");
 	printf("<td>--:--:--</td>");
 	
-	$cols = array("temp_in", "temp_out", "dewpoint", "rel_hum_in", "rel_hum_out", "windspeed", "wind_angle",
-			"wind_chill", "rel_pressure", "rain_1h", "rain_24h", "rain_total");
+	$cols = getTableColumns();
 	
 	foreach($cols as $column)
 	{
@@ -230,8 +290,7 @@ function valueTable($stat, $value, $day, $month, $year, $text)
 
 function valueTimeDateTable($stat, $value, $valueTime, $valueDate, $text)
 {
-	$cols = array("temp_in", "temp_out", "dewpoint", "rel_hum_in", "rel_hum_out", "windspeed", "wind_angle",
-			"wind_chill", "rel_pressure", "rain_1h", "rain_24h", "rain_total");
+	$cols = getTableColumns();
 
 	tableHeader($text);
 	echo "<tr>";
@@ -590,16 +649,30 @@ function graphs($type, $title, $begin, $end, $text)
 
 	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=${text['temperature']}/${text['dewpoint']}/${text['humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
-
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=${text['pressure']}&unit=hPa&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=${text['windspeed']}&unit=km/h&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=${text['winddir']}&unit=%B0&type=$type\">";
-	echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=${text['winddist']}&unit=km/h&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=${text['precipitation']} 1h&unit=mm&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=${text['precipitation']} 24h&unit=mm&type=$type\">";
-	echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
-
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=${text['pressure']}&unit=hPa&type=$type\">";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{	
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=${text['windspeed']}&unit=km/h&type=$type\">";
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=${text['winddir']}&unit=%B0&type=$type\">";
+		echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=${text['winddist']}&unit=km/h&type=$type\">";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{	
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=${text['precipitation']} 1h&unit=mm&type=$type\">";
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=${text['precipitation']} 24h&unit=mm&type=$type\">";
+		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
+	}
+	
 	if(TableExists("additionalsensors"))
 	{
 		$result = SqlQuery("select id,name,filename,linenumber,unit,Active from additionalsensors ORDER BY id", false);
@@ -736,18 +809,40 @@ function tableHeader($text)
 	echo "<tr>";
 	echo "<td><b>{$text['date']}</b></td>";
 	echo "<td><b>{$text['time']}</b></td>";
-	echo "<td><b>{$text['temp_in_table']}</b></td>";
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<td><b>{$text['temp_in_table']}</b></td>";
+	}
+
 	echo "<td><b>{$text['temp_out_table']}</b></td>";
 	echo "<td><b>{$text['dew_table']}</b></td>";
-	echo "<td><b>{$text['hum_in_table']}</b></td>";
+	
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<td><b>{$text['hum_in_table']}</b></td>";
+	}
+	
 	echo "<td><b>{$text['hum_out_table']}</b></td>";
-	echo "<td><b>{$text['windspeed_table']}</b></td>";
-	echo "<td><b>{$text['windangle_table']}</b></td>";
-	echo "<td><b>{$text['windchill_table']}</b></td>";
-	echo "<td><b>{$text['airpressure_table']}</b></td>";
-	echo "<td><b>{$text['rain1h_table']}</b></td>";
-	echo "<td><b>{$text['rain24h_table']}</b></td>";
-	echo "<td><b>{$text['rainoverall_table']}</b></td>";
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		echo "<td><b>{$text['windspeed_table']}</b></td>";
+		echo "<td><b>{$text['windangle_table']}</b></td>";
+		echo "<td><b>{$text['windchill_table']}</b></td>";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<td><b>{$text['airpressure_table']}</b></td>";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{
+		echo "<td><b>{$text['rain1h_table']}</b></td>";
+		echo "<td><b>{$text['rain24h_table']}</b></td>";
+		echo "<td><b>{$text['rainoverall_table']}</b></td>";
+	}
+	
 	echo "</tr>";
 }
 
@@ -764,21 +859,37 @@ function printTableRows($result)
 	
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	{
-		printf("<tr><td>%s</td><td>%s</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td></tr>",
-		$row["rec_date"],
-		$row["rec_time"],
-		$row["temp_in"],
-		$row["temp_out"],
-		$row["dewpoint"],
-		$row["rel_hum_in"],
-		$row["rel_hum_out"],
-		$row["windspeed"],
-		$row["wind_angle"], 
-		$row["wind_chill"],
-		$row["rel_pressure"],
-		$row["rain_1h"],
-		$row["rain_24h"],
-		$row["rain_total"]);
+		printf("<tr><td>%s</td><td>%s</td>", $row["rec_date"],$row["rec_time"]);
+		
+		if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+		{
+			printf("<td>%2.2f</td>",$row["temp_in"]);
+		}
+		
+		printf("<td>%2.2f</td><td>%2.2f</td>",$row["temp_out"],$row["dewpoint"]);
+		
+		if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+		{
+			printf("<td>%2.2f</td>",$row["rel_hum_in"]);
+		}
+		
+		printf("<td>%2.2f</td>",$row["rel_hum_out"]);
+		
+		if(isDisplayEnabled(DISPLAY_WIND_INFO))
+		{
+			printf("<td>%2.2f</td><td>%2.2f</td><td>%2.2f</td>",$row["windspeed"],$row["wind_angle"], $row["wind_chill"]);
+		}
+		
+		if(isDisplayEnabled(DISPLAY_PRES_INFO))
+		{
+			printf("<td>%2.2f</td>",$row["rel_pressure"]);
+		}
+		
+		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		{
+			printf("<td>%2.2f</td><td>%2.2f</td><td>%2.2f</td></tr>",	$row["rain_1h"],$row["rain_24h"],	$row["rain_total"]);
+		}
+		
 	}
 }
 
@@ -792,8 +903,7 @@ function diffTime($timestamp, $diff)
 	$minute = substr($timestamp, 10, 2);
 	$second = substr($timestamp, 12, 4);
 
-
-        $newTime = getdate(strtotime($diff, mktime($hour, $minute, $second, $month, $day, $year)));
+  $newTime = getdate(strtotime($diff, mktime($hour, $minute, $second, $month, $day, $year)));
 
 	$newtimestamp = convertTimestamp($newTime['mday'],$newTime['mon'],$newTime['year'],
 	       $newTime['hours'],$newTime['minutes'],$newTime['seconds']);

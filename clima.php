@@ -31,7 +31,11 @@ include("weatherInclude.php");
 echo "<h2>{$text['climagraph']} </h2>";
 
 echo "<p><img src=\"climaGraph.php?title=${text['avg_temp']}&col=temp_out\">";
-echo "<p><img src=\"climaGraph.php?title=${text['avg_prec']}&col=rain_total&unit=mm&avg=30\">";
+
+if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+{
+	echo "<p><img src=\"climaGraph.php?title=${text['avg_prec']}&col=rain_total&unit=mm&avg=30\">";
+}
 
 mysql_close();
 ?>

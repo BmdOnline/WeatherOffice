@@ -20,7 +20,7 @@
 	echo "</head>";
 	echo "<body bgcolor=\"#d6e5ca\" marginheight=\"25\" marginwidth=\"20\" topmargin=\"25\" leftmargin=\"0\">";
 
-	include("weatherDataInclude.php");
+	include("weatherInclude.php");
 	
 	if($webcamType == "image")
 	{

@@ -38,14 +38,32 @@ function getYear($dispyear, $text)
 	echo "<tr>";
 	echo "<td><b>{$text['date']}</b></td>";
 	echo "<td colspan=\"5\"><b>{$text['temp_out']} &deg;C </b></td>";	
-	echo "<td colspan=\"3\"><b>{$text['precipitation']} mm</b></td>";			
-	echo "<td colspan=\"2\"><b>{$text['wind']} km/h </b></td>";
-	echo "<td colspan=\"1\"><b>{$text['wind']}</b></td>";	
-	echo "<td colspan=\"3\"><b>{$text['hum_out']} % </b></td>";
-	echo "<td colspan=\"3\"><b>{$text['pressure']} hPa </b></td>";
-	echo "<td></td>";				
-	echo "<td colspan=\"3\"><b>{$text['temp_in']} &deg;C </b></td>";
-	echo "<td colspan=\"3\"><b>{$text['hum_in']} % </b></td>";
+	
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{
+		echo "<td colspan=\"3\"><b>{$text['precipitation']} mm</b></td>";			
+	}
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		echo "<td colspan=\"2\"><b>{$text['wind']} km/h </b></td>";
+		echo "<td colspan=\"1\"><b>{$text['wind']}</b></td>";	
+	}
+	
+	echo "<td colspan=\"3\"><b>{$text['hum_out']} % </b></td>";	
+	
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<td colspan=\"3\"><b>{$text['pressure']} hPa </b></td>";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<td></td>";				
+		echo "<td colspan=\"3\"><b>{$text['temp_in']} &deg;C </b></td>";
+		echo "<td colspan=\"3\"><b>{$text['hum_in']} % </b></td>";
+	}
+	
 	echo "</tr>";
 	
 	echo "<tr>";
@@ -55,32 +73,42 @@ function getYear($dispyear, $text)
 	echo "<td><b>{$text['avg']}</b></td>";
 	echo "<td colspan=\"2\"><b>{$text['long_avg']}</b></td>";	
 
-	echo "<td><b>{$text['total']}</b></td>";
-	echo "<td colspan=\"2\"><b>{$text['long_avg']}</b></td>";
-
-	echo "<td><b>{$text['avg']}</b></td>";		
-	echo "<td><b>{$text['max']}</b></td>";
-
-	echo "<td><b>{$text['dir']}</b></td>";
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+	{
+		echo "<td><b>{$text['total']}</b></td>";
+		echo "<td colspan=\"2\"><b>{$text['long_avg']}</b></td>";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		echo "<td><b>{$text['avg']}</b></td>";		
+		echo "<td><b>{$text['max']}</b></td>";
+		echo "<td><b>{$text['dir']}</b></td>";
+	}
 	
 	echo "<td><b>{$text['min']}</b></td>";
 	echo "<td><b>{$text['avg']}</b></td>";		
 	echo "<td><b>{$text['max']}</b></td>";
 
-	echo "<td><b>{$text['min']}</b></td>";
-	echo "<td><b>{$text['avg']}</b></td>";		
-	echo "<td><b>{$text['max']}</b></td>";
-
-	echo "<td></td>";				
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<td><b>{$text['min']}</b></td>";
+		echo "<td><b>{$text['avg']}</b></td>";		
+		echo "<td><b>{$text['max']}</b></td>";
+	}
 	
-	echo "<td><b>Min</b></td>";
-	echo "<td><b>Avg</b></td>";		
-	echo "<td><b>Max</b></td>";
-	
-	echo "<td><b>Min</b></td>";
-	echo "<td><b>Avg</b></td>";		
-	echo "<td><b>Max</b></td>";
-				
+	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+	{
+		echo "<td></td>";				
+		
+		echo "<td><b>Min</b></td>";
+		echo "<td><b>Avg</b></td>";		
+		echo "<td><b>Max</b></td>";
+		
+		echo "<td><b>Min</b></td>";
+		echo "<td><b>Avg</b></td>";		
+		echo "<td><b>Max</b></td>";
+	}			
 	echo "</tr>";
 	
 	$sum['temp_out_avg'] = 0;
@@ -126,47 +154,56 @@ function getYear($dispyear, $text)
 	     $sum['temp_out_avg']      += $stat["temp_out"]["avg"];
 	     $sum['temp_out_long_avg'] += $avgTemp;
 	     
-	     $avgRain = $mittel['rain'];
-	     $devRain = $stat["rain_total"]['max'] - $stat["rain_total"]['min'] - $avgRain;
+	     if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+			 {
+					$avgRain = $mittel['rain'];
+					$devRain = $stat["rain_total"]['max'] - $stat["rain_total"]['min'] - $avgRain;
 
-	     printf ("<td>%.1f </td>",$stat["rain_total"]['max'] - $stat["rain_total"]['min']);
+					printf ("<td>%.1f </td>",$stat["rain_total"]['max'] - $stat["rain_total"]['min']);
 
+					if ($devRain > 0)
+						printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
+					else if ($devRain < 0)
+						printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devRain);
+					else
+					printf ("<td>%.1f</td>", $devRain);
 
-	     if ($devRain > 0)
-		     printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
-	     else if ($devRain < 0)
-	     	     printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devRain);
-	     else
-			printf ("<td>%.1f</td>", $devRain);
-
-	     printf ("<td>%.1f</td>", $avgRain);
+					printf ("<td>%.1f</td>", $avgRain);
+					
+					$sum['rain'] += $stat["rain_total"]['max'] - $stat["rain_total"]['min'];
+					$sum['rain_long_avg'] += $avgRain;	     
+	     }
 	     
-	     $sum['rain'] += $stat["rain_total"]['max'] - $stat["rain_total"]['min'];
-   	     $sum['rain_long_avg'] += $avgRain;
-	     
-           printf ("<td>%.1f </td>",$stat["windspeed"]["avg"]* 3.6);	     
-	     printf ("<td>%.1f </td>",$stat["windspeed"]["max"]* 3.6);
-	     
-	     printf ("<td>%.1f </td>",$stat["wind_angle"]["avg"]);	     
+	     if(isDisplayEnabled(DISPLAY_WIND_INFO))
+			 {
+				 printf ("<td>%.1f </td>",$stat["windspeed"]["avg"]* 3.6);	     
+				 printf ("<td>%.1f </td>",$stat["windspeed"]["max"]* 3.6);	     
+				 printf ("<td>%.1f </td>",$stat["wind_angle"]["avg"]);	  
+	     }
 	
 	     printf ("<td>%.1f </td>",$stat["rel_hum_out"]["min"]);
 	     printf ("<td>%.1f </td>",$stat["rel_hum_out"]["avg"]);	     
 	     printf ("<td>%.1f </td>",$stat["rel_hum_out"]["max"]);	
 
-	     printf ("<td>%.1f </td>",$stat["rel_pressure"]["min"]);
-	     printf ("<td>%.1f </td>",$stat["rel_pressure"]["avg"]);	     
-	     printf ("<td>%.1f </td>",$stat["rel_pressure"]["max"]);	
+	     if(isDisplayEnabled(DISPLAY_PRES_INFO))
+			 {
+				 printf ("<td>%.1f </td>",$stat["rel_pressure"]["min"]);
+				 printf ("<td>%.1f </td>",$stat["rel_pressure"]["avg"]);	     
+				 printf ("<td>%.1f </td>",$stat["rel_pressure"]["max"]);	
+			 }
 
-	     echo "<td></td>";
-	     
-	     printf ("<td>%.1f </td>",$stat["temp_in"]["min"]);
-	     printf ("<td>%.1f </td>",$stat["temp_in"]["avg"]);	     
-	     printf ("<td>%.1f </td>",$stat["temp_in"]["max"]);	 
-	     
-             printf ("<td>%.1f </td>",$stat["rel_hum_in"]["min"]);
-	     printf ("<td>%.1f </td>",$stat["rel_hum_in"]["avg"]);	     
-	     printf ("<td>%.1f </td>",$stat["rel_hum_in"]["max"]);	
-    
+	     if(isDisplayEnabled(DISPLAY_ROOM_INFO))
+			 {
+				echo "<td></td>";
+					
+				printf ("<td>%.1f </td>",$stat["temp_in"]["min"]);
+				printf ("<td>%.1f </td>",$stat["temp_in"]["avg"]);	     
+				printf ("<td>%.1f </td>",$stat["temp_in"]["max"]);	 
+					
+				printf ("<td>%.1f </td>",$stat["rel_hum_in"]["min"]);
+				printf ("<td>%.1f </td>",$stat["rel_hum_in"]["avg"]);	     
+				printf ("<td>%.1f </td>",$stat["rel_hum_in"]["max"]);	
+			 }
 	     	     
 	     echo "</tr>";
 	   }
@@ -189,29 +226,32 @@ function getYear($dispyear, $text)
 		
 		printf ("<td>%.1f </td>",$temp_out_avg);
 		
-	        $devTemp = $temp_out_avg-$temp_out_long_avg;
-	     	if ($devTemp > 0)
-		     printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devTemp);
-	        else if ($devTemp < 0)
-	     	     printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devTemp);
-	        else
-		     printf ("<td>%.1f</td>", $devTemp);
+	  $devTemp = $temp_out_avg-$temp_out_long_avg;
+	  
+	  if ($devTemp > 0)
+		  printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devTemp);
+	  else if ($devTemp < 0)
+	    printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devTemp);
+	  else
+			printf ("<td>%.1f</td>", $devTemp);
 		
-	        printf ("<td>%.1f</td>", $temp_out_long_avg);		
-		
-		$devRain = $sum['rain'] - $sum['rain_long_avg'];	
-		
-  	        printf ("<td>%.1f</td>", $sum['rain']);
-		     
-		if ($devRain > 0)
-		     printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
-	        else if ($devRain < 0)
-	     	     printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devRain);
-	        else
-		     printf ("<td>%.1f</td>", $devRain);
+	  printf ("<td>%.1f</td>", $temp_out_long_avg);		
+	        
+	  if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		{		
+			$devRain = $sum['rain'] - $sum['rain_long_avg'];	
+			
+			printf ("<td>%.1f</td>", $sum['rain']);
+					
+			if ($devRain > 0)
+				printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
+			else if ($devRain < 0)
+				printf ("<td><span style=\"color: rgb(0, 0, 255);\">%.1f</span></td>", $devRain);
+			else
+				printf ("<td>%.1f</td>", $devRain);
 
-	        printf ("<td>%.1f</td>", $sum['rain_long_avg']);
-	 
+			printf ("<td>%.1f</td>", $sum['rain_long_avg']);
+		}
 		
 		printf ("</tr>");
 

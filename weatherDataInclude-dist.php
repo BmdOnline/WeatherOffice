@@ -30,6 +30,8 @@
    $webcamType = "image";
    $weatherWebcamUrl ="http://www.r-kom.de/camps/dom/current.jpg";
     
+   // Disable Some Information to be displayed if you dont have all sensors
+   SetDisplayValues( DISPLAY_ROOM_INFO | DISPLAY_WIND_INFO | DISPLAY_RAIN_INFO |DISPLAY_PRES_INFO);
   
 // This function contains some web links shown on the bottom of the left frame   
 function weatherWebLinks()
