@@ -101,7 +101,7 @@
 			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
 	}
 	
-	$graph->title->Set($title);
+	$graph->title->Set(encodeStringForGraph($title));
 	$graph->yaxis->SetColor("blue");
 	$graph->yaxis->title->Set($unit);
 	

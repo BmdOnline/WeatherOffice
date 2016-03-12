@@ -81,7 +81,7 @@
 			
 	}
 	
-	$graph->title->Set($title);
+	$graph->title->Set(encodeStringForGraph($title));
 		
 	 
 	$data = array();

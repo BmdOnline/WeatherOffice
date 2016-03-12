@@ -727,6 +727,11 @@ function monthName($month, $text)
 	}
 }
 
+function encodeStringForGraph($text)
+{
+	return html_entity_decode($text, ENT_COMPAT, 'ISO-8859-1');
+}
+
 function tendencyName($tend, $text)
 {
 	switch($tend)
