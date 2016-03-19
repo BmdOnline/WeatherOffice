@@ -151,43 +151,26 @@ class MinMaxAvg
 		echo "Calculating Rain for $Type...\n";
 
 		// Special Handling for Rain Required
+		
 
-
-		$query = "SELECT SUBSTR(YYYYDD,$tStampStart, $tStampLenght) AS timestamp, ". 
-						 "\"${Type}\" as type , " .
+		$query = "UPDATE MinMaxAvg t ".
+						 "INNER JOIN ".
+						 "(SELECT SUBSTR(YYYYDD,$tStampStart, $tStampLenght) AS timestamp, ".
 						 "ROUND(AVG(rainfall),1) AS rain_total_avg, ".
 						 "ROUND(MIN(rainfall),1) AS rain_total_min, ".
 						 "ROUND(MAX(rainfall),1) AS rain_total_max ".
 						 "FROM ((SELECT MAX(rain_total)- MIN(rain_total) AS rainfall, ". 
 						 "substr(timestamp,$tRainStart, $tRainLenght) AS YYYYDD " .
 						 "FROM weather GROUP BY substr(timestamp,$tRainStart, $tRainLenght) ) AS T1) " .
-						 "GROUP BY SUBSTR(YYYYDD,$tStampStart, $tStampLenght)";
-
-		//echo $query;
-
-		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-
-		echo "Inserting Rain for $Type...\n";
-
-		while($row = mysql_fetch_array($result, MYSQL_ASSOC))
-		{	
-			$query = "UPDATE MinMaxAvg SET ";
-			$i=0;
-			foreach($row as $key => $value)
-			{
-					if ($i > 0)
-						$query = $query . ", ";
-
-					$query = $query . "$key='$value'";
-
-					$i++;
-			}
-
-			$query= $query . " WHERE timestamp=${row['timestamp']};\n";
-			//echo $query;
-			mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());			
-		}
-
+						 "GROUP BY SUBSTR(YYYYDD,$tStampStart, $tStampLenght))" .
+						 " s ON t.timestamp = s.timestamp ".
+						 "SET ".
+						 "t.rain_total_avg=s.rain_total_avg ".
+						 "t.rain_total_min=s.rain_total_min ".
+						 "t.rain_total_max=s.rain_total_max ".
+		
+		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());						 
+		
 	}
 	
 	public function getRows($filter, $column)
