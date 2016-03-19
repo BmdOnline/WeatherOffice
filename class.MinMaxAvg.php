@@ -153,7 +153,7 @@ class MinMaxAvg
 		// Special Handling for Rain Required
 		
 
-		$query = "UPDATE MinMaxAvg t ".
+		$query = "UPDATE MinMaxAvg AS tar ".
 						 "INNER JOIN ".
 						 "(SELECT SUBSTR(YYYYDD,$tStampStart, $tStampLenght) AS timestamp, ".
 						 "ROUND(AVG(rainfall),1) AS rain_total_avg, ".
@@ -163,11 +163,11 @@ class MinMaxAvg
 						 "substr(timestamp,$tRainStart, $tRainLenght) AS YYYYDD " .
 						 "FROM weather GROUP BY substr(timestamp,$tRainStart, $tRainLenght) ) AS T1) " .
 						 "GROUP BY SUBSTR(YYYYDD,$tStampStart, $tStampLenght))" .
-						 " s ON t.timestamp = s.timestamp ".
+						 " AS sor ON tar.timestamp = sor.timestamp ".
 						 "SET ".
-						 "t.rain_total_avg=s.rain_total_avg ".
-						 "t.rain_total_min=s.rain_total_min ".
-						 "t.rain_total_max=s.rain_total_max ".
+						 "tar.rain_total_avg=sor.rain_total_avg, ".
+						 "tar.rain_total_min=sor.rain_total_min, ".
+						 "tar.rain_total_max=sor.rain_total_max ";
 		
 		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());						 
 		
