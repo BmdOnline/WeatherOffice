@@ -20,22 +20,110 @@
 //
 ////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// MAIN
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 include("weatherInclude.php");
+include("class.MinMaxAvg.php");
+include("class.climatetable.php");
+
+
+echo "<h2>Klimatafel</h2>";
+
+# Objekt für Klimatafel anlegen
+$objClimateTable = new ClimateTable();
+
+
+$arrAvgTemp=MinMaxAvg::getRows('MONTH','temp_out_avg');
+$arrMaxTemp=MinMaxAvg::getRows('MONTH','temp_out_max');
+$arrMinTemp=MinMaxAvg::getRows('MONTH','temp_out_min');
+
+
+$query= "SELECT substr(DAY,5,2)AS MONTH,".
+				"ROUND(AVG(DAY_TEMP_MAX),1) AS MEAN_TEMP_MAX,".
+			  "ROUND(AVG(DAY_TEMP_MIN),1) AS MEAN_TEMP_MIN ".
+				"FROM (SELECT substr(timestamp, 1,8) as DAY, ".
+				"MAX(temp_out_max) AS DAY_TEMP_MAX, ".
+				"MIN(temp_out_min) AS DAY_TEMP_MIN  ".
+				"FROM MinMaxAvg WHERE Type='DAY' GROUP BY substr(timestamp, 1,8) )AS T1 group by substr(DAY,5,2)";
+
+$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+{	
+	$arrMeanMaxTemp[] = $row['MEAN_TEMP_MAX'];
+	$arrMeanMinTemp[] = $row['MEAN_TEMP_MIN'];
+}
+
+
+$arrAvgRainfall=MinMaxAvg::getRows('MONTH','rain_total_avg');
+
+$query = "SELECT SUBSTR(YYYYDD,5,2) AS MONTH, ".
+				 "ROUND(AVG(RAINDAYS)) AS RAINDAYS_AVG ".
+				 "FROM (SELECT COUNT(DAY)AS RAINDAYS, SUBSTR(DAY,1,6) AS YYYYDD " .
+				 "FROM (	SELECT DAY, RAINFALL FROM (select substr(timestamp,1,8) AS DAY, type AS Type, rain_total_max AS rainfall ".
+				 "FROM MinMaxAvg group by substr(timestamp,1,8)) AS T1 WHERE Type='DAY' and rainfall > 0) AS T2 ".
+				 "GROUP BY SUBSTR(DAY,1,6)) AS T3 GROUP BY SUBSTR(YYYYDD,5,2) ORDER BY SUBSTR(YYYYDD,5,2);";
+
+$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+
+while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+{	
+	$arrAvgRaindays[intval($row['MONTH'])-1] = $row['RAINDAYS_AVG'];
+}
+
+# Titelzeile festlegen
+$objClimateTable->setTitle('Monatliche Durchschnittstemperaturen und -niederschl&auml;ge');
+# Name der Station/ des Messortes festlegen (optional)
+$objClimateTable->setStationName($STATION_NAME);
+# Geografische Koordinaten der Station/ des Messortes festlegen (optional)
+$objClimateTable->setStationPlace("Lat: $STATION_LAT Lon: $STATION_LON");
+$objClimateTable->addRow("TEMP_AVG","Mittlere Temperatur (&deg;C)",$arrAvgTemp);
+$objClimateTable->addRow("MEAN_TEMP_MAX","Mittlere H&ouml;chsttemperatur (&deg;C)",$arrMeanMaxTemp);
+$objClimateTable->addRow("MEAN_TEMP_MIN","Mittlere Tiefsttemperatur (&deg;C)",$arrMeanMinTemp);
+$objClimateTable->addRow("TEMP_MAX","Historischer H&ouml;chstwert (&deg;C)",$arrMaxTemp);
+$objClimateTable->addRow("TEMP_MIN","Historischer Tiefstwert (&deg;C)",$arrMinTemp);
+$objClimateTable->addRow("RAINFALL_AVG","Mittlerer Niederschlag (mm)",$arrAvgRainfall);
+$objClimateTable->addRow("RAINDAYS_AVG","Regentage (d)",$arrAvgRaindays);
+$objClimateTable->getTable();
+
+
+// Extremas
+
+echo "<h2>Extremas </h2>";
+
+$stat=MinMaxAvg::getValues('DAY');
+
+printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
+	    	dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
+printf("Die <b>niedrigste Temperatur</b> trat am <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br><br>",	    	
+				dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
+printf("Der <b>w&auml;rmste Tag</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
+				dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+printf("Der <b>k&auml;lteste Tag</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
+				dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+
+printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
+				dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
+printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
+				dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
+								
+$stat=MinMaxAvg::getValues('YEARMONTH');
+
+printf("Der <b>w&auml;rmste Monat</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
+				monthLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+
+printf("Der <b>k&auml;lteste Monat</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br>",				
+				monthLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+
 
 echo "<h2>{$text['climagraph']} </h2>";
 
-echo "<p><img src=\"climaGraph.php?title=${text['avg_temp']}&col=temp_out\">";
+echo "<p><img src=\"climaGraph2D.php?title=${text['avg_temp']}&col=temp_out_avg\">";
+
+echo "<p><img src=\"climaGraph2D.php?title=${text['precipation']}&col=rain_total_max\">";
 
 if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 {
-	echo "<p><img src=\"climaGraph.php?title=${text['avg_prec']}&col=rain_total&unit=mm&avg=30\">";
+	//echo "<p><img src=\"climaGraph.php?title=${text['avg_prec']}&col=rain_total&unit=mm&avg=30\">";
 }
 
 mysql_close();
 ?>
+</html>

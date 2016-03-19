@@ -31,7 +31,7 @@
    include("weatherDataInclude.php");
    
    // Version
-   $WeatherOfficeVersion="1.1.2-dev";
+   $WeatherOfficeVersion="1.1.3-dev";
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
@@ -235,6 +235,16 @@ function beaufort($windspeed, $lang)
 	return $txt;
 }
 
+function getRequest($key)
+{
+	global $_REQUEST;
+
+	if (isset($_REQUEST[$key]))
+		return $_REQUEST[$key];
+	else
+		return "";
+}
+
 function getTableColumns()
 {
 	$cols = array("temp_in");
@@ -338,7 +348,28 @@ function dayLink($day, $month, $year)
 	}
 	return("<a href=daily.php?day=$day&month=$month&year=$year&showVal=false target=\"main\">$day</a>");
 }
+
+function dateLink($tag)
+{
+	$day = substr($tag, 6, 2);
+	$month = substr($tag, 4, 2);
+  $year = substr($tag, 0, 4);
+
+	if(strlen($day)<2)
+	{
+		$day = "0" . $day;
+	}
+	return("<a href=daily.php?day=$day&month=$month&year=$year&showVal=false target=\"main\">$day.$month.$year</a>");
+}
  
+function monthLink($tag)
+{
+	$month = substr($tag, 4, 2);
+  $year = substr($tag, 0, 4);
+
+	return("<a href=monthly.php?&month=$month&year=$year&showVal=false target=\"main\">$month.$year</a>");
+}
+
  
 function statArray($result, $num, $day, $startTime, $stopTime)
 {
@@ -955,6 +986,18 @@ function getStartYearAndMonth(&$year, &$month, &$day)
 	$month = substr($timestamp, 4, 2); 
 	$year  = substr($timestamp, 0, 4);
 }
+function getStopYearAndMonth(&$year, &$month, &$day)
+{
+
+	$query = "select max(timestamp) from weather";
+	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+	$timestamp = mysql_result($result, 0);
+	mysql_free_result($result);
+	
+	$day   = substr($timestamp, 6, 2);
+	$month = substr($timestamp, 4, 2); 
+	$year  = substr($timestamp, 0, 4);
+}
 
 function tendency($timestamp)
 {
@@ -1409,4 +1452,5 @@ function TableExists($table)
 
 	return false;
 }
+
 ?>
