@@ -364,12 +364,12 @@
 			echo "<div style=\"font-size:95%; text-align:center; margin-bottom:5px;\">";			
 			echo "<table style=\"border: 5px solid #E5E5E5; font-size:95%; background:#E5E5E5; margin-bottom:10px;\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">";
 			echo "<tr align=\"center\"><td colspan=\"13\" height=\"5\"><b>" . $this->arrParameters["TITLE"];
-			if ($this->arrParameters["STATIONNAME"] != NULL) 
+			if (isset($this->arrParameters["STATIONNAME"])) 
 			{
 				echo "<BR>" . $this->arrParameters["STATIONNAME"];
 			}
 			
-			if ($this->arrParameters["STATIONPLACE"] != NULL)
+			if (isset($this->arrParameters["STATIONPLACE"]))
 			{
 				echo " (" . $this->arrParameters["STATIONPLACE"] . ")";
 			}
@@ -380,33 +380,33 @@
 			#echo "<tbody>";
 			
 			$this->getMonthNames();
-			if($this->arrParameters["TEMP_AVG"] != NULL) 
+			if(isset($this->arrParameters["TEMP_AVG"])) 
 			{		
 				$this->getRowTemperature($this->arrParameters["TEMP_AVG"]["CAPTION"],$this->arrParameters["TEMP_AVG"]["VALUES"]);
 				echo "<tr align=\"center\"><td colspan=\"13\" height=\"5\"></td></tr>"; # horizontal spacer
 			}
-			if($this->arrParameters["MEAN_TEMP_MAX"] != NULL) 
+			if(isset($this->arrParameters["MEAN_TEMP_MAX"])) 
 			{				
 				$this->getRowTemperature($this->arrParameters["MEAN_TEMP_MAX"]["CAPTION"],$this->arrParameters["MEAN_TEMP_MAX"]["VALUES"]);
 			}
-			if($this->arrParameters["MEAN_TEMP_MIN"] != NULL) 
+			if(isset($this->arrParameters["MEAN_TEMP_MIN"])) 
 			{				
 				$this->getRowTemperature($this->arrParameters["MEAN_TEMP_MIN"]["CAPTION"],$this->arrParameters["MEAN_TEMP_MIN"]["VALUES"]);
 			}
-			if($this->arrParameters["TEMP_MAX"] != NULL) 
+			if(isset($this->arrParameters["TEMP_MAX"])) 
 			{				
 				$this->getRowTemperature($this->arrParameters["TEMP_MAX"]["CAPTION"],$this->arrParameters["TEMP_MAX"]["VALUES"]);
 			}
-			if($this->arrParameters["TEMP_MIN"] != NULL) 
+			if(isset($this->arrParameters["TEMP_MIN"])) 
 			{				
 				$this->getRowTemperature($this->arrParameters["TEMP_MIN"]["CAPTION"],$this->arrParameters["TEMP_MIN"]["VALUES"]);
 			}
 			echo "<tr align=\"center\"><td colspan=\"13\" height=\"5\"></td></tr>"; # horizontal spacer
-			if($this->arrParameters["RAINFALL_AVG"] != NULL) 
+			if(isset($this->arrParameters["RAINFALL_AVG"])) 
 			{				
 				$this->getRowRainfall($this->arrParameters["RAINFALL_AVG"]["CAPTION"],$this->arrParameters["RAINFALL_AVG"]["VALUES"]);
 			}
-			if($this->arrParameters["RAINDAYS_AVG"] != NULL)
+			if(isset($this->arrParameters["RAINDAYS_AVG"]))
 			{
 				$this->getRowRaindays($this->arrParameters["RAINDAYS_AVG"]["CAPTION"],$this->arrParameters["RAINDAYS_AVG"]["VALUES"]);
 			}

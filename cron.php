@@ -15,12 +15,7 @@
 include("weatherInclude.php");
 include("class.MinMaxAvg.php");
 
-MinMaxAvg::createDbTable();
-
-MinMaxAvg::updateDbTable("DAY");
-MinMaxAvg::updateDbTable("YEARMONTH");
-MinMaxAvg::updateDbTable("MONTH");
-MinMaxAvg::updateDbTable("YEAR");
+MinMaxAvg::updateDbTables(false); // Force a full update
 
 mysql_close();
 ?>

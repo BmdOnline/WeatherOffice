@@ -189,7 +189,7 @@ include("weatherInclude.php");
 	//
 	// Climagraph
 	//
-	echo "<p><hr><a href=\"clima.php\" target=\"main\">{$text['climagraph']}</a>";
+	echo "<p><hr><a href=\"clima.php\" target=\"main\">{$text['clima']}</a>";
 
 	
 	//

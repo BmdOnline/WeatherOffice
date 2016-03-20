@@ -137,6 +137,7 @@ $GLOBALS['text'] = array (
   'sun_position' => 'Position of the sun',
   'sun_rise' => 'Sunrise',
   'sun_down' => 'Sunset',
+  'clima' => 'Climate',
   'climagraph' => 'Climate graph',
   'avg_temp' => 'Average Temperature',
   'avg_prec' => 'Average Precipitation',
