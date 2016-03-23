@@ -22,6 +22,15 @@ Installation
 * Copy logo-dist.html to logo.html. This page is shown in the left top corner and can contain anything you want
 * Point your browser to the URL pointing to index.php of WeatherOffice. You should see the main screen showing
   the last measured data as Current Values
+  
+Crontab
+=============
+To update statistic values once per day you can use cron. You can add a line like this to /etc/crontab:
+
+30 0  * * *     root  php /srv/www/htdocs/weather/cron.php >>/tmp/weatherCron.log 2>&1
+
+Please adjust the path to your installation of WeatherOffice. If you don't do this the statistic table
+is update on calls of certain pages. This might take some time depending on your database size.
 
 Update to 0.4
 =============

@@ -24,7 +24,7 @@ class MinMaxAvg
 {
 	public static function getTableColumns()
 	{
-		$cols = array("temp_out", "windspeed", "rel_pressure", "rain_total");
+		$cols = array("temp_in", "temp_out", "rel_hum_in", "rel_hum_out", "windspeed", "wind_angle", "rain_total", "rel_pressure");
 		return $cols;
 	}
 
@@ -51,6 +51,9 @@ class MinMaxAvg
 				if($col == "rel_pressure")
 					$precision = "4,0";
 
+				if($col == "wind_angle")
+					$precision = "4,1";	
+					
 				if($col == "rain_total")
 					$precision = "5,1";
 
@@ -301,15 +304,16 @@ class MinMaxAvg
 
 		return $rows;
 	}
-
-	public function getValues($filter)
+	
+	public function getExtremValues($filter)
 	{
 		$cols['temp_out_min'] = array('min');
 		$cols['temp_out_max'] = array('max');
 		$cols['temp_out_avg'] = array('min','max');
 		$cols['rel_pressure_max'] = array('max');
 		$cols['rel_pressure_min'] = array('min');		
-		$cols['rain_total_avg'] = array('min','max');
+		$cols['rain_total_max'] = array('max');
+		$cols['rain_total_min'] = array('min');		
 		
 		foreach ($cols as $column => $operations)
 		{
@@ -339,6 +343,53 @@ class MinMaxAvg
 		
 		return $st;
 	}
+	
+	public function getStatArray($Type, $year, $month, $day)
+	{
+		$timeStamp = 0;
+		switch($Type)
+		{
+			case 'DAY';
+			  $timeStamp=sprintf("%04d%02d%02d", $year, $month, $day);
+				break;
+			case 'YEARMONTH';
+			  $timeStamp=sprintf("%04d%02d", $year, $month);
+				break;
+			case 'MONTH';
+				$timeStamp=sprintf("%02d", $month);
+				break;				
+			case 'YEAR';
+				$timeStamp=sprintf("%024", $year);
+				break;
+			default;
+				echo "Error: getStatArray Type $Type is not supported\n";
+				return;
+		}
+		
+		//echo "TS $Type $timeStamp<br>";
+		
+		$query = "SELECT *  FROM MinMaxAvg WHERE type='$Type' AND timestamp='$timeStamp'";
+		
+		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
+					
+		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+		{
+			$cols = MinMaxAvg::getTableColumns();
+			$ops  = MinMaxAvg::getOperations();
+			
+			foreach ($cols as $col)
+			{	
+				foreach($ops as $op)
+				{			
+						$col_name="${col}_${op}";						
+						$st[$col][$op]=$row[$col_name];
+				}
+			}
+			
+			return $st;
+		}
+		
+		return NULL;
+	}
 }
 ?>
-

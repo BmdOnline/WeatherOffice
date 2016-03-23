@@ -121,19 +121,18 @@ function getYear($dispyear, $text)
 	{
 	
 	   $begin = convertTimestamp($day, $month, $year, 0, 0, 0);
-   	   $end   = convertTimestamp(31, $month, $year, 23, 59, 59);
-	
-	   $query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
- 	   $result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
- 	   $num = mysql_num_rows($result);
+   	 $end   = convertTimestamp(31, $month, $year, 23, 59, 59);
 	   
-	   if ($num > 0)
+	   
+	   $stat=MinMaxAvg::getStatArray('YEARMONTH', $year, $month, $day);
+	   
+	   if ($stat)
 	   {
-	     $stat=statArray($result, $num, $day, $begin, $end);
+	     //$stat=statArray($result, $num, $day, $begin, $end);
 	     $numMonth++;
 	     echo "<tr>";
 	     
-  	     printf ("<td><a href=\"monthly.php?yearMonth=%d%d\">%s</a></td>",$year,$month,monthName($month, $text)); 
+  	   printf ("<td><a href=\"monthly.php?yearMonth=%d%d\">%s</a></td>",$year,$month,monthName($month, $text)); 
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["min"]);	     
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["max"]);
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["avg"]);
@@ -157,9 +156,9 @@ function getYear($dispyear, $text)
 	     if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 			 {
 					$avgRain = $mittel['rain'];
-					$devRain = $stat["rain_total"]['max'] - $stat["rain_total"]['min'] - $avgRain;
+					$devRain = $stat["rain_total"]['max'] - $avgRain;
 
-					printf ("<td>%.1f </td>",$stat["rain_total"]['max'] - $stat["rain_total"]['min']);
+					printf ("<td>%.1f </td>",$stat["rain_total"]['max']);
 
 					if ($devRain > 0)
 						printf ("<td><span style=\"color: rgb(255, 0, 0);\">+%.1f</span></td>", $devRain);
@@ -170,7 +169,7 @@ function getYear($dispyear, $text)
 
 					printf ("<td>%.1f</td>", $avgRain);
 					
-					$sum['rain'] += $stat["rain_total"]['max'] - $stat["rain_total"]['min'];
+					$sum['rain'] += $stat["rain_total"]['max'];
 					$sum['rain_long_avg'] += $avgRain;	     
 	     }
 	     
@@ -213,7 +212,6 @@ function getYear($dispyear, $text)
    	   $month = $nextDay['mon'];
 	   $year  = $nextDay['year'];
 	   
-   	   mysql_free_result($result);
 
 	}
 
@@ -278,9 +276,11 @@ function getYear($dispyear, $text)
 //
 //////////////////////////////////////////////////////////////////////
 include("weatherInclude.php");
+include("class.MinMaxAvg.php");
 
 $year =  $_REQUEST["year"];
 
+MinMaxAvg::updateDbTables(true); // Incremental update of DB Tables
 getYear($year, $text);
 
 mysql_close();

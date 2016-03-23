@@ -12,6 +12,7 @@
 //
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
+	include("class.MinMaxAvg.php");
 	
 	$dispyear =  $_REQUEST["year"];
 	
@@ -52,35 +53,24 @@
 		
 	while($dispyear == $year )
 	{
-	
-	   $begin = convertTimestamp($day, $month, $year, 0, 0, 0);
-   	   $end   = convertTimestamp($day, $month, $year, 23, 59, 59);
-	
-	   $query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
- 	   $result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
- 	   $num = mysql_num_rows($result);
+		$stat=MinMaxAvg::getStatArray('DAY', $year, $month, $day);
 	   
-	   if ($num > 0)
-	   {
-	     $stat=statArray($result, $num, $day, $begin, $end);
-
-	     $xdata[$idx] =  mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], $nextDay['year']);
+	  if ($stat)
+	  {
+			$xdata[$idx] =  mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], $nextDay['year']);
+			$ydata1[$idx] = $stat["temp_out"]["min"];
+			$ydata2[$idx] = $stat["temp_out"]["avg"];     
+			$ydata3[$idx] = $stat["temp_out"]["max"];
+			$ydata4[$idx] = $stat["rain_total"]['max']; // - $stat["rain_total"]['min'];
 	     
-  	     $ydata1[$idx] = $stat["temp_out"]["min"];
-	     $ydata2[$idx] = $stat["temp_out"]["avg"];     
-	     $ydata3[$idx] = $stat["temp_out"]["max"];
-	     $ydata4[$idx] = $stat["rain_total"]['max'] - $stat["rain_total"]['min'];
-	     
-     	     $idx++;
-           }
+      $idx++;
+    }
 	
-	   $nextDay = getdate(strtotime("+1 day", mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], $nextDay['year'])));
-	   $day   = $nextDay['mday'];
-   	   $month = $nextDay['mon'];
-	   $year  = $nextDay['year'];
+	  $nextDay = getdate(strtotime("+1 day", mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], $nextDay['year'])));
+	  $day   = $nextDay['mday'];
+		$month = $nextDay['mon'];
+	  $year  = $nextDay['year'];
 	   
-   	   mysql_free_result($result);
-
 	}
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
