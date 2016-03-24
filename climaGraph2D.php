@@ -84,6 +84,16 @@ if($col == "rain_total_max")
 		$i++;
 	}
 }
+else if($col == "windspeed_max")
+{
+	$i=0;
+	while($i < $NUMCOLORS)
+	{
+		$colVal=255-(255*$i)/$NUMCOLORS;
+		$cStatus[$i] = ImageColorAllocate($img,255,$colVal,$colVal);
+		$i++;
+	}
+}
 else
 {
 	$i=0;
@@ -191,6 +201,8 @@ while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	//$Y2=$plotY2-1;
 	
 	if($col == "rain_total_max")
+		$colorIdx = (int) $actValue;
+	else if($col == "windspeed_max")
 		$colorIdx = (int) $actValue;
 	else
 		$colorIdx = (int)($actValue + 25);

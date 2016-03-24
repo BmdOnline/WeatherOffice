@@ -193,6 +193,8 @@ function climaGraphs()
 	{
 		echo "<p><img src=\"climaGraph2D.php?title=${text['precipation']}&col=rain_total_max\">";
 	}
+	
+	echo "<p><img src=\"climaGraph2D.php?title=${text['wind']}&col=windspeed_max\">";
 }
 
 MinMaxAvg::updateDbTables(true); // Incremental update of DB Tables
