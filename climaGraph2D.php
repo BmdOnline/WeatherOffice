@@ -137,7 +137,7 @@ while($actScale <= $scaleLastDay)
 			
 		ImageLine($img, $X1, $Y1, $X2,$Y2, $cScale);
 	
-		if($dayOfMonth == 1)
+		//if($dayOfMonth == 1)
 		{
 			$lText = date ("d.m", $actScale );
 			imagestringup ( $img , 2, $X1-5, $Y2+35,  $lText, $cText);

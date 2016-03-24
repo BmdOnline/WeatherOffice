@@ -29,7 +29,7 @@ function climaTable()
 	global $text;
 	global $STATION_NAME, $STATION_LAT,  $STATION_LON;
 	
-	echo "<h2>Klimatafel</h2>";
+	echo "<h2>{$text['Climate Table']}</h2>";
 
 	# Objekt für Klimatafel anlegen
 	$objClimateTable = new ClimateTable();
@@ -60,16 +60,16 @@ function climaTable()
 	getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
 	
 	# Titelzeile festlegen
-	$objClimateTable->setTitle("Monatliche Durchschnittstemperaturen und -niederschl&auml;ge ($firstYear - $lastYear)");
+	$objClimateTable->setTitle("{$text['Monthly']}  {$text['Temperatures']} {$text['and']}  {$text['Precipations']} ($firstYear - $lastYear)");
 	# Name der Station/ des Messortes festlegen (optional)
 	$objClimateTable->setStationName($STATION_NAME);
 	# Geografische Koordinaten der Station/ des Messortes festlegen (optional)
 	$objClimateTable->setStationPlace("Lat: $STATION_LAT Lon: $STATION_LON");
-	$objClimateTable->addRow("TEMP_AVG","Mittlere Temperatur (&deg;C)",$arrAvgTemp);
-	$objClimateTable->addRow("MEAN_TEMP_MAX","Mittlere H&ouml;chsttemperatur (&deg;C)",$arrMeanMaxTemp);
-	$objClimateTable->addRow("MEAN_TEMP_MIN","Mittlere Tiefsttemperatur (&deg;C)",$arrMeanMinTemp);
-	$objClimateTable->addRow("TEMP_MAX","Historischer H&ouml;chstwert (&deg;C)",$arrMaxTemp);
-	$objClimateTable->addRow("TEMP_MIN","Historischer Tiefstwert (&deg;C)",$arrMinTemp);
+	$objClimateTable->addRow("TEMP_AVG","{$text['avg_temp']} (&deg;C)",$arrAvgTemp);
+	$objClimateTable->addRow("MEAN_TEMP_MAX","{$text['Average']} {$text['Maximum Temperature']} (&deg;C)",$arrMeanMaxTemp);
+	$objClimateTable->addRow("MEAN_TEMP_MIN","{$text['Average']} {$text['Minimum Temperature']} (&deg;C)",$arrMeanMinTemp);
+	$objClimateTable->addRow("TEMP_MAX","{$text['Historic']} {$text['Peak Value']} (&deg;C)",$arrMaxTemp);
+	$objClimateTable->addRow("TEMP_MIN","{$text['Historic']} {$text['Lowest Value']} (&deg;C)",$arrMinTemp);
 	
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
@@ -89,8 +89,8 @@ function climaTable()
 			$arrAvgRaindays[intval($row['MONTH'])-1] = $row['RAINDAYS_AVG'];
 		}
 		
-		$objClimateTable->addRow("RAINFALL_AVG","Mittlerer Niederschlag (mm)",$arrAvgRainfall);
-		$objClimateTable->addRow("RAINDAYS_AVG","Regentage (d)",$arrAvgRaindays);	
+		$objClimateTable->addRow("RAINFALL_AVG","{$text['Average']} {$text['precipation']} (mm)",$arrAvgRainfall);
+		$objClimateTable->addRow("RAINDAYS_AVG","{$text['Raindays']} (d)",$arrAvgRaindays);	
 	}
 	
 	$objClimateTable->getTable();
@@ -99,44 +99,85 @@ function climaTable()
 
 function displayExtremas()
 {
-	global $text;
+	global $text, $lang;
 
-	echo "<h2>Extremas </h2>";
+	echo "<h2>${text['Extreme values']}</h2>";
 
 	$stat=MinMaxAvg::getExtremValues('DAY');
-
-	printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
-					dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
-	printf("Die <b>niedrigste Temperatur</b> trat am <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br><br>",	    	
-					dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
-	printf("Der <b>w&auml;rmste Tag</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
-					dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
-	printf("Der <b>k&auml;lteste Tag</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
-					dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
-
-	printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
-					dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
-	printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
-					dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
-																
 	$statMonth=MinMaxAvg::getExtremValues('YEARMONTH');
+	
+	if($lang == "de")
+  {	
+		printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
+						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
+		printf("Die <b>niedrigste Temperatur</b> trat am <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br><br>",	    	
+						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
+						
+		printf("Der <b>w&auml;rmste Tag</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
+						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+		printf("Der <b>k&auml;lteste Tag</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
+						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
 
-	printf("Der <b>w&auml;rmste Monat</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
-					monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
+						
+		printf("Der <b>w&auml;rmste Monat</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
+						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
+		printf("Der <b>k&auml;lteste Monat</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
+						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);						
+						
+		printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
+						dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
+		printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
+						dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
+																	
 
-	printf("Der <b>k&auml;lteste Monat</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
-					monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);
 
-	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		{
+			printf("Der <b>niederschlagsreichste Tag</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
+							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);	
+							
+			printf("Der <b>niederschlagsreichste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
+							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);						
+							
+			printf("Der <b>trockenste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br><br>",					
+							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
+		}
+	}
+	else
 	{
-		printf("Der <b>niederschlagsreichste Tag</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
-						dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);	
+		printf("The <b>highest temperature</b> was measured on <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
+						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
+		printf("The <b>lowest temperature</b> appeared on <b>%s</b> and was <b>%2.2f &deg;C</b>.<br><br>",	    	
+						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
 						
-		printf("Der <b>niederschlagsreichste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
-						monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);						
+		printf("The <b>warmest day</b> has been the <b>%s</b> with an average temperature of <b>%2.2f &deg;C</b>.<br>",				
+						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+		printf("The <b>coldest day</b> was the <b>%s</b> with an average of <b>%2.2f &deg;C</b>.<br><br>",				
+						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+
+		printf("The <b>warmest month</b> has been <b>%s</b> with an average temperature of <b>%2.2f &deg;C</b>.<br>",				
+						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
+		printf("The <b>coldest month</b> was <b>%s</b> with an average of <b>%2.2f &deg;C</b>.<br><br>",				
+						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);												
 						
-		printf("Der <b>trockenste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br><br>",					
-						monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
+		printf("The <b>highst airpressure</b> was measured on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
+						dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
+		printf("The <b>lowest airpressure</b> appeared on <b>%s</b> with <b>%2.2f hPa</b>.<br><br>",				
+						dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
+																	
+
+
+		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		{
+			printf("The day with the <b>most precipitation</b> was <b>%s</b> with <b>%2.2f mm</b>.<br>",					
+							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);	
+							
+			printf("The month with the <b>most precipitation</b> was <b>%s</b> with <b>%2.2f mm</b>.<br>",					
+							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);						
+							
+			printf("The <b>dryest month</b> was <b>%s</b> with <b>%2.2f mm</b>.<br><br>",					
+							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
+		}
 	}
 }
 

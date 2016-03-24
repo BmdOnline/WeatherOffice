@@ -23,7 +23,8 @@
 	class ClimateTable{
 
 		private $arrParameters;
-		
+		private $tabColumns = array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+		private $numCols = 12;
 		
 		/**
 		 * Constructor
@@ -66,6 +67,18 @@
 		 */
 		public function setStationPlace($strStationPlace){
 			$this->arrParameters['STATIONPLACE'] =  $strStationPlace;
+		}
+		
+		/**
+		 * Overwrites the column names
+		 *
+		 * @param 		string     $cols       Array of Strings contain column names
+		 * @access 		public
+		 * @return 		void
+		 */
+		public function setColumns($cols){
+					$this->tabColumns = $cols;
+					$this->numCols = sizeof($cols);
 		}
 		
 		/**
@@ -157,13 +170,13 @@
 			echo "<tr align=\"center\"><td style=\"height:20px; text-align:left; white-space:nowrap;\">";
 			echo $caption . "</td>";
 			$sum=0;
-			for($i = 0; $i<12;$i++) 
+			for($i = 0; $i< $this->numCols;$i++) 
 			{ 		
 				echo "<td style=\"background: " . $this->getBGCOLORTemp($arrValues[$i]) . "\">". $arrValues[$i] . "</td>";
 				$sum=$sum+$arrValues[$i];
 			}
 			echo "<td style=\"border-left: 6px solid #E5E5E5; border-right: 3px solid #E5E5E5; font-size: 110%;\"><b>&empty;</b></td>";
-			echo "<td style=\"background: " . $this->getBGCOLORTemp($sum/12) . ";width:45px;\"><b>". round($sum/12,1) . "</b></td>";
+			echo "<td style=\"background: " . $this->getBGCOLORTemp($sum/$this->numCols) . ";width:45px;\"><b>". round($sum/$this->numCols,1) . "</b></td>";
 			echo "</tr>";
 		}
 		
@@ -246,7 +259,7 @@
 			echo "<tr align=\"center\"><td style=\"height:20px; text-align:left; white-space:nowrap;\">";
 			echo $caption . "</td>";
 			$sum = 0;
-			for($i = 0; $i<12;$i++)
+			for($i = 0; $i< $this->numCols ;$i++)
 			{
 				echo "<td style=\"background: " . $this->getBGCOLORRainfall($arrValues[$i]) . "\">". $arrValues[$i] . "</td>";
 				$sum=$sum+$arrValues[$i];
@@ -270,7 +283,7 @@
 			echo "<tr align=\"center\"><td style=\"height:20px; text-align:left; white-space:nowrap;\">";
 			echo $caption . "</td>";
 			$sum = 0;
-			for($i = 0; $i<12;$i++)
+			for($i = 0; $i< $this->numCols;$i++)
 			{
 				echo "<td style=\"background: " . $this->getBGCOLORRaindays($arrValues[$i]) . "\">". $arrValues[$i] . "</td>";
 				$sum=$sum+$arrValues[$i];
@@ -335,21 +348,25 @@
 		
 		}
 		
-		private function getMonthNames(){
+		private function getColumnNames(){
+		
+			global $text;
 			
 			echo "<tr align=\"center\"><td style=\"height:15px\"></td>";
-			echo "<td style=\"width:45px\">Jan</td>";
-			echo "<td style=\"width:45px\">Feb</td>";
-			echo "<td style=\"width:45px\">M&auml;r</td>";
-			echo "<td style=\"width:45px\">Apr</td>";
-			echo "<td style=\"width:45px\">Mai</td>";
-			echo "<td style=\"width:45px\">Jun</td>";
-			echo "<td style=\"width:45px\">Jul</td>";
-			echo "<td style=\"width:45px\">Aug</td>";
-			echo "<td style=\"width:45px\">Sep</td>";
-			echo "<td style=\"width:45px\">Okt</td>";
-			echo "<td style=\"width:45px\">Nov</td>";
-			echo "<td style=\"width:45px\">Dez</td>";
+			
+			foreach($this->tabColumns as $col)
+			{
+				if(isset($text[$col]))
+				{
+					$value=$text[$col];
+				}
+				else
+				{
+					$value=$col;
+				}
+			
+				echo "<td style=\"width:45px\">$value</td>";
+			}
 			echo "</tr>";
 		}
 		
@@ -379,7 +396,7 @@
 			#echo "<tbody><tr align=\"center\"><td style=\"height:15px\">";
 			#echo "<tbody>";
 			
-			$this->getMonthNames();
+			$this->getColumnNames();
 			if(isset($this->arrParameters["TEMP_AVG"])) 
 			{		
 				$this->getRowTemperature($this->arrParameters["TEMP_AVG"]["CAPTION"],$this->arrParameters["TEMP_AVG"]["VALUES"]);

@@ -5,10 +5,8 @@
 //
 // http://www.sourceforge.net/projects/weatheroffice
 //
-// Copyright (C) 03/2014
+// Copyright (C) 03/2016
 //	Bernhard Heibler,
-//	Mathias Zuckermann
-//	
 //
 // See COPYING for license info
 //
@@ -22,21 +20,39 @@
 
 class MinMaxAvg
 {
-	public static function getTableColumns()
+	/**
+		* Returns a list of columns from the source table that should be processed for Min Max Avg calculations
+		*
+		* @access 		public
+		* @return 		String Array
+		*/
+	public static function getSrcTableColumns()
 	{
 		$cols = array("temp_in", "temp_out", "rel_hum_in", "rel_hum_out", "windspeed", "wind_angle", "rain_total", "rel_pressure");
 		return $cols;
 	}
 
+	/**
+		* Returns a list of operations that should be applied to the source table columns
+		*
+		* @access 		public
+		* @return 		String Array
+		*/
 	public static function getOperations()
 	{
 		$ops = array("min", "max", "avg");
 		return $ops;
 	}
 	
+	/**
+		* Create the MinMaxAvg Table in the database if it doesn't exist
+		*
+		* @access 		public
+		* @return 		void
+		*/
 	public static function createDbTable()
 	{
-		$cols = MinMaxAvg::getTableColumns();
+		$cols = MinMaxAvg::getSrcTableColumns();
 		$ops = MinMaxAvg::getOperations();
 	
 		$i=0;
@@ -75,7 +91,14 @@ class MinMaxAvg
 		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
 	}
 
-	private function updateDbTableDay($startDay)
+	/**
+	* Calculate and update the Min Max Avg values for every day
+	*
+	* @access 		private
+	* @param 		  int     $startDay       First day to process
+	* @return 		void
+	*/
+	static function updateDbTableDay($startDay)
 	{
 		$Type = 'DAY';
 		
@@ -94,7 +117,7 @@ class MinMaxAvg
 		$queryFields = "";
 		$targetCols = "";
 		
-		$cols = MinMaxAvg::getTableColumns();
+		$cols = MinMaxAvg::getSrcTableColumns();
 		
 		$i=0;
 		foreach ($cols as $col)
@@ -150,7 +173,15 @@ class MinMaxAvg
 		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());					
 	}
 	
-	function updateDbTableType($Type, $startDay)
+	/**
+	* Calculate and update the Min Max Avg values the given entry type
+	*
+	* @access 		public
+	* @param 		  string     $Type           'DAY', 'MONTH' ...
+	* @param 		  int     	 $startDay       First day to process
+	* @return 		void
+	*/
+	static function updateDbTableType($Type, $startDay)
 	{
 		$tStampStart=0;
 		$tStampLenght=0;
@@ -197,7 +228,7 @@ class MinMaxAvg
 		$queryFields = "";
 		$targetCols = "";
 		
-		$cols = MinMaxAvg::getTableColumns();
+		$cols = MinMaxAvg::getSrcTableColumns();
 		
 		$i=0;
 		foreach ($cols as $col)
@@ -238,7 +269,14 @@ class MinMaxAvg
 	
 	}
 	
-	function updateDbTables($incremental)
+	/**
+	 * Update all MinMaxAvg Table entries. If incremental update is set checks what entries are missing
+	 *
+	 * @access 		public
+	 * @param 		bool				 $incrumental		 fale -> Run a full update, true -> only update missing days
+	 * @return 		void
+	 */
+	static function updateDbTables($incremental)
 	{
 	
 		if(TableExists("MinMaxAvg") == false)
@@ -279,7 +317,15 @@ class MinMaxAvg
 		flush();
 	}
 	
-	public function getLastEntryTs($type)
+	/**
+	 * Returns the latest timestamp entry
+	 *
+	 * @access 		public
+	 * @param 		string     $Type           'DAY', 'MONTH' ...
+	 * @return 		int				 The last entry of the slected type. 0 If no entry exists
+	 */
+	 
+	static public function getLastEntryTs($type)
 	{
 		$query = "SELECT MAX(timestamp) AS timestamp FROM MinMaxAvg WHERE type='$type'";
 		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
@@ -292,7 +338,15 @@ class MinMaxAvg
 		return 0;
 	}
 	
-	public function getRows($filter, $column)
+	/**
+	 * Return all values of the given colum
+	 *
+	 * @access 		public
+	 * @param 		string     $Type           'DAY', 'MONTH' ...
+	 * @param 		string     $column         Name of column to return
+	 * @return 		array of strings 				 
+	 */
+	static public function getRows($filter, $column)
 	{
 		$query = "SELECT ${column} FROM MinMaxAvg WHERE type='$filter'";
 		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
@@ -305,7 +359,14 @@ class MinMaxAvg
 		return $rows;
 	}
 	
-	public function getExtremValues($filter)
+	/**
+	 * Return the extreme values for the given entry type
+	 *
+	 * @access 		public
+	 * @param 		string     $filter         'DAY', 'MONTH' ...
+	 * @return 		two dimensional associative array			 
+	 */
+	static public function getExtremValues($filter)
 	{
 		$cols['temp_out_min'] = array('min');
 		$cols['temp_out_max'] = array('max');
@@ -344,7 +405,15 @@ class MinMaxAvg
 		return $st;
 	}
 	
-	public function getStatArray($Type, $year, $month, $day)
+	/**
+	 * Return the values for the given entry
+	 *
+	 * @access 		public
+	 * @param 		string     $Type         				'DAY', 'MONTH' ...
+	 * @param			int				 $year, $month, $day	 selected entry
+	 * @return 		two dimensional associative array			 
+	 */
+	static public function getStatArray($Type, $year, $month, $day)
 	{
 		$timeStamp = 0;
 		switch($Type)
@@ -374,7 +443,7 @@ class MinMaxAvg
 					
 		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
 		{
-			$cols = MinMaxAvg::getTableColumns();
+			$cols = MinMaxAvg::getSrcTableColumns();
 			$ops  = MinMaxAvg::getOperations();
 			
 			foreach ($cols as $col)

@@ -364,10 +364,14 @@ function dateLink($tag)
  
 function monthLink($tag)
 {
+	global $text;
+
 	$month = (int) substr($tag, 4, 2);
   $year = substr($tag, 0, 4);
 
-	return("<a href=monthly.php?yearMonth=$year$month&showVal=false target=\"main\">$month.$year</a>");
+  $monthText=monthName($month, $text);
+  
+	return("<a href=monthly.php?yearMonth=$year$month&showVal=false target=\"main\">$monthText $year</a>");
 }
 
  
