@@ -204,6 +204,8 @@ while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 		$colorIdx = (int) $actValue;
 	else if($col == "windspeed_max")
 		$colorIdx = (int) $actValue;
+	else if($col == "rel_pressure_avg")
+		$colorIdx = (int) ($actValue - 990.0);		
 	else
 		$colorIdx = (int)($actValue + 25);
 	

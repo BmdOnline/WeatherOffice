@@ -123,13 +123,14 @@ function displayExtremas()
 						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
 		printf("Der <b>k&auml;lteste Monat</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
 						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);						
-						
-		printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
-						dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
-		printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
-						dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
-																	
 
+		if(isDisplayEnabled(DISPLAY_PRES_INFO))
+		{	
+			printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
+							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
+			printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
+							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
+		}
 
 		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 		{
@@ -160,11 +161,13 @@ function displayExtremas()
 		printf("The <b>coldest month</b> was <b>%s</b> with an average of <b>%2.2f &deg;C</b>.<br><br>",				
 						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);												
 						
-		printf("The <b>highst airpressure</b> was measured on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
-						dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
-		printf("The <b>lowest airpressure</b> appeared on <b>%s</b> with <b>%2.2f hPa</b>.<br><br>",				
-						dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
-																	
+		if(isDisplayEnabled(DISPLAY_PRES_INFO))
+		{						
+			printf("The <b>highst airpressure</b> was measured on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
+							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
+			printf("The <b>lowest airpressure</b> appeared on <b>%s</b> with <b>%2.2f hPa</b>.<br><br>",				
+							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
+		}															
 
 
 		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
@@ -194,7 +197,15 @@ function climaGraphs()
 		echo "<p><img src=\"climaGraph2D.php?title=${text['precipation']}&col=rain_total_max\">";
 	}
 	
-	echo "<p><img src=\"climaGraph2D.php?title=${text['wind']}&col=windspeed_max\">";
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		echo "<p><img src=\"climaGraph2D.php?title=${text['pressure']}&col=rel_pressure_avg\">";
+	}
+	
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		echo "<p><img src=\"climaGraph2D.php?title=${text['wind']}&col=windspeed_max\">";
+	}
 }
 
 MinMaxAvg::updateDbTables(true); // Incremental update of DB Tables
