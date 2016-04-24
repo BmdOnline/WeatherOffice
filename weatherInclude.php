@@ -682,11 +682,11 @@ function graphs($type, $title, $begin, $end, $text)
 	echo "<a name=\"graph\"</a>";
 	echo "<hr><h3>$title</h3><p>";	
 
-	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=${text['temperature']}/${text['dewpoint']}/${text['humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
+	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=${text['temperature']}/${text['dewpoint']}/${text['humidity']}&unit1=%B0C&unit2=%B0C&unit3=%25&type=$type\">";
 
 	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 	{
-		echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%&type=$type\">";
+		echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%25&type=$type\">";
 	}
 	
 	if(isDisplayEnabled(DISPLAY_PRES_INFO))
