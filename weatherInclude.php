@@ -106,6 +106,38 @@ function fahrenheit($tempC)
 	return ((($tempC*9)/5)+32);
 }
 
+function absoluteHumidity($temp, $relHum)
+{
+	$absHum = 0;
+	$temp_k = $temp + 273.15;
+	$gas_const = 8314.3;
+	$mol_steam = 18.016;
+
+	if ($temp >= 0 )
+  {
+    $a = 7.5;
+    $b = 237.3;
+  }
+  else
+  {
+    $a = 7.6; 
+		$b = 240.7;
+  }
+
+	$sdd_1 = (($a * $temp)/($b + $temp));
+	$sdd = 6.1078 * pow(10,$sdd_1);
+	$dd = $relHum/100 * $sdd;
+
+	$dd1 = ($dd / 6.1078);
+
+	$dewPoint = log10($dd1);
+	$absHum = 100000 * $mol_steam/$gas_const * $dd / $temp_k;
+
+	$absHum = (round($absHum * 10)) / 10;
+	
+	return $absHum;
+}
+
 function heatIndex($temp, $hum, $text)
 {
 	if($temp < 27)
