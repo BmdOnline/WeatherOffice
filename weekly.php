@@ -38,8 +38,8 @@ function getWeek($day, $month, $year, $showVal, $text)
 		
 	echo "<a name=\"top\"></a>";
 	echo "<center>";
-	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} bis {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
-	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} bis {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
+	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} {$text['to']} {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
+	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} {$text['to']} {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
 	echo "</center>";
 	
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
@@ -94,8 +94,8 @@ function getWeek($day, $month, $year, $showVal, $text)
 	}
 	
 	echo "<hr><center>";
-	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} bis {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
-	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} bis {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
+	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} {$text['to']} {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
+	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} {$text['to']} {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
 	echo "</center>";
 	
  	mysql_free_result($result);

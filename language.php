@@ -18,7 +18,7 @@
 
 // First define an array of all possible
 // languages:
-$languages = array('en' => 'English', 'de' => 'German');
+$languages = array('en' => 'English', 'de' => 'German', 'fr' => 'French');
 
 // Make sure that the language string we have is
 // a valid one:

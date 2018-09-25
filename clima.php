@@ -144,6 +144,44 @@ function displayExtremas()
 							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
 		}
 	}
+	elseif($lang == "fr")
+	{
+		printf("La <b>temp&eacute;rature la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
+		printf("La <b>temp&eacute;rature la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br><br>",
+						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
+
+		printf("Le <b>jour le plus chaud</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+		printf("Le <b>jour le plus froid</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br><br>",
+						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+
+		printf("Le <b>mois le plus chaud</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
+		printf("Le <b>mois le plus froid</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br><br>",
+						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);
+
+		if(isDisplayEnabled(DISPLAY_PRES_INFO))
+		{
+			printf("La <b>pression la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);
+			printf("La <b>pression la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br><br>",
+							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);
+		}
+
+
+		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
+		{
+			printf("Le jour avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait le <b>%s</b> avec <b>%2.2f mm</b>.<br>",
+							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);
+
+			printf("Le mois avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br>",
+							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);
+
+			printf("Le mois <b>le plus sec</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br><br>",
+							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);
+		}
+	}
 	else
 	{
 		printf("The <b>highest temperature</b> was measured on <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",

@@ -38,18 +38,18 @@
    
    // Retreive Language
    $gl=array();
-   
+
    $gl = get_languages('data');
-   $language=$gl[0][1]; 
-   
-   if($language != "de" && $language != "en")
+   $language=$gl[0][1];
+
+   if($language != "de" && $language != "en" && $language != "fr")
    {
 	   $language = "en";
 	   $lang="en";
    }
-   else 
+   else
      $lang=$language;
-   
+
    require_once 'language.php';
 
    //
@@ -236,6 +236,22 @@ function beaufort($windspeed, $lang)
 		"Schwerer Sturm",
 		"Orkanartiger Sturm",
 		"Orkan");
+	}
+	else if($lang == "fr")
+	{
+		$bftTxt = array("Calme",
+		"Tr&egrave;s l&eacute;g&egrave;re brise",
+		"L&eacute;g&egrave;re brise",
+		"Petite brise",
+		"Jolie brise",
+		"Bonne brise",
+		"Vent frais",
+		"Grand vent frais",
+		"Coup de vent",
+		"Fort coup de vent",
+		"Temp&ecirc;te",
+		"Veilente temp&ecirc;te",
+		"Ouragan");
 	}
 	else
 	{	

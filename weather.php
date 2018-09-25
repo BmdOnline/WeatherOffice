@@ -127,7 +127,7 @@ include("weatherInclude.php");
 	// Monthly Overview
 	//
 	echo "<p><hr><b>{$text['monthly_overview']}</b></p>";
-	echo "<form action = \"monthly.php\" method = \"get\" target=\"main\">";
+	echo "<form action = \"monthly.php?lng={$language}\" method = \"get\" target=\"main\">";
 	echo "<select name=\"yearMonth\">";
 
 	
