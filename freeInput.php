@@ -26,6 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $endYear, $showVal, $text)
 {
+	global $link;
 	$begin = convertTimestamp($beginDay, $beginMonth, $beginYear, 0, 0, 0);
 	$end   = convertTimestamp($endDay, $endMonth, $endYear, 23, 59, 59);
 	
@@ -33,8 +34,12 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 	echo "<a name=\"top\"></a>";
 
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
@@ -82,7 +87,7 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 		echo "<hr><a href=\"freeInput.php?showVal=true&beginDay=$beginDay&beginMonth=$beginMonth&beginYear=$beginYear&endDay=$endDay&endMonth=$endMonth&endYear=$endYear#all\">{$text['show_all_values']}</a>";
 	}
 	
- 	mysql_free_result($result);
+ 	$result->free();
 }
 
 
@@ -112,5 +117,5 @@ $showVal = $_REQUEST["showVal"];
 
 getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $endYear, $showVal, $text);
 
-mysql_close();
+$link->close();
 ?>

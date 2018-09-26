@@ -36,9 +36,14 @@
 	$graph = new Graph(800, 300, "auto", 86400);
 	
 	$query = "select max(timestamp) from weather";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$timestamp = mysql_result($result, 0);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$datarow = $result->fetch_array();
+	$timestamp = $datarow[0];
+	$result->free();
 	$maxYear    = substr($timestamp, 0, 4);
 
 	$graph->SetMargin(50,150,10,90);
@@ -98,8 +103,12 @@
    	   $end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	
 	   $query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
- 	   $result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
- 	   $num = mysql_num_rows($result);
+	   $result = $link->query($query);
+	   if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	   }
+	   $num = $result->num_rows;
 	   
 	   if ($num > 0)
 	   {
@@ -134,7 +143,7 @@
    	   $month = $nextDay['mon'];
 	   $year  = $nextDay['year'];
 	   
-   	   mysql_free_result($result);
+   	   $result->free();
 
 	}
 	

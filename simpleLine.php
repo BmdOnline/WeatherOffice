@@ -55,11 +55,15 @@
 	}
 	else
 	{
-	$query = "select $col, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
+		$query = "select $col, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
 	}
 
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 
 	$graph = new Graph(900, 300);
 	$graph->SetMargin(50,10,10,90);
@@ -117,7 +121,7 @@
 	
 	$lastValue = -1;
 	
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	while($row = $result->fetch_assoc())
 	{
 		if(($i % $factor) == 0)
 		{
@@ -164,8 +168,8 @@
 	
 	$totalNumValues = $idx;
 
-	mysql_free_result($result);
-	mysql_close();
+    $result->free();
+    $link->close();
 	
 	if($col == "wind_angle" || $col == "windspeed")
 	{

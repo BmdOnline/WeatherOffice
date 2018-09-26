@@ -21,14 +21,23 @@
 	$_SERVER["HTTP_ACCEPT_LANGUAGE"]=$lang;
 	
 	$query = "select max(timestamp) from weather";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$timestamp = mysql_result($result, 0);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$datarow = $result->fetch_array();
+	$timestamp = $datarow[0];
+	$result->free();
 	
 	$query = "select * from weather where timestamp=$timestamp";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$values = mysql_fetch_array($result);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$values = $result->fetch_array();
+	$result->free();
 	
 	$day     = substr($timestamp, 6, 2);
 	$month = substr($timestamp, 4, 2);
@@ -61,6 +70,6 @@
 	echo "Regen 24h$tab$values[rain_24h] mm~n";
 	echo "Regen Jahr$tab$values[rain_total] mm";	
 */	
-	mysql_close();
+	$link->close();
 ?>
 

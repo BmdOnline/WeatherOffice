@@ -52,12 +52,15 @@
 
    require_once 'language.php';
 
+   global $link;
    //
    // connect to the database
    //
-   $link = mysql_connect($weatherDatabaseHost, $weatherDatabaseUser, $weatherDatabasePW) or die("Keine Verbindung zum Database Host $databaseHost m&ouml;glich!");
-   mysql_select_db($weatherDatabase)
-       or die("Auswahl der Datenbank fehlgeschlagen<br>");
+   $link = new mysqli($weatherDatabaseHost, $weatherDatabaseUser, $weatherDatabasePW, $weatherDatabase);
+   if ($link->connect_errno) {
+	printf("Connection Failed.<br>Host:<font color=red>$databaseHost</font><br>Error: %s\n", $link->error);
+	exit();
+   }
    
    $now = time();
    
@@ -73,8 +76,13 @@
   
 	function SqlQuery($query, $debug)
 	{
+		global $link;
 		if($debug == false)
-			$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+		$result = $link->query($query);
+		if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+		}
 		else
 		{
 			echo $query . "<br>";
@@ -425,6 +433,7 @@ function monthLink($tag)
  
 function statArray($result, $num, $day, $startTime, $stopTime)
 {
+	global $link;
 	$minimalCacheRows = 200;
 
 	if($num > $minimalCacheRows)
@@ -434,20 +443,27 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 	  createCacheTable();
 	
 	  $query = "SELECT value FROM `cache` WHERE startTime=$startTime AND stopTime=$stopTime AND day=$day AND rows=$num";
-	  $cacheResult = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
-	
-	  $cacheNum = mysql_num_rows($cacheResult);
+	  $cacheResult = $link->query($query);
+	   if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	   }
+	  $cacheNum = $cacheResult->num_rows;
 	
 	  if($cacheNum > 0)
 	  {
-	   $value=mysql_fetch_array($cacheResult);
+	   $value=$cacheResult->fetch_array();
 	   $st=unserialize($value[0]);
 
 	   // update access time
 	   
    	   $now = time();
 	   $query = "UPDATE `cache` SET accessTime=$now WHERE startTime=$startTime AND stopTime=$stopTime AND day=$day AND rows=$num";;
-	   mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
+	   $result = $link->query($query);
+	   if (!$result) {
+	   	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	   }
 	   
 	   return $st;
 	  }
@@ -458,7 +474,7 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 			"wind_chill", "rel_pressure", "rain_1h", "rain_24h", "rain_total");
 		
 			
-	$row = mysql_fetch_array($result, MYSQL_ASSOC);
+	$row = $result->fetch_assoc();
 	
 	foreach ($cols as $column)
 	{
@@ -495,11 +511,11 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 		$tropicalNightsText[$column]	= "";
 	}
 		
-	mysql_data_seek($result, 0);
+	$result->data_seek(0);
 		
 	$currentRow = 0;	
 		
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	while($row = $result->fetch_assoc())
 	{	
 		$currentRow++;
 	
@@ -695,7 +711,8 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 
 function storeStatInCache($startTime, $stopTime, $rows, $day, $stat)
 {
-	$dataString = mysql_real_escape_string(serialize($stat));
+	global $link;
+	$dataString = $link->real_escape_string(serialize($stat));
 	
 	createCacheTable();
 	
@@ -704,14 +721,18 @@ function storeStatInCache($startTime, $stopTime, $rows, $day, $stat)
 	$query = "REPLACE INTO `cache` SET startTime=$startTime, stopTime=$stopTime, 
 		  rows=$rows, day=$day, accessTime=$now, value=\"$dataString\"";
 		  
-	$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
+	$result = $link->query($query);
+	if (!$result) {
+        	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
 		
 }
 
 
 function createCacheTable()
 {
-
+	global $link;
 	$query = "CREATE TABLE IF NOT EXISTS `cache` (
 	   `startTime` bigint(14) unsigned NOT NULL default '0',
 	   `stopTime`  bigint(14) unsigned NOT NULL default '0',
@@ -721,7 +742,11 @@ function createCacheTable()
            `value`      TEXT default NULL,
 	   PRIMARY KEY  (`startTime`,`stopTime`, `day`));"; 
 	   
-  	$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+  	$result = $link->query($query);
+	if (!$result) {
+        	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
 
 }
 
@@ -759,22 +784,23 @@ function graphs($type, $title, $begin, $end, $text)
 	if(TableExists("additionalsensors"))
 	{
 		$result = SqlQuery("select id,name,filename,linenumber,unit,Active from additionalsensors ORDER BY id", false);
-		$cnt=mysql_num_rows($result);
+		$cnt=$result->num_rows;
 		for($i=0; $i<$cnt; $i++)
 		{
-			$active=mysql_result($result, $i, 'Active');
+			$datarow = $result->fetch_array();
+			$active=$datarow['Active'];
 			if($active == 1)
 			{
-			$id=mysql_result($result, $i, 'id');
-			$name=mysql_result($result, $i, 'name');
-			$filename=mysql_result($result, $i, 'filename');
-			$linenumber=mysql_result($result, $i, 'linenumber');
-			$unit=mysql_result($result, $i, 'unit');
+    			$id=$datarow['id'];
+    			$name=$datarow['name'];
+    			$filename=$datarow['filename'];
+    			$linenumber=$datarow['linenumber'];
+    			$unit=$datarow['unit'];
 			
 			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=as$id&title=$name&unit=$unit&type=$type\">";
 }
 		}
-		mysql_free_result($result);
+		$result->free();
 	}
 	
 	echo "<br><a href=\"#top\">{$text['to_top']}</a>";
@@ -847,17 +873,27 @@ function forecastSymbol($fore)
 
 function weatherGetOneValue($query)
 {  
+   global $link;
    //printf("<br>QUERY: $query<br>\n");
-   $result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-   $line = mysql_fetch_array($result, MYSQL_NUM);
- 	mysql_free_result($result);
+   $result = $link->query($query);
+   if (!$result) {
+	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	exit();
+   }
+   $line = $result->fetch_array(MYSQL_NUM);
+   $result->free();
    return $line[0];
 } // getOneValue
 
 function weatherSendCommand($query)
 {  
+   global $link;
    //printf("<br>QUERY: $query<br>\n");
-   $result = mysql_query($query) or die ("send Command ist fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+   $result = $link->query($query);
+   if (!$result) {
+       printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+       exit();
+   }
 } // sendCommand
 
 function convertTimestamp($day, $month, $year, $hour, $minute, $second)
@@ -943,9 +979,9 @@ function tableFooter($text)
 
 function printTableRows($result)
 {
-	mysql_data_seek($result, 0);
+	$result->data_seek(0);
 	
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	while($row = $result->fetch_assoc())
 	{
 		printf("<tr><td>%s</td><td>%s</td>", $row["rec_date"],$row["rec_time"]);
 		
@@ -1028,11 +1064,17 @@ function diffTimestamps($t1, $t2)
 
 function getStartYearAndMonth(&$year, &$month, &$day)
 {
+	global $link;
 
 	$query = "select min(timestamp) from weather";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$timestamp = mysql_result($result, 0);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
+	$datarow = $result->fetch_array();
+	$timestamp = $datarow[0];
+	$result->free();
 	
 	$day   = substr($timestamp, 6, 2);
 	$month = substr($timestamp, 4, 2); 
@@ -1040,11 +1082,17 @@ function getStartYearAndMonth(&$year, &$month, &$day)
 }
 function getStopYearAndMonth(&$year, &$month, &$day)
 {
+	global $link;
 
 	$query = "select max(timestamp) from weather";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$timestamp = mysql_result($result, 0);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
+	$datarow = $result->fetch_array();
+	$timestamp = $datarow[0];
+	$result->free();
 	
 	$day   = substr($timestamp, 6, 2);
 	$month = substr($timestamp, 4, 2); 
@@ -1053,21 +1101,29 @@ function getStopYearAndMonth(&$year, &$month, &$day)
 
 function tendency($timestamp)
 {
-
+	global $link;
 	$starttime = diffTime($timestamp, "-65 minutes");
 	$stoptime = diffTime($timestamp, "-55 minutes");
 	
 
 	$query = "select * from weather where timestamp>$starttime and timestamp<$stoptime";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$oldValues = mysql_fetch_assoc($result);
-	$numRows = mysql_num_rows($result);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
+	$oldValues = $result->fetch_assoc();
+	$numRows = $result->num_rows;
+	$result->free();
 
 	$query = "select * from weather where timestamp=$timestamp";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$curValues = mysql_fetch_assoc($result);
-	mysql_free_result($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$curValues = $result->fetch_assoc();
+	$result->free();
 
 	
 	if($numRows > 0)
@@ -1084,10 +1140,14 @@ function tendency($timestamp)
 		$stoptime = diffTime($timestamp, "-1435 minutes");	
 		
 		$query = "select rain_total from weather where timestamp>$starttime and timestamp<$stoptime";
-		$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-		$oldValues = mysql_fetch_assoc($result);
-		$numRows = mysql_num_rows($result);
-		mysql_free_result($result);
+		$result = $link->query($query);
+		if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+		}
+		$oldValues = $result->fetch_assoc();
+		$numRows = $result->num_rows;
+		$result->free();
 
 		$diff['rain_last24'] = $curValues['rain_total'] - $oldValues['rain_total'];
 	}
@@ -1499,7 +1559,9 @@ function GetCurrentSensorValue($filename, $linenumber)
 
 function TableExists($table)
 {
-	if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table."'")))
+	global $link;
+	$result = $link->query("SHOW TABLES LIKE '".$table."'");
+	if( $result->num_rows)
 	{
 		return true;
 	}

@@ -26,6 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 {
+	global $link;
 	$prev = getdate(strtotime("-1 day", mktime($hour, $minute, 0, $month, $day, $year)));
 	$next   = getdate(strtotime("+1 day", mktime($hour, $minute, 0, $month, $day, $year)));
 	
@@ -50,8 +51,12 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	echo "</center>";
 	
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
@@ -109,7 +114,7 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	echo "<a href=\"24h.php?showVal=$showVal&day=$nextDay&month=$nextMon&year=$nextYear&hour=$hour&minute=$minute\" target=\"main\">{$text['24_hours_forward']}</a><hr>";
 	echo "</center>";
 	
- 	mysql_free_result($result);
+ 	$result->free();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,5 +147,5 @@ if($month[0] == 0)
 
 get24($day, $month, $year, $hour, $minute, $showVal, $text);
 
-mysql_close();
+$link->close();
 ?>

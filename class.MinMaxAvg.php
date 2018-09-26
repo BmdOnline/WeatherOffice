@@ -52,6 +52,7 @@ class MinMaxAvg
 		*/
 	public static function createDbTable()
 	{
+		global $link;
 		$cols = MinMaxAvg::getSrcTableColumns();
 		$ops = MinMaxAvg::getOperations();
 	
@@ -87,8 +88,11 @@ class MinMaxAvg
 						 ", PRIMARY KEY (`timestamp`) " .
 						 ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		//echo "$query";				 
-						 
-		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
 	}
 
 	/**
@@ -100,6 +104,7 @@ class MinMaxAvg
 	*/
 	static function updateDbTableDay($startDay)
 	{
+		global $link;
 		$Type = 'DAY';
 		
 		$tStampStart=1;
@@ -145,8 +150,11 @@ class MinMaxAvg
 							.	"SELECT substr(timestamp, $tStampStart, $tStampLenght) as timestamp, \"${Type}\" as Type ,"
 							. " $queryFields FROM weather WHERE timestamp > $startTS GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
 		//echo $query;
-
-		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
 
 
 		//echo "Calculating Rain for $Type...<br>\n";
@@ -170,9 +178,12 @@ class MinMaxAvg
 						 "tar.rain_total_min=sor.rain_total_min, ".
 						 "tar.rain_total_max=sor.rain_total_max ";
 		
-		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());					
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
 	}
-	
 	/**
 	* Calculate and update the Min Max Avg values the given entry type
 	*
@@ -183,6 +194,7 @@ class MinMaxAvg
 	*/
 	static function updateDbTableType($Type, $startDay)
 	{
+		global $link;
 		$tStampStart=0;
 		$tStampLenght=0;
 
@@ -265,8 +277,12 @@ class MinMaxAvg
 							. " $queryFields FROM $dataSource GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
 		//echo $query;
 
-		mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
+
 	}
 	
 	/**
@@ -278,6 +294,7 @@ class MinMaxAvg
 	 */
 	static function updateDbTables($incremental)
 	{
+		global $link;
 	
 		if(TableExists("MinMaxAvg") == false)
 		{
@@ -327,10 +344,15 @@ class MinMaxAvg
 	 
 	static public function getLastEntryTs($type)
 	{
+		global $link;
 		$query = "SELECT MAX(timestamp) AS timestamp FROM MinMaxAvg WHERE type='$type'";
-		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
-	
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
+
+		if($row = $result->fetch_array())
 		{	
 			return $row['timestamp'];
 		}
@@ -348,10 +370,15 @@ class MinMaxAvg
 	 */
 	static public function getRows($filter, $column)
 	{
+		global $link;
 		$query = "SELECT ${column} FROM MinMaxAvg WHERE type='$filter'";
-		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());	
-	
-		while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
+
+		while($row = $result->fetch_array())
 		{	
 			$rows[] = $row[$column];
 		}
@@ -368,6 +395,7 @@ class MinMaxAvg
 	 */
 	static public function getExtremValues($filter)
 	{
+		global $link;
 		$cols['temp_out_min'] = array('min');
 		$cols['temp_out_max'] = array('max');
 		$cols['temp_out_avg'] = array('min','max');
@@ -382,9 +410,13 @@ class MinMaxAvg
 			{
 				$query = "SELECT timestamp, ${column}  FROM MinMaxAvg WHERE type='$filter' AND ${column}="
 							 . "(SELECT $op(${column}) FROM MinMaxAvg WHERE type='$filter');";	
-				$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
-					
-				if($row = mysql_fetch_array($result, MYSQL_ASSOC));
+				$result = $link->query($query);
+				    if (!$result) {
+					printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+					exit();
+			    	}
+
+				if($row = $result->fetch_array())
 				{		
 				
 					$st["$column"]["$op"]=$row[$column];
@@ -415,6 +447,7 @@ class MinMaxAvg
 	 */
 	static public function getStatArray($Type, $year, $month, $day)
 	{
+		global $link;
 		$timeStamp = 0;
 		switch($Type)
 		{
@@ -439,9 +472,13 @@ class MinMaxAvg
 		
 		$query = "SELECT *  FROM MinMaxAvg WHERE type='$Type' AND timestamp='$timeStamp'";
 		
-		$result = mysql_query($query) or die ("Query Failed<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());		  
-					
-		if($row = mysql_fetch_array($result, MYSQL_ASSOC))
+		$result = $link->query($query);
+		if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
+
+		if($row = $result->fetch_array())
 		{
 			$cols = MinMaxAvg::getSrcTableColumns();
 			$ops  = MinMaxAvg::getOperations();

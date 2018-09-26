@@ -27,6 +27,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getDay($day, $month, $year, $showVal, $text)
 {
+	global $link;
 	$begin = convertTimestamp($day, $month, $year, 0, 0, 0);
 	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	
@@ -52,8 +53,12 @@ function getDay($day, $month, $year, $showVal, $text)
 	echo "</center>";
 	
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
@@ -106,7 +111,7 @@ function getDay($day, $month, $year, $showVal, $text)
 	echo "<a href=\"daily.php?showVal=$showVal&day=$nextDay&month=$nextMon&year=$nextYear\" target=\"main\">$nextDay. $nextMonthName $nextYear</a><hr>";
 	echo "</center>";
 	
- 	mysql_free_result($result);
+ 	$result->free();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,5 +142,5 @@ if($month[0] == 0)
 
 getDay($day, $month, $year, $showVal, $text);
 
-mysql_close();
+$link->close();
 ?>

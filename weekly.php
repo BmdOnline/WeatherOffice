@@ -26,6 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getWeek($day, $month, $year, $showVal, $text)
 {
+	global $link;
 	$wbegin = getdate(strtotime("-6 days", mktime(0, 0, 0, $month, $day, $year)));
 	$begin = convertTimestamp($wbegin['mday'], $wbegin['mon'], $wbegin['year'], 0, 0, 0);
 	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
@@ -43,8 +44,12 @@ function getWeek($day, $month, $year, $showVal, $text)
 	echo "</center>";
 	
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
@@ -98,7 +103,7 @@ function getWeek($day, $month, $year, $showVal, $text)
 	echo "         <a href=\"weekly.php?showVal=$showVal&day={$nextEnd['mday']}&month={$nextEnd['mon']}&year={$nextEnd['year']}\" target=\"main\">{$nextBegin['mday']}.{$nextBegin['mon']}.{$nextBegin['year']} {$text['to']} {$nextEnd['mday']}.{$nextEnd['mon']}.{$nextEnd['year']}</a><hr>";
 	echo "</center>";
 	
- 	mysql_free_result($result);
+ 	$result->free();
 }
 
 
@@ -125,5 +130,5 @@ $year =  $_REQUEST["year"];
 
 getWeek($day, $month, $year, $showVal, $text);
 
-mysql_close();
+$link->close();
 ?>

@@ -51,6 +51,7 @@ function printSpecialDays($stat, $text)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getMonth($month, $year, $showVal, $text, $lng)
 {
+	global $link;
 	$begin = convertTimestamp(1, $month, $year, 0, 0, 0);
 	$end   = convertTimestamp(31, $month, $year, 23, 59, 59);
 	
@@ -75,8 +76,12 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	echo "</center>";
 	
 	$query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+        	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	        exit();
+	}
+	$num = $result->num_rows;
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
@@ -355,8 +360,8 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	echo "<a href=\"monthly.php?showVal=$showVal&yearMonth=$nextYear$nextMon\" target=\"main\">$nextMonthName $nextYear</a><hr>";
 	echo "</center>";
 	
- 	mysql_free_result($result);
- 	mysql_close();
+ 	$result->free();
+ 	$link->close();
 }
 
 

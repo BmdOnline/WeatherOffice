@@ -26,6 +26,7 @@ include("class.climatetable.php");
 
 function climaTable()
 {
+	global $link;
 	global $text;
 	global $STATION_NAME, $STATION_LAT,  $STATION_LON;
 	
@@ -48,8 +49,12 @@ function climaTable()
 					"MIN(temp_out_min) AS DAY_TEMP_MIN  ".
 					"FROM MinMaxAvg WHERE Type='DAY' GROUP BY substr(timestamp, 1,8) )AS T1 group by substr(DAY,5,2)";
 
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	$result = $link->query($query);
+	    if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+    	}
+	while($row = $result->fetch_assoc())
 	{	
 		$arrMeanMaxTemp[] = $row['MEAN_TEMP_MAX'];
 		$arrMeanMinTemp[] = $row['MEAN_TEMP_MIN'];
@@ -82,9 +87,13 @@ function climaTable()
 						"FROM MinMaxAvg group by substr(timestamp,1,8)) AS T1 WHERE Type='DAY' and rainfall > 0) AS T2 ".
 						"GROUP BY SUBSTR(DAY,1,6)) AS T3 GROUP BY SUBSTR(YYYYDD,5,2) ORDER BY SUBSTR(YYYYDD,5,2);";
 
-		$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
+		$result = $link->query($query);
+		    if (!$result) {
+			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+			exit();
+	    	}
 
-		while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+		while($row = $result->fetch_assoc())
 		{	
 			$arrAvgRaindays[intval($row['MONTH'])-1] = $row['RAINDAYS_AVG'];
 		}
@@ -251,6 +260,6 @@ climaTable();
 displayExtremas();
 climaGraphs();
 
-mysql_close();
+$link->close();
 ?>
 </html>

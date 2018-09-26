@@ -22,7 +22,7 @@ echo "<title>Weather Office Home - $STATION_NAME</title>";
 ?>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 <!--<META HTTP-EQUIV="Refresh" CONTENT="300">  -->
-<link rel="shortcut icon" href="../favicon.ico" />
+<link rel="shortcut icon" href="./favicon.ico" />
 <link rel="stylesheet" href="woffice.css">
 <link rel="microsummary" type="application/x.microsummary+xml" href="summary.php">
 </head>

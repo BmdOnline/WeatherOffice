@@ -68,8 +68,12 @@ include ("jpgraphSetup.php");
 	$year    = substr($begin, 0, 4);
 
 	$query = "select $col1, $col2, $col3, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$num = mysql_num_rows($result);
+	$result = $link->query($query);
+	if (!$result) {
+		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+		exit();
+	}
+	$num = $result->num_rows;
 
 	$graph = new Graph(1080, 500);
 	$graph->SetMargin(50,190,10,90);
@@ -129,7 +133,7 @@ include ("jpgraphSetup.php");
 	
 	$idx = 0;
 	$i   = 0;
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	while($row = $result->fetch_assoc())
 	{
 		if(($i % $factor) == 0)
 		{
@@ -146,8 +150,8 @@ include ("jpgraphSetup.php");
 		$i++;
 	}
 	
-	mysql_free_result($result);
-	mysql_close();
+	$result->free();
+	$link->close();
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
 	$lineplot1->SetColor("blue");

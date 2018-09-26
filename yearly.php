@@ -283,5 +283,5 @@ $year =  $_REQUEST["year"];
 MinMaxAvg::updateDbTables(true); // Incremental update of DB Tables
 getYear($year, $text);
 
-mysql_close();
+$link->close();
 ?>

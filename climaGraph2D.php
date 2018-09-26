@@ -49,8 +49,12 @@ getStopYearAndMonth($lastYear, $dummyMonth, $dummyDay);
 
 //$query = "select timestamp, $col from MinMaxAvg where type='DAY' and timestamp >= $begin and timestamp <= $end order by timestamp";
 $query = "select timestamp, $col from MinMaxAvg where type='DAY' order by timestamp";
-$result = mysql_query($query) or die ("oneValue Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-$num = mysql_num_rows($result);   
+$result = $link->query($query);
+    if (!$result) {
+	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
+	exit();
+}
+$num = $result->num_rows;
 
 $height  = $marginT + $marginB + 2+($PIX_PER_YEAR * (($lastYear-$firstYear)+1));
 
@@ -174,7 +178,7 @@ while($year <= $lastYear)
 $lastX2 = 0;
 $firstYear=0;
 
-while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+while($row = $result->fetch_array())
 {
 	$recDate  = $row["timestamp"];
 	$year =  (int)substr($recDate, 0, 4);
