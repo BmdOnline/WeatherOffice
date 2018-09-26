@@ -16,9 +16,9 @@
 // Dreambox Digital SAT-Receiver using Tuxweather
 //
 ////////////////////////////////////////////////////
-	$_SERVER["HTTP_ACCEPT_LANGUAGE"]="de";
-	
 	include("weatherInclude.php");
+	
+	$_SERVER["HTTP_ACCEPT_LANGUAGE"]=$lang;
 	
 	$query = "select max(timestamp) from weather";
 	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
