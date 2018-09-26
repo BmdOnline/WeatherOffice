@@ -1072,11 +1072,13 @@ function tendency($timestamp)
 	
 	if($numRows > 0)
 	{
-		foreach($oldValues as $key => $value)
+		//$diff = array_combine(array_keys($curValues), array_map(function ($x, $y) { return $y-$x; } , $oldValues, $curValues));
+		$diff = array_combine(array_keys($curValues), array_map(function ($x, $y) { return is_numeric($x)?$y-$x:0; } , $oldValues, $curValues));
+		/*foreach($oldValues as $key => $value)
 		{
 			$diff[$key] = $curValues[$key] - $value;
 			//echo "$key $value<BR>";
-		}
+		}*/
 		
 		$starttime = diffTime($timestamp, "-1450 minutes");
 		$stoptime = diffTime($timestamp, "-1435 minutes");	

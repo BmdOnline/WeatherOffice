@@ -77,7 +77,7 @@ function testComp($compWoffice)
 	
 	// Temperature and Humidity
 		
-	$absHum=absoluteHumidity($values[temp_out],$values[rel_hum_out]);
+	$absHum=absoluteHumidity($values['temp_out'],$values['rel_hum_out']);
 	
 	echo "<Table border=\"1\" valign=\"center\">";
 	echo "<tr>";
@@ -91,7 +91,7 @@ function testComp($compWoffice)
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td>{$text['humidity']}</td>";
-	echo "<td>$values[rel_hum_out] % ($absHum g/m³)</td>";
+	echo "<td>$values[rel_hum_out] % ($absHum g/m&sup3;)</td>";
       displayTendency($diff['rel_hum_out'],"%%/h", $text); 
 	echo "</tr>";
 
@@ -200,7 +200,7 @@ function testComp($compWoffice)
 	// Indoor
 	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 	{
-		$absHum=absoluteHumidity($values[temp_in],$values[rel_hum_in]);
+		$absHum=absoluteHumidity($values['temp_in'],$values['rel_hum_in']);
 	
 		echo "<tr>";
 		echo "<td colspan=\"4\"><b>{$text['indoor']}</b></td>";
@@ -212,7 +212,7 @@ function testComp($compWoffice)
 		echo "</tr>";
 		echo "<tr>";
 		echo "<td>{$text['humidity']}</td>";
-		echo "<td colspan=\"1\">$values[rel_hum_in] %   ($absHum g/m³)</td>";
+		echo "<td colspan=\"1\">$values[rel_hum_in] %   ($absHum g/m&sup3;)</td>";
 		displayTendency($diff['rel_hum_in'],"%%/h", $text); 
 		echo "</tr>";		
 		echo "<tr>";

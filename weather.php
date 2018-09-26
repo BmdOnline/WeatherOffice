@@ -3,6 +3,7 @@
 	<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
 	<title>Weather</title>
 	<link rel="stylesheet" href="woffice.css">
+	<meta http-equiv="Refresh" CONTENT="600">
 	</head>
 	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
 	
@@ -38,6 +39,7 @@
 //////////////////////////////////////////////////////////////////////
 include("weatherInclude.php");
 
+	date_default_timezone_set($TimeZone);
 	$today = getdate();
 	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);	
 	
