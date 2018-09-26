@@ -93,10 +93,10 @@
 	$lineplot3->SetLegend(encodeStringForGraph($text['max'] . " " . $text['temp']));
 	
 	$lineplot4=new LinePlot($ydata4, $xdata);
+	$graph->AddY2($lineplot4);
 	$lineplot4->SetColor("blue");
 	$lineplot4->SetWeight($LineThickness);
 	$lineplot4->SetLegend(encodeStringForGraph($text['precipitation']));
-	$graph->AddY2($lineplot4);	
 
 	$graph->SetShadow();
 	$graph->Stroke();
