@@ -88,44 +88,45 @@ include ("jpgraphSetup.php");
 	{
 		case "day":
 			$title = $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 			break;
 			
 		case "24":
 			$title = "24h " . $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 			break;
 
 		case "week":
 			$title = $titleStr . " " . $text['in_the_week_from'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		case "month":
 			$title = $titleStr . " " .  monthName($month, $text) . " " . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		case "free":
 			$title = $titleStr . " " . $text['in_the_period_from'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		default:
 			$title = $titleStr;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 	}
 	
 	$graph->title->Set(encodeStringForGraph($title));
 	
 	$graph->yaxis->SetColor("blue");
-	$graph->yaxis->title->Set($unit1);
-	$graph->y2axis->title->Set($unit3);
+	$graph->yaxis->title->Set(encodeStringForGraph($unit1));
+	$graph->y2axis->title->Set(encodeStringForGraph($unit3));
 	$graph->y2axis->SetColor("red");
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
 	
-	$graph ->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->SetColumns(1);
 	 
 	$xdata = array();
 	$ydata = array();
@@ -154,23 +155,22 @@ include ("jpgraphSetup.php");
 	$link->close();
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
+	$graph->Add($lineplot1);
 	$lineplot1->SetColor("blue");
 	$lineplot1->SetWeight($LineThickness);
-	$lineplot1->SetLegend(getLegend($col1));
-	$graph->Add($lineplot1);
+	$lineplot1->SetLegend(encodeStringForGraph(getLegend($col1)));
 	
 	$lineplot2=new LinePlot($ydata2, $xdata);
+	$graph->Add($lineplot2);
 	$lineplot2->SetColor("green");
 	$lineplot2->SetWeight($LineThickness);
-	$lineplot2->SetLegend(getLegend($col2));
-
-	$graph->Add($lineplot2);
+	$lineplot2->SetLegend(encodeStringForGraph(getLegend($col2)));
 	
 	$lineplot3=new LinePlot($ydata3, $xdata);
+	$graph->AddY2($lineplot3);
 	$lineplot3->SetColor("red");
 	$lineplot3->SetWeight($LineThickness);
-	$lineplot3->SetLegend(getLegend($col3));
-	$graph->AddY2($lineplot3);
+	$lineplot3->SetLegend(encodeStringForGraph(getLegend($col3)));
 	
 	$graph->SetShadow();
 	$graph->Stroke();

@@ -77,37 +77,37 @@
 	{
 		case "day":
 			$title = $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 			break;
 
 		case "24":
 			$title = "24h " . $titleStr . " " . $text['at'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 			break;
 
 		case "week":
 			$title = $titleStr . " " . $text['in_the_week_from'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		case "month":
 			$title = $titleStr . " " .  monthName($month, $text) . " " . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		case "free":
 			$title = $titleStr . " " . $text['in_the_period_from'] . " " . $day . "." . $month . "." . $year;
-			$graph ->xaxis->scale-> SetDateFormat( 'd.m. H:i');
+			$graph->xaxis->scale->SetDateFormat( 'd.m. H:i');
 			break;
 			
 		default:
 			$title = $titleStr;
-			$graph ->xaxis->scale-> SetDateFormat( 'H:i');
+			$graph->xaxis->scale->SetDateFormat( 'H:i');
 	}
 	
 	$graph->title->Set(encodeStringForGraph($title));
 	$graph->yaxis->SetColor("blue");
-	$graph->yaxis->title->Set($unit);
+	$graph->yaxis->title->Set(encodeStringForGraph($unit));
 	
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
@@ -177,19 +177,17 @@
 		$scatplot= new LinePlot($ydata, $xdata);	  
 	  else
 		$scatplot= new ScatterPlot($ydata, $xdata);	 
-		
+	  $graph->Add($scatplot);
 	  $scatplot->SetColor("blue");
   	  $scatplot->mark->SetCallback("PlaceMarkCallback");
    	  $scatplot->mark->SetType(MARK_FILLEDCIRCLE);
-	  
-	  $graph->Add($scatplot);
 	}
 	else
 	{
 	  $lineplot=new LinePlot($ydata, $xdata);	
+	  $graph->Add($lineplot);
 	  $lineplot->SetColor("blue");
 	  $lineplot->SetWeight($LineThickness);
-	  $graph->Add($lineplot);
 	}
 	
 	$graph->SetShadow();

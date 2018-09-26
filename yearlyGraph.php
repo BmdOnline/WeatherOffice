@@ -23,9 +23,9 @@
 	$graph->SetY2Scale( "lin");
 		
 	$title = "{$text['yearly_overview_graph']} $dispyear";
-	$graph ->xaxis->scale-> SetDateFormat( 'd.m.');
+	$graph->xaxis->scale->SetDateFormat( 'd.m.');
 	
-	$graph->title->Set($title);
+	$graph->title->Set(encodeStringForGraph($title));
 	
 	$graph->yaxis->SetColor("green");
 	$graph->yaxis->title->Set("°C");
@@ -34,7 +34,8 @@
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
 	
-	$graph ->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->SetColumns(1);
 	 
 	$xdata = array();
 	$ydata1 = array();
@@ -74,27 +75,27 @@
 	}
 	
 	$lineplot1=new LinePlot($ydata1, $xdata);
+	$graph->Add($lineplot1);
 	$lineplot1->SetColor("yellow");
 	$lineplot1->SetWeight($LineThickness);
-	$lineplot1->SetLegend($text['min'] . " " . $text['temp']);
-	$graph->Add($lineplot1);
-	
+	$lineplot1->SetLegend(encodeStringForGraph($text['min'] . " " . $text['temp']));
+
 	$lineplot2=new LinePlot($ydata2, $xdata);
+	$graph->Add($lineplot2);
 	$lineplot2->SetColor("green");
 	$lineplot2->SetWeight($LineThickness);
-	$lineplot2->SetLegend($text['avg'] . " " . $text['temp']);
-	$graph->Add($lineplot2);
+	$lineplot2->SetLegend(encodeStringForGraph($text['avg'] . " " . $text['temp']));
 	
 	$lineplot3=new LinePlot($ydata3, $xdata);
+	$graph->Add($lineplot3);
 	$lineplot3->SetColor("red");
 	$lineplot3->SetWeight($LineThickness);
-	$lineplot3->SetLegend($text['max'] . " " . $text['temp']);
-	$graph->Add($lineplot3);
+	$lineplot3->SetLegend(encodeStringForGraph($text['max'] . " " . $text['temp']));
 	
 	$lineplot4=new LinePlot($ydata4, $xdata);
 	$lineplot4->SetColor("blue");
 	$lineplot4->SetWeight($LineThickness);
-	$lineplot4->SetLegend($text['precipitation']);
+	$lineplot4->SetLegend(encodeStringForGraph($text['precipitation']));
 	$graph->AddY2($lineplot4);	
 
 	$graph->SetShadow();

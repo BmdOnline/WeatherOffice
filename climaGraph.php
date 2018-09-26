@@ -50,18 +50,19 @@
 	$graph->SetScale("datlin");
 	//$graph->SetY2Scale( "lin");
 		
-	$graph ->xaxis->scale-> SetDateFormat( 'd.m');
+	$graph->xaxis->scale->SetDateFormat( 'd.m');
 	
-	$graph->title->Set($title);
+	$graph>title->Set(encodeStringForGraph($title));
 	
 	$graph->yaxis->SetColor("green");
-	$graph->yaxis->title->Set($unit);
-	//$graph->y2axis->title->Set("mm");
+	$graph->yaxis->title->Set(encodeStringForGraph($unit));
+	//$graph->y2axis->title->Set(encodeStringForGraph("mm"));
 	//$graph->y2axis->SetColor("blue");
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
 	
-	$graph ->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->Pos( 0.03,0.2,"right" ,"center");
+	$graph->legend->SetColumns(1);
 	 
 	$xdata = array();
 	$ydata = array();
@@ -169,10 +170,10 @@
 	while($num < $yearNum)
 	{
 		$lineplot[$num]=new LinePlot($ydata[$num], $xdata[$num]);
+		$graph->Add($lineplot[$num]);
 		$lineplot[$num]->SetColor($gColors[$num % sizeof($gColors)]);
 		$lineplot[$num]->SetWeight($LineThickness);
-		$lineplot[$num]->SetLegend($firstYear + $num);
-		$graph->Add($lineplot[$num]);
+		$lineplot[$num]->SetLegend(encodeStringForGraph($firstYear + $num));
 		$num++;
 	}
 	

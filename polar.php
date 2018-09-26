@@ -120,6 +120,7 @@
 
 
 	$p = new PolarPlot($data);
+	$graph->Add($p);
 	$p->mark->SetType(MARK_FILLEDCIRCLE);
 	$p->SetWeight(0);
 	$p->mark->SetCallback("PlaceMarkCallback");
@@ -128,30 +129,29 @@
 	// Add Directions
 
 	$tNorth = new Text("N");
+	$graph->Add($tNorth);
 	$tNorth->Center(0,$width, $margin - 15);
 	$tNorth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tNorth->SetColor('red');
-	$graph->Add($tNorth);
 
 	$tEast = new Text($text['east_char']);
+	$graph->Add($tEast);
 	$tEast->Center($width-$margin,$width - $margin/2, $height/2 - $margin/4);
 	$tEast->SetFont(FF_FONT2, FS_BOLD, 12);
-	$graph->Add($tEast);
 
 	$tSouth = new Text("S");
+	$graph->Add($tSouth);
 	$tSouth->Center(0,$width, $height - $margin);
 	$tSouth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tSouth->SetColor('green');
-	$graph->Add($tSouth);
 
 	$tWest = new Text("W");
+	$graph->Add($tWest);
 	$tWest->Center($margin/2,$margin, $height/2 - $margin/4);
 	$tWest->SetFont(FF_FONT2, FS_BOLD, 12);
-	$graph->Add($tWest);
 
 	$graph->axis->ShowAngleLabel(false);
 	$graph->SetMarginColor('gray');
-	$graph->Add($p);
 	$graph->SetShadow();
 	$graph->Stroke();
 ?>
