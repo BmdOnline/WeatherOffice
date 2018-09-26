@@ -126,7 +126,7 @@ ImageFilledRectangle($img, $plotX1, $plotY1, $plotX2,$plotY2, $cCanvas);
 ImageRectangle($img, $plotX1, $plotY1, $plotX2,$plotY2, $cScale);
 
 $textWidth = imagefontwidth(4) * strlen($titleStr);
-imagestring ( $img , 4, ($width-$textWidth)/2.0, 10,  $titleStr, $cText);
+imagestring ( $img , 4, ($width-$textWidth)/2.0, 10,  encodeStringForGraph(utf8_decode($titleStr)), $cText);
 
 /** Draw Scale */
 
