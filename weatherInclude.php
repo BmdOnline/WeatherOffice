@@ -35,7 +35,17 @@
    
    // Thicknes of Lines in plots
    $LineThickness=1.0;
-   
+   $PlotThickness=3.0;
+
+   // Colors for graphs
+   $LineColors=array("blue", "green", "red");
+   $LineFillColors=array(null, null, null);
+   $YearlyColors=array("yellow", "green", "red", "blue");
+   $YearlyFillColors=array(null, null, null, null);
+   $PolarDirColors=array("red", "black", "green", "black");
+   $YAxisColors=array("blue", "red");
+   $MarginColor="gray";
+
    // Retreive Language
    $gl=array();
 
@@ -1522,16 +1532,17 @@ function contains($x, $y, $xpoints, $ypoints, $npoints)
 
 function rainbowColor($idx)
 {
+	$alpha = "@0.25";
 	if($idx < 25)
-		return array(255,$idx*10.2,0);
+		return sprintf('#%02X%02X%02X%s"', 255,$idx*10.2,0,$alpha);
 	else if($idx < 50)
-		return array(255-(($idx-25)*10.2),255,0);
-  else if($idx < 75)
-		return array(0,255-(($idx-50)*10.2),($idx-50)*10.2);
-  else if ($idx <= 100)
-		return array(($idx-75)*10.2,0,255);
+		return sprintf('#%02X%02X%02X%s', 255-(($idx-25)*10.2),255,0,$alpha);
+	else if($idx < 75)
+		return sprintf('#%02X%02X%02X%s', 0,255-(($idx-50)*10.2),($idx-50)*10.2,$alpha);
+	else if ($idx <= 100)
+		return sprintf('#%02X%02X%02X%s', ($idx-75)*10.2,0,255,$alpha);
 	else
-	  return array(0,0,0);
+		return sprintf('#%02X%02X%02X%s', 0,0,0,$alpha);
 }
 
 function GetCurrentSensorValue($filename, $linenumber)
