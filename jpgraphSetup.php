@@ -18,10 +18,19 @@ function phpnum()
    return (int) $version[0];
 }
 
-if(phpnum() == 5)
-  $jpgraphPath="./jpgraph_php5";
-else
-  $jpgraphPath="./jpgraph_php4";
+switch (phpnum()) {
+    case 4:
+        $jpgraphPath="./jpgraph_php4";
+        break;
+    case 5:
+         $jpgraphPath="./jpgraph_php5";
+        break;
+    case 7:
+        $jpgraphPath="./jpgraph_php72";
+        break;
+    default:
+        $jpgraphPath="./jpgraph_php5";
+}
         
 $oldIncludePath=get_cfg_var('include_path');
 $newIncludePath=$jpgraphPath . PATH_SEPARATOR . $oldIncludePath;
