@@ -46,15 +46,14 @@
 	}
 	$num = $result->num_rows;
 
-	$width  = 400;
-	$height = 425;
 	$margin = 40;
 
-	$graph = new PolarGraph($width, $height);
-	$graph->SetScale('lin');
+	$graph = new PolarGraph($PolarWidth, $PolarHeight);
 	$graph->SetMargin($margin, $margin, $margin, $margin);
-
-
+	$graph->SetScale('lin');
+	$graph->SetMarginColor($MarginColor);
+	$graph->SetFrame(true,$FrameColor,1);
+	$graph->SetBox(false);
 	$factor=(integer) ($num/500); // 500 Werte maximal
 	if($factor == 0)
 		$factor = 1;
@@ -87,6 +86,7 @@
 	}
 
 	$graph->title->Set(encodeStringForGraph($title));
+	$graph->title->SetColor($LegendColor);
 
 
 	$data = array();
@@ -131,30 +131,29 @@
 
 	$tNorth = new Text(encodeStringForGraph($text['north_char']));
 	$graph->Add($tNorth);
-	$tNorth->Center(0,$width, $margin - 15);
+	$tNorth->Center(0,$PolarWidth, $margin - 15);
 	$tNorth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tNorth->SetColor($PolarDirColors[0]);
 
 	$tEast = new Text(encodeStringForGraph($text['east_char']));
 	$graph->Add($tEast);
-	$tEast->Center($width-$margin,$width - $margin/2, $height/2 - $margin/4);
+	$tEast->Center($PolarWidth-$margin,$PolarWidth - $margin/2, $PolarHeight/2 - $margin/4);
 	$tEast->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tEast->SetColor($PolarDirColors[1]);
 
 	$tSouth = new Text(encodeStringForGraph($text['south_char']));
 	$graph->Add($tSouth);
-	$tSouth->Center(0,$width, $height - $margin);
+	$tSouth->Center(0,$PolarWidth, $PolarHeight - $margin);
 	$tSouth->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tSouth->SetColor($PolarDirColors[2]);
 
 	$tWest = new Text(encodeStringForGraph($text['west_char']));
 	$graph->Add($tWest);
-	$tWest->Center($margin/2,$margin, $height/2 - $margin/4);
+	$tWest->Center($margin/2,$margin, $PolarHeight/2 - $margin/4);
 	$tWest->SetFont(FF_FONT2, FS_BOLD, 12);
 	$tWest->SetColor($PolarDirColors[3]);
 
 	$graph->axis->ShowAngleLabel(false);
-	$graph->SetMarginColor($MarginColor);
 	$graph->SetShadow();
 	$graph->Stroke();
 ?>

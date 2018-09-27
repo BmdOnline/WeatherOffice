@@ -33,7 +33,7 @@
 	else
 	   $unit = "°C";
 
-	$graph = new Graph(850, 400, "auto", 86400);
+	$graph = new Graph($GraphWidth, $GraphHeight, "auto", 86400);
 
 	$query = "select max(timestamp) from weather";
 	$result = $link->query($query);
@@ -47,18 +47,19 @@
 	$maxYear    = substr($timestamp, 0, 4);
 
 	$graph->SetMargin(50,100,10,90);
-	$graph->SetMarginColor($MarginColor);
 	$graph->SetScale("datlin");
 	//$graph->SetY2Scale( "lin");
+	$graph->SetMarginColor($MarginColor);
+	$graph->SetFrame(true,$FrameColor,1);
 
 	$graph->xaxis->scale->SetDateFormat('d.m');
 
 	$graph->title->Set(encodeStringForGraph($title));
 
-	$graph->yaxis->SetColor("green");
+	$graph->yaxis->SetColor($YAxisColors[0]);
 	$graph->yaxis->title->Set(encodeStringForGraph($unit));
 	//$graph->y2axis->title->Set(encodeStringForGraph("mm"));
-	//$graph->y2axis->SetColor("blue");
+	//$graph->y2axis->SetColor($YAxisColors[1]);
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
 

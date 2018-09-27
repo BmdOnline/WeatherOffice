@@ -75,11 +75,12 @@ include ("jpgraphSetup.php");
 	}
 	$num = $result->num_rows;
 
-	$graph = new Graph(850, 400);
+	$graph = new Graph($GraphWidth, $GraphHeight);
 	$graph->SetMargin(50,50,10,90);
-	$graph->SetMarginColor($MarginColor);
 	$graph->SetScale("datlin");
-	$graph->SetY2Scale( "lin");
+	$graph->SetY2Scale("lin");
+	$graph->SetMarginColor($MarginColor);
+	$graph->SetFrame(true,$FrameColor,1);
 
 	$factor=(integer) ($num/500); // 500 Werte maximal
 	if($factor == 0)
@@ -134,14 +135,21 @@ include ("jpgraphSetup.php");
 	}
 
 	$graph->title->Set(encodeStringForGraph($title));
+	$graph->title->SetColor($LegendColor);
 
 	$graph->yaxis->SetColor($YAxisColors[0]);
+	$graph->yaxis->title->SetMargin(0);
+	$graph->yaxis->title->SetColor($LegendColor);
 	$graph->yaxis->title->Set(encodeStringForGraph($unit1));
-	$graph->y2axis->title->Set(encodeStringForGraph($unit3));
 	$graph->y2axis->SetColor($YAxisColors[1]);
+	$graph->y2axis->title->SetMargin(10);
+	$graph->y2axis->title->SetColor($LegendColor);
+	$graph->y2axis->title->Set(encodeStringForGraph($unit3));
 	$graph->SetTickDensity(TICKD_SPARSE);
 	$graph->xaxis->SetPos('min');
 
+	$graph->legend->SetColor($LegendColor);
+	$graph->legend->SetFillColor($LegendFillColor);
 	$graph->legend->SetPos( 0.03,0.95,"right" ,"bottom");
 	$graph->legend->SetColumns(3);
 

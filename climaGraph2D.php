@@ -1,8 +1,7 @@
 <?php
 // v 1.00 - 14.03.2004 - initial version
 
-include("weatherInclude.php");
-
+include ("jpgraphSetup.php");
 
 $width   = 1000;
 $PIX_PER_YEAR=15;
@@ -63,14 +62,16 @@ Header("Content-type: image/PNG");
 $img = imagecreate($width,$height);
 
 // Allocate Colors
-$cBack = ImageColorAllocate($img,200,200,200);
+$rgb = new RGB();
+$arr = $rgb->Color($MarginColor);
+$cBack = ImageColorAllocate($img,$arr[0],$arr[1],$arr[2]);
 $cCanvas   = ImageColorAllocate($img,255,255,255); 
-//$cBack = ImageColorAllocate($img,113,148,45);
-$cBorder = ImageColorAllocate($img,218,218,218);  
-//$cText   = ImageColorAllocate($img,50,50,50);  
-$cText   = ImageColorAllocate($img,0,0,0); 
+$cBorder = ImageColorAllocate($img,$arr[0],$arr[1],$arr[2]);
+$arr = $rgb->Color($LegendColor);
+$cText   = ImageColorAllocate($img,$arr[0],$arr[1],$arr[2]);
 $cTextB   = ImageColorAllocate($img,0,0,0); 
-$cScale   = ImageColorAllocate($img,50,50,50);  
+$arr = $rgb->Color($FrameColor);
+$cScale   = ImageColorAllocate($img,$arr[0],$arr[1],$arr[2]);
 
 $cStatus = array();
 

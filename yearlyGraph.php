@@ -17,25 +17,33 @@
 	$dispyear =  $_REQUEST["year"];
 
 
-	$graph = new Graph(850, 400, "auto",  86400);
+	$graph = new Graph($GraphWidth, $GraphHeight, "auto",  86400);
 	$graph->SetMargin(50,50,10,90);
-	$graph->SetMarginColor($MarginColor);
 	$graph->SetScale("datlin");
 	$graph->SetY2Scale( "lin");
+	$graph->SetMarginColor($MarginColor);
+	$graph->SetFrame(true,$FrameColor,1);
 
 	$title = "{$text['yearly_overview_graph']} $dispyear";
 	$graph->xaxis->scale->SetDateFormat('d.m');
 
 	$graph->title->Set(encodeStringForGraph($title));
+	$graph->title->SetColor($LegendColor);
 
 	$graph->yaxis->SetColor($YAxisColors[0]);
+	$graph->yaxis->title->SetMargin(0);
+	$graph->yaxis->title->SetColor($LegendColor);
 	$graph->yaxis->title->Set(encodeStringForGraph("°C"));
-	$graph->y2axis->title->Set(encodeStringForGraph("mm"));
 	$graph->y2axis->SetColor($YAxisColors[1]);
+	$graph->y2axis->title->SetMargin(10);
+	$graph->y2axis->title->SetColor($LegendColor);
+	$graph->y2axis->title->Set(encodeStringForGraph("mm"));
 	$graph->SetTickDensity(TICKD_SPARSE);
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
 
+	$graph->legend->SetColor($LegendColor);
+	$graph->legend->SetFillColor($LegendFillColor);
 	$graph->legend->SetPos( 0.03,0.95,"right" ,"bottom");
 	$graph->legend->SetColumns(4);
 

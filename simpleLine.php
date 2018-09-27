@@ -66,10 +66,11 @@
 	}
 	$num = $result->num_rows;
 
-	$graph = new Graph(850, 400);
+	$graph = new Graph($GraphWidth, $GraphHeight);
 	$graph->SetMargin(50,50,10,90);
-	$graph->SetMarginColor($MarginColor);
 	$graph->SetScale("datlin");
+	$graph->SetMarginColor($MarginColor);
+	$graph->SetFrame(true,$FrameColor,1);
 
 	$factor=(integer) ($num/500); // 500 Werte maximal
 	if($factor == 0)
@@ -124,7 +125,10 @@
 	}
 
 	$graph->title->Set(encodeStringForGraph($title));
+	$graph->title->SetColor($LegendColor);
 	$graph->yaxis->SetColor($YAxisColors[0]);
+	$graph->yaxis->title->SetMargin(0);
+	$graph->yaxis->title->SetColor($LegendColor);
 	$graph->yaxis->title->Set(encodeStringForGraph($unit));
 	$graph->SetTickDensity(TICKD_SPARSE);
 
@@ -197,7 +201,6 @@
 		$scatplot= new ScatterPlot($ydata, $xdata);
 	  $graph->Add($scatplot);
 	  $scatplot->SetColor($LineColors[0]);
-	  if ($LineFillColors[0]) $scatplot->SetFillColor($LineFillColors[0]);
   	  $scatplot->mark->SetCallback("PlaceMarkCallback");
    	  $scatplot->mark->SetType(MARK_FILLEDCIRCLE);
 	}

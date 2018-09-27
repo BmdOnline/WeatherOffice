@@ -33,18 +33,25 @@
    // Version
    $WeatherOfficeVersion="1.1.3-dev";
    
-   // Thicknes of Lines in plots
+   // Graph parameters
+   $GraphWidth=850;
+   $GraphHeight=300;
+   $PolarWidth=400;
+   $PolarHeight=425;
+
    $LineThickness=1.0;
    $PlotThickness=3.0;
 
-   // Colors for graphs
    $LineColors=array("blue", "green", "red");
    $LineFillColors=array(null, null, null);
    $YearlyColors=array("yellow", "green", "red", "blue");
    $YearlyFillColors=array(null, null, null, null);
    $PolarDirColors=array("red", "black", "green", "black");
    $YAxisColors=array("blue", "red");
+   $LegendColor="black";
+   $LegendFillColor="white";
    $MarginColor="gray";
+   $FrameColor="gray:0.25";
 
    // Retreive Language
    $gl=array();
