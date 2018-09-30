@@ -14,6 +14,9 @@
    $weatherDatabaseUser= "mySqlUser";
 // Password of database user   
    $weatherDatabasePW  = "mySqlUserPassword";
+
+// Date Time Zone
+   $TimeZone = "Europe/Paris";
       
 // Your Weather station name (city)   
    $STATION_NAME = "Hinterdupfing";

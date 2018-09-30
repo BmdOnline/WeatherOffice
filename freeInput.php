@@ -21,12 +21,13 @@
 ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// getDay
+// getFreeInput
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $endYear, $showVal, $text)
 {
 	global $link;
+	// Header
 	$begin = convertTimestamp($beginDay, $beginMonth, $beginYear, 0, 0, 0);
 	$end   = convertTimestamp($endDay, $endMonth, $endYear, 23, 59, 59);
 	
@@ -43,7 +44,8 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
 		return $num;
 	}
 	

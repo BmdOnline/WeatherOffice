@@ -28,8 +28,6 @@
 function getDay($day, $month, $year, $showVal, $text)
 {
 	global $link;
-	$begin = convertTimestamp($day, $month, $year, 0, 0, 0);
-	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	
 	// Header
 	$prev = getdate(strtotime("-1 day", mktime(0, 0, 0, $month, $day, $year)));
@@ -42,6 +40,8 @@ function getDay($day, $month, $year, $showVal, $text)
 	$prevYear = $prev['year'];
 	$nextYear = $next['year'];
 	
+	$begin = convertTimestamp($day, $month, $year, 0, 0, 0);
+	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	$monthName = monthName($month, $text);
 	$prevMonthName = monthName($prevMon, $text);
 	$nextMonthName = monthName($nextMon, $text);
@@ -62,7 +62,8 @@ function getDay($day, $month, $year, $showVal, $text)
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
 		return $num;
 	}
 	
@@ -72,20 +73,20 @@ function getDay($day, $month, $year, $showVal, $text)
 	echo "<h2>{$text['daily_overview']} {$text['for_date']} $day.$month.$year.</h2><p>";
 	links($showVal, $text);
 	
-	// graps
+	// Graphs
 	graphs("day", "{$text['graphs']} {$text['for_date']} $day.$month.$year.", $begin, $end, $text);
 	
-	// Average Table 	
+	// Average Table Header
 	echo "<a name=\"avg\"></a>";
 	echo "<h3>{$text['avg_values']} {$text['for_date']} $day.$month.$year.</h3><p>";
 	valueTable($stat, "avg", $day, $month, $year, $text);
 
-	// min values Table
+	// min values Table Header
 	echo "<a name=\"minimal\"></a>";
 	echo "<hr><h3>{$text['min_values']} {$text['for_date']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "min", "minTime", "minDate", $text);
 
-	// max values Table
+	// max values Table Header
 	echo "<a name=\"maximal\"></a>";
 	echo "<hr><h3>{$text['max_values']} {$text['for_date']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "max", "maxTime", "maxDate", $text);

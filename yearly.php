@@ -21,11 +21,12 @@
 ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// getDay
+// getYear
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getYear($dispyear, $text)
 {
+	global $language;
 	
 	$nextDay = getdate(strtotime("+0 sec", mktime(0, 0, 0, 1, 1, $dispyear)));
 	$day   = $nextDay['mday'];
@@ -132,7 +133,7 @@ function getYear($dispyear, $text)
 	     $numMonth++;
 	     echo "<tr>";
 	     
-  	   printf ("<td><a href=\"monthly.php?yearMonth=%d%d\">%s</a></td>",$year,$month,monthName($month, $text)); 
+  	   printf ("<td><a href=\"monthly.php?showVal=false&yearMonth=%d%d&lng={$language}\">%s</a></td>",$year,$month,monthName($month, $text));
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["min"]);	     
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["max"]);
 	     printf ("<td>%.1f </td>",$stat["temp_out"]["avg"]);

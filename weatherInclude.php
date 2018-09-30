@@ -47,6 +47,7 @@
    $YearlyColors=array("yellow", "green", "red", "blue");
    $YearlyFillColors=array(null, null, null, null);
    $PolarDirColors=array("red", "black", "green", "black");
+   $XAxisColors="black";
    $YAxisColors=array("blue", "red");
    $LegendColor="black";
    $LegendFillColor="white";
@@ -79,6 +80,7 @@
 	exit();
    }
    
+   date_default_timezone_set($TimeZone);
    $now = time();
    
   function isDisplayEnabled($item)
@@ -1556,11 +1558,13 @@ function GetCurrentSensorValue($filename, $linenumber)
 {
 	if(file_exists($filename) == false)
 	{
-		$value = "nicht vorhanden";
+		//$value = "nicht vorhanden";
+		$value = "unavailable (file not found)";
 	}
 	else
 	{
-		$value = "vorhanden";
+		//$value = "vorhanden";
+		$value = "available (file ready)";
 		
 		$handle = fopen($filename, "r");
 		

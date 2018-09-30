@@ -214,21 +214,21 @@ class MinMaxAvg
 				$tStampLenght=6;
 				$tRainStart=1;
 				$tRainLenght=8;
-				$dataSource="MinMaxAvg WHERE type='DAY'";
+			    $dataType="DAY";
 				break;
 			case 'MONTH';
 				$tStampStart=5;
 				$tStampLenght=2;
 				$tRainStart=1;
 				$tRainLenght=6;
-				$dataSource="MinMaxAvg WHERE type='YEARMONTH'";
+			    $dataType="YEARMONTH";
 				break;				
 			case 'YEAR';
 				$tStampStart=1;
 				$tStampLenght=4;
 				$tRainStart=1;
 				$tRainLenght=4;			
-				$dataSource="MinMaxAvg WHERE type='YEARMONTH'";
+			    $dataType="YEARMONTH";
 				break;
 			default;
 				echo "Error: generateMinMaxEntries Type $Type is not supported\n";
@@ -274,7 +274,7 @@ class MinMaxAvg
 			
 		$query = "REPLACE INTO MinMaxAvg(timestamp, type, $targetCols) "
 							.	"SELECT substr(timestamp, $tStampStart, $tStampLenght) as timestamp, \"${Type}\" as Type ,"
-							. " $queryFields FROM $dataSource GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
+							. " $queryFields FROM MinMaxAvg WHERE $dataType GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
 		//echo $query;
 
 		$result = $link->query($query);

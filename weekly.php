@@ -21,15 +21,12 @@
 ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// getDay
+// getWeek
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getWeek($day, $month, $year, $showVal, $text)
 {
 	global $link;
-	$wbegin = getdate(strtotime("-6 days", mktime(0, 0, 0, $month, $day, $year)));
-	$begin = convertTimestamp($wbegin['mday'], $wbegin['mon'], $wbegin['year'], 0, 0, 0);
-	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	
 	// Header
 	$prevBegin = getdate(strtotime("-13 days", mktime(0, 0, 0, $month, $day, $year)));
@@ -37,6 +34,9 @@ function getWeek($day, $month, $year, $showVal, $text)
 	$nextBegin = getdate(strtotime("+1 day", mktime(0, 0, 0, $month, $day, $year)));
 	$nextEnd   = getdate(strtotime("+7 days", mktime(0, 0, 0, $month, $day, $year)));
 		
+	$wbegin = getdate(strtotime("-6 days", mktime(0, 0, 0, $month, $day, $year)));
+	$begin = convertTimestamp($wbegin['mday'], $wbegin['mon'], $wbegin['year'], 0, 0, 0);
+	$end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 	echo "<a name=\"top\"></a>";
 	echo "<center>";
 	echo "{$text['go_to']}: <a href=\"weekly.php?showVal=$showVal&day={$prevEnd['mday']}&month={$prevEnd['mon']}&year={$prevEnd['year']}\" target=\"main\">{$prevBegin['mday']}.{$prevBegin['mon']}.{$prevBegin['year']} {$text['to']} {$prevEnd['mday']}.{$prevEnd['mon']}.{$prevEnd['year']}</a> {$text['or']} ";
@@ -53,7 +53,8 @@ function getWeek($day, $month, $year, $showVal, $text)
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
 		return $num;
 	}
 	
@@ -63,20 +64,20 @@ function getWeek($day, $month, $year, $showVal, $text)
 	echo "<h2>{$text['weekly_overview']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h2><p>";
 	links($showVal, $text);
 	
-	// Graphen
+	// Graphs
 	graphs("week", "{$text['graphs']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.", $begin, $end, $text);
 	
-	// Average Table	
+	// Average Table Header
 	echo "<a name=\"avg\"></a>";
 	echo "<h3>{$text['avg_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";
 	valueTable($stat, "avg", "--", "--", "--", $text);
 
-	// Minimalwerte Table
+	// min values Table Header
 	echo "<a name=\"minimal\"></a>";
 	echo "<hr><h3>{$text['min_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "min", "minTime", "minDate", $text);
 
-	// Maximalwerte Table
+	// max values Table Header
 	echo "<a name=\"maximal\"></a>";
 	echo "<hr><h3>{$text['max_values']} {$text['for']} {$text['week_of']} {$wbegin['mday']}.{$wbegin['mon']}.{$wbegin['year']} {$text['to']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "max", "maxTime", "maxDate", $text);

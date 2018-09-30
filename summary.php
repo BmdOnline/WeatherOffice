@@ -11,12 +11,6 @@
 // See COPYING for license info
 //
 ////////////////////////////////////////////////////
-	header("Content-type: text/xml");
-
-	// Microsummary for Firefox 2.0 Bookmarks http://wiki.mozilla.org/Microsummaries
-
-	echo"<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	
 	include("weatherInclude.php");
 	
 	$query = "select max(timestamp) from weather";
@@ -36,6 +30,7 @@
 	        exit();
 	}
 	$values = $result->fetch_array();
+ 	$result->free();
 
 	$day     = substr($timestamp, 6, 2);
 	$month = substr($timestamp, 4, 2);
@@ -45,18 +40,17 @@
 	$second = substr($timestamp, 12, 4);
 
 	$windkmh = $values['windspeed']*3.6;
+ 	$link->close();
 
- 	$result->free();
+	header("Content-type: text/xml");
 
+	// Microsummary for Firefox 2.0 Bookmarks http://wiki.mozilla.org/Microsummaries
+
+	echo"<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
 	echo"<generator xmlns=\"http://www.mozilla.org/microsummaries/0.1\" name=\"Weather Info\">";
 	echo"<template><transform xmlns=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"><output method=\"text\"/><template match=\"/\">";
 	echo"<text>$STATION_NAME: $values[temp_out]C $windkmh km/h - $hour:$minute</text>";
 	echo"</template></transform></template>";
         echo "</generator>";
- 	$link->close();
-
-      
 ?>
-	  
-      

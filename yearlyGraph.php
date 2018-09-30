@@ -41,6 +41,7 @@
 	$graph->SetTickDensity(TICKD_SPARSE);
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
+	$graph->xaxis->SetColor($XAxisColors);
 
 	$graph->legend->SetColor($LegendColor);
 	$graph->legend->SetFillColor($LegendFillColor);

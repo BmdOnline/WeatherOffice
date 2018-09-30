@@ -46,14 +46,12 @@ function printSpecialDays($stat, $text)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// getDay
+// getMonth
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getMonth($month, $year, $showVal, $text, $lng)
 {
 	global $link;
-	$begin = convertTimestamp(1, $month, $year, 0, 0, 0);
-	$end   = convertTimestamp(31, $month, $year, 23, 59, 59);
 	
 	// Header
 	$prev = getdate(strtotime("-1 month", mktime(0, 0, 0, $month, 1, $year)));
@@ -64,6 +62,8 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	$prevYear = $prev['year'];
 	$nextYear = $next['year'];
 	
+	$begin = convertTimestamp(1, $month, $year, 0, 0, 0);
+	$end   = convertTimestamp(31, $month, $year, 23, 59, 59);
 	$monthName = monthName($month, $text);
 	$prevMonthName = monthName($prevMon, $text);
 	$nextMonthName = monthName($nextMon, $text);
@@ -85,7 +85,8 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		//echo "Keine Daten f&uuml;r den $month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for the $month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
 		return $num;
 	}
 	
@@ -323,12 +324,12 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	// graphs
 	graphs("month", "{$text['graphs']} {$text['for']} $monthName $year.", $begin, $end, $text);
 
-	// Average Table	
+	// Average Table Header
 	echo "<a name=\"avg\"></a>";
 	echo "<h3>{$text['avg_values']} {$text['for']} $monthName $year.</h3><p>";
 	valueTable($stat, "avg", "--", "--", "--", $text);
 	
-	// min values Table
+	// min values Table Header
 	echo "<a name=\"minimal\"></a>";
 	echo "<hr><h3>{$text['min_values']} {$text['for']} $monthName $year.</h3><p>";	
 	valueTimeDateTable($stat, "min", "minTime", "minDate", $text);
@@ -352,12 +353,12 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	}
 	else
 	{
-		echo "<hr><a href=\"monthly.php?showVal=true&yearMonth=$year$month#all\">{$text['show_all_values']}</a>";
+		echo "<hr><a href=\"monthly.php?showVal=true&yearMonth=$year$month&lng=$lng#all\">{$text['show_all_values']}</a>";
 	}
 	
 	echo "<hr><center>";
-	echo "{$text['go_to']}: <a href=\"monthly.php?showVal=$showVal&yearMonth=$prevYear$prevMon\" target=\"main\">$prevMonthName $prevYear</a> {$text['or']} ";
-	echo "<a href=\"monthly.php?showVal=$showVal&yearMonth=$nextYear$nextMon\" target=\"main\">$nextMonthName $nextYear</a><hr>";
+	echo "{$text['go_to']}: <a href=\"monthly.php?showVal=$showVal&yearMonth=$prevYear$prevMon&lng=$lng\" target=\"main\">$prevMonthName $prevYear</a> {$text['or']} ";
+	echo "<a href=\"monthly.php?showVal=$showVal&yearMonth=$nextYear$nextMon&lng=$lng\" target=\"main\">$nextMonthName $nextYear</a><hr>";
 	echo "</center>";
 	
  	$result->free();

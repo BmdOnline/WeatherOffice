@@ -57,8 +57,6 @@ $num = $result->num_rows;
 
 $height  = $marginT + $marginB + 2+($PIX_PER_YEAR * (($lastYear-$firstYear)+1));
 
-Header("Content-type: image/PNG");
-
 $img = imagecreate($width,$height);
 
 // Allocate Colors
@@ -225,6 +223,7 @@ while($row = $result->fetch_array())
 	
 }
    
+Header("Content-type: image/PNG");
 imagePNG($img);
 imagedestroy($img);
 

@@ -21,12 +21,13 @@
 ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// getDay
+// get24
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 {
 	global $link;
+	// Header
 	$prev = getdate(strtotime("-1 day", mktime($hour, $minute, 0, $month, $day, $year)));
 	$next   = getdate(strtotime("+1 day", mktime($hour, $minute, 0, $month, $day, $year)));
 	
@@ -60,7 +61,8 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
-		echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
 		return $num;
 	}
 	
@@ -75,20 +77,20 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	echo "<h2>{$text['statistics']} {$text['for']} {$text['the_she']} {$text['24_hours']} {$text['from']} $prevDay.$prevMon.$prevYear $hour:$minute{$text['uhr']} {$text['to']} $day.$month.$year $hour:$minute{$text['uhr']}.</h2><p>";
 	links($showVal, $text);
 	
-	// Graphen
+	// Graphs
 	graphs("24", "{$text['graphs']} {$text['24_hours']} {$text['before_date']} $day.$month.$year, $hour:$minute{$text['uhr']}.", $begin, $end, $text);
 	
-	// Average Table 	
+	// Average Table Header
 	echo "<a name=\"avg\"></a>";
 	echo "<h3>{$text['avg_values']} {$text['for_date']} $day.$month.$year.</h3><p>";
 	valueTable($stat, "avg", $day, $month, $year, $text);
 
-	// Minimalwerte Table
+	// min values Table Header
 	echo "<a name=\"minimal\"></a>";
 	echo "<hr><h3>{$text['min_values']} {$text['for_date']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "min", "minTime", "minDate", $text);
 
-	// Maximalwerte Table
+	// max values Table Header
 	echo "<a name=\"maximal\"></a>";
 	echo "<hr><h3>{$text['max_values']} {$text['for_date']} $day.$month.$year.</h3><p>";	
 	valueTimeDateTable($stat, "max", "maxTime", "maxDate", $text);
@@ -98,7 +100,7 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	{
 		// All Values Table Header
 		echo "<hr><h3>{$text['all_values']} {$text['for_date']} $day.$month.$year.</h3><p>";	
-		tableHeader();
+		tableHeader($text);
 	
 		// All Values Table
 		printTableRows($result);
@@ -106,7 +108,7 @@ function get24($day, $month, $year, $hour, $minute, $showVal, $text)
 	}
 	else
 	{
-		echo "<hr><a href=\"daily.php?showVal=true&day=$day&month=$month&year=$year#all\">{$text['show_all_values']}</a>";
+		echo "<hr><a href=\"24h.php?showVal=true&day=$day&month=$month&year=$year&hour=$hour&minute=$minute#all\">{$text['show_all_values']}</a>";
 	}
 	
 	echo "<center>";

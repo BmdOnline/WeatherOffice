@@ -39,7 +39,6 @@
 //////////////////////////////////////////////////////////////////////
 include("weatherInclude.php");
 
-	date_default_timezone_set($TimeZone);
 	$today = getdate();
 	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);	
 	
