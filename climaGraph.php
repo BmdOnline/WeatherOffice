@@ -62,6 +62,7 @@
 	//$graph->y2axis->SetColor($YAxisColors[1]);
 	$graph->xaxis->SetLabelAngle(90);
 	$graph->xaxis->SetPos('min');
+	$graph->xaxis->SetColor($XAxisColors);
 
 	$graph->legend->SetPos( 0.03,0.4,"right" ,"center");
 	$graph->legend->SetColumns(1);

@@ -800,6 +800,7 @@ function graphs($type, $title, $begin, $end, $text)
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
 	}
 	
+	// Additional Sensors
 	if(TableExists("additionalsensors"))
 	{
 		$result = SqlQuery("select id,name,filename,linenumber,unit,Active from additionalsensors ORDER BY id", false);

@@ -62,8 +62,9 @@ function getDay($day, $month, $year, $showVal, $text)
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
+		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
 		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
+		echo "No data found for the $day.$month.$year. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
 		return $num;
 	}
 	

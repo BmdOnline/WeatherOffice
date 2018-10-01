@@ -28,11 +28,31 @@ function getYear($dispyear, $text)
 {
 	global $language;
 	
+	// Header
+	$prev = getdate(strtotime("-1 year", mktime(0, 0, 0, 1, 1, $dispyear)));
+	$next   = getdate(strtotime("+1 year", mktime(0, 0, 0, 1, 1, $dispyear)));
 	$nextDay = getdate(strtotime("+0 sec", mktime(0, 0, 0, 1, 1, $dispyear)));
 	$day   = $nextDay['mday'];
 	$month = $nextDay['mon'];
 	$year  = $nextDay['year'];
-	
+	$prevYear = $prev['year'];
+	$nextYear = $next['year'];
+
+	echo "<a name=\"top\"></a>";
+	echo "<center>";
+	echo "{$text['go_to']}: <a href=\"yearly.php?year=$prevYear\" target=\"main\">$prevYear</a> {$text['or']} ";
+	echo "<a href=\"yearly.php?year=$nextYear\" target=\"main\">$nextYear</a><hr>";
+	echo "</center>";
+
+	$stat=MinMaxAvg::getStatArray('YEAR', $dispyear, 0, 0);
+	if (!$stat)
+	{
+		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
+		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
+		//echo "Keine Daten f&uuml;r den $month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
+		echo "No data found for $year. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
+		return $stat;
+	}
 	echo "<h2>{$text['yearly_overview']} {$text['for']} $year.</h2>";
 	
 	echo "<Table border=\"1\" spaceing=\"5\" >";
@@ -260,7 +280,11 @@ function getYear($dispyear, $text)
 	
 	echo "<p><img src=\"yearlyGraph.php?year=$dispyear&\">";
 
-	
+	echo "<hr><center>";
+	echo "{$text['go_to']}: <a href=\"yearly.php?year=$prevYear\" target=\"main\">$prevYear</a> {$text['or']} ";
+	echo "<a href=\"yearly.php?year=$nextYear\" target=\"main\">$nextYear</a><hr>";
+	echo "</center>";
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

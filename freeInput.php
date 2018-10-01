@@ -44,8 +44,9 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 	if ($num == 0)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
+		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
 		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for the $day.$month.$year. Data is available from the $firstDay.$firstMonth.$firstYear.";
+		echo "No data found for the $beginDay.$beginMonth.$beginYear. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
 		return $num;
 	}
 	
@@ -55,10 +56,10 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 	echo "<h2>{$text['statistics']} {$text['of']} $beginDay.$beginMonth.$beginYear {$text['to']} $endDay.$endMonth.$endYear.</h2><p>";
 	links($showVal, $text);
 	
-	// graphs
+	// Graphs
 	graphs("free", "{$text['graphs']} {$text['for_the_range_from']} $beginDay.$beginMonth.$beginYear {$text['to']} $endDay.$endMonth.$endYear.", $begin, $end, $text);
 	
-	// Average Table Header	
+	// Average Table Header
 	echo "<a name=\"avg\"></a>";
 	echo "<h3>{$text['avg_values']} {$text['for_the_range_from']} $beginDay.$beginMonth.$beginYear {$text['to']} $endDay.$endMonth.$endYear.</h3><p>";
 	valueTable($stat, "avg", "--", "--", "--", $text);
