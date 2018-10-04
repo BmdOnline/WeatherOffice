@@ -59,17 +59,6 @@
 	$foreName = forecastName($values['forecast'], $text);
 	
 	echo "$values[temp_out]";
-/*
-	echo "Feuchtigkeit$tab$values[rel_hum_out]% $tab2 Innen: $values[rel_hum_in]%~n";
-	echo "Taupunkt$tab$values[dewpoint]C~n";
-	echo "Windgeschw.$tab$windkmh km/h ($bftTxt)~n";
-	echo "Windrichtung$tab$values[wind_direction] ($values[wind_angle])~n";
-	echo "Windkuehle$tab$values[wind_chill] C~n";
-	echo "Luftdruck$tab$values[rel_pressure] hPa  $tendName->$foreName~n";
-	echo "Regen 1h$tab$values[rain_1h] mm~n";
-	echo "Regen 24h$tab$values[rain_24h] mm~n";
-	echo "Regen Jahr$tab$values[rain_total] mm";	
-*/	
 	$link->close();
 ?>
 

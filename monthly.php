@@ -99,10 +99,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	$tomorrow = getdate(strtotime("+1 day", mktime(0, 0, 0, $today['mon'], $today['mday'], $today['year'])));
 	if($today['year'] == $year && $today['mon'] == $month && $tomorrow['mon'] == $month)
 	{
-	   $msg["de"] = "Vorl&auml;ufig bis zum";
-	   $msg["en"] = "Preliminary data on";
-	   $msg["fr"] = "Donn&eacute;es provisoires au";
-	   printf("<h3><font color=\"red\">".$msg[$lng]." %d.%d.%d.</font></h3>", $today['mday'], $today['mon'], $today['year']);
+	   printf("<h3><font color=\"red\">".$text['partial_values']." %d.%d.%d.</font></h3>", $today['mday'], $today['mon'], $today['year']);
 	}
 	
 	links($showVal, $text);
@@ -127,201 +124,75 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	$windAvgTxt = windDir($windAvg, $text);
 	
 	// Language dependent text
-  if($lng == "de")
-  {
-		// german
-	  printf("<p>Die <b>mittlere Temperatur</b> im %s hat <b>%2.2f &deg;C</b> betragen.<br>", $monthName, $avgTemp);
-	  printf("Damit war der Monat <b> um %2.2f &deg;C %s </b> als im langj&auml;hrigen Mittel von %2.2f &deg;C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-	  printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(mehr dazu)</a><br>");
-	  printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
-	    	dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
-	  printf("Die <b>niedrigste Temperatur</b> trat am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br>",
-			dayLink(substr($stat["temp_out"]['minDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDate'], 5, 2), substr($stat["temp_out"]['minTime'], 0, 5), $stat["temp_out"]['min']);
-		printf("Der <b>w&auml;rmste Tag</b> war der <b>%s.%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
-		printf("Der <b>k&auml;lteste Tag</b> war der <b>%s.%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
-	 
-	  printSpecialDays($stat, $text);
-				  
-		printf("<p>Die <b>Taupunktstemperatur</b> lag im Monatsdurchschnitt bei <b>%2.2f &deg;C</b>.<br>", $stat["dewpoint"]['avg']);		
-		printf("Der <b>h&ouml;chste Taupunkt</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> erreicht.<br>",
-			dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
-		printf("Der <b>niedrigste Taupunkt</b> war am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f &deg;C</b> zu verzeichnen.<br>",
-			dayLink(substr($stat["dewpoint"]['minDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['minDate'], 5, 2),  substr($stat["dewpoint"]['minTime'], 0, 5), $stat["dewpoint"]['min']);
-	
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("<p>Es fielen <b>%2.2f mm Niederschlag</b>. Das waren <b>%2.2f %%</b> des langj&auml;hrigen Mittels (<b>%s mm</b>).<br>", $rainMon, $rainPct, $mittel['rain']);
-			printf("Der <b>niederschlagsreichste Tag</b> war der <b>%s.%s</b> mit <b>%2.2f mm</b>.<br>",
-			dayLink(substr($stat["rain_total"]['maxDayDiffDate'], 8, 2), $month, $year), substr($stat["rain_total"]['maxDayDiffDate'], 5, 2), $stat["rain_total"]['maxDayDiff']);
-			printf("<b>Niederschlagsfrei</b> waren <b>%d Tage</b> (%s).<br>", $stat["rain_total"]['zeroDiffValDays'], $stat["rain_total"]['zeroDiffValText']);
-		}
-		
-		if(isDisplayEnabled(DISPLAY_WIND_INFO))
-		{
-			printf("<p>Der <b>mittlere Wind</b> im <b>%s</b> hat <b>%2.2f km/h (%s)</b>
-				betragen.<br>", $monthName, $stat["windspeed"]['avg']*3.6,	beaufort($stat['windspeed']['avg'], $lng));
-			printf("Der <b>st&auml;rkste Wind</b> war am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f km/h (%s)</b> zu verzeichnen.<br>",
-				dayLink(substr($stat["windspeed"]['maxDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDate'], 5, 2), 
-				substr($stat["windspeed"]['maxTime'], 0, 5), $stat["windspeed"]['max']*3.6, beaufort($stat['windspeed']['max'], $lng));
-			printf("Der <b>windigste Tag</b> war der <b>%s.%s</b> mit einer durchschnittlichen Windgeschwindigkeit von <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['maxDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDayAvgDate'], 5, 2), $stat["windspeed"]['maxDayAvg']*3.6, beaufort($stat['windspeed']['maxDayAvg'],$lng));
-			printf("Am <b>wenigsten Wind</b> wehte am <b>%s.%s</b> mit durchschnittlich <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['minDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['minDayAvgDate'], 5, 2), $stat["windspeed"]['minDayAvg']*3.6, beaufort($stat['windspeed']['minDayAvg'],$lng));
-			printf("Der Wind kam vorherrschend aus <b>%s (%2.2f)</b>.<br>", $windAvgTxt, $windAvg);
-		}
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{
-			printf("<p>Der <b>mittlere auf NN reduzierte Luftdruck</b> lag bei <b>%2.2f hPa</b>.<br>", $stat["rel_pressure"]['avg']);
-			printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['maxTime'], 0, 5),
-				$stat["rel_pressure"]['max']);
-			printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s.%s</b> um <b>%s</b> mit <b>%2.2f hPa</b> vor.<br>",
-				dayLink(substr($stat["rel_pressure"]['minDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['minDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['minTime'], 0, 5),
-				$stat["rel_pressure"]['min']);
-		}
-		printf("");
-	}
-	elseif ($lng == "fr")
+	printf("<p>");
+	printf($text['messages']['avg_temp'], $avgTemp, $monthName);
+	printf($text['messages']['avg_temp_diff'], $avgTempDiff, $wcTxt, $mittel['temp']);
+	printf($text['messages']['max_temp'],
+		dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year) . "." . substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
+	printf($text['messages']['min_temp'],
+		dayLink(substr($stat["temp_out"]['minDate'], 8, 2), $month, $year) . "." . substr($stat["temp_out"]['minDate'], 5, 2), substr($stat["temp_out"]['minTime'], 0, 5), $stat["temp_out"]['min']);
+	printf($text['messages']['max_temp_day'],
+		dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year) . "." . substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
+	printf($text['messages']['min_temp_day'],
+		dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year) . "." . substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
+	printf("</p>");
+
+	printf("<p>");
+	printSpecialDays($stat, $text);
+	printf("</p>");
+
+	printf("<p>");
+	printf($text['messages']['avg_dewpoint'], $stat["dewpoint"]['avg']);
+	printf($text['messages']['max_dewpoint'],
+		dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year) . "." . substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
+	printf($text['messages']['min_dewpoint'],
+		dayLink(substr($stat["dewpoint"]['minDate'], 8, 2), $month, $year) . "." . substr($stat["dewpoint"]['minDate'], 5, 2),  substr($stat["dewpoint"]['minTime'], 0, 5), $stat["dewpoint"]['min']);
+	printf("</p>");
+
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
-		// French version
-		printf("<p>La <b>temp&eacute;rature moyenne</b> est de <b>%2.2f &deg;C</b> en %s.<br>", $avgTemp, $monthName);
-		printf("C'est &agrave; dire <b> %2.2f &deg;C %s </b> que la normale mensuelle de %2.2f &deg;C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-		printf("(<a href=\"http://www.meteofrance.com/climat/france/marignane/13054001/normales\" target=\"_blank\">M&eacute;t&eacute;o-France</a>, ");
-		printf("<a href=\"http://www.lameteo.org/index.php/climatologie/1633-normales-climatiques-1981-2010-marseille\" target=\"_blank\">Lam&eacute;t&eacute;o.org</a>)<br>");
-		printf("La <b>temp&eacute;rature la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
-		printf("La <b>temp&eacute;rature la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['minDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDate'], 5, 2), substr($stat["temp_out"]['minTime'], 0, 5), $stat["temp_out"]['min']);
-		printf("Le <b>jour le plus chaud</b> &eacute;tait le <b>%s.%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
-		printf("Le <b>jour le plus froid</b> &eacute;tait le <b>%s.%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
-
-		printSpecialDays($stat, $text);
-
-		printf("<p>Le <b>point de ros&eacute;e</b> &eacute;tait en moyenne de <b>%2.2f &deg;C</b>.<br>", $stat["dewpoint"]['avg']);
-
-		printf("Le <b>point de ros&eacute;e maximum</b>, atteint le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
-		printf("Le <b>point de ros&eacute;e minimum</b>, atteint le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["dewpoint"]['minDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['minDate'], 5, 2),  substr($stat["dewpoint"]['minTime'], 0, 5), $stat["dewpoint"]['min']);
-
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("<p>Il y a eu <b>%2.2f mm de pr&eacute;cipitations</b>, soit <b>%2.2f %%</b> de la normale mensuelle de <b>%s mm</b>.<br>", $rainMon, $rainPct, $mittel['rain']);
-			printf("Le jour avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait le <b>%s.%s</b> avec <b>%2.2f mm</b>.<br>",
-				dayLink(substr($stat["rain_total"]['maxDayDiffDate'], 8, 2), $month, $year), substr($stat["rain_total"]['maxDayDiffDate'], 5, 2), $stat["rain_total"]['maxDayDiff']);
-			printf("<b>Pas de pr&eacute;cipitation</b> pendant <b>%d jour(s)</b> (%s).<br>", $stat["rain_total"]['zeroDiffValDays'], $stat["rain_total"]['zeroDiffValText']);
-		}
-
-		if(isDisplayEnabled(DISPLAY_WIND_INFO))
-		{
-			printf("<p>La <b>vitesse moyenne du vent</b> en <b>%s</b> &eacute;tait de <b>%2.2f km/h (%s)</b>.<br>", $monthName,
-				$stat["windspeed"]['avg']*3.6, beaufort($stat['windspeed']['avg'], $lng));
-			printf("Le <b>vent le plus fort</b>, mesur&eacute; le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['maxDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDate'], 5, 2),
-				substr($stat["windspeed"]['maxTime'], 0, 5), $stat["windspeed"]['max']*3.6, beaufort($stat['windspeed']['max'], $lng));
-			printf("Le <b>jour le plus venteux</b> &eacute;tait le <b>%s.%s</b> avec un vent moyen de <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['maxDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDayAvgDate'], 5, 2), $stat["windspeed"]['maxDayAvg']*3.6, beaufort($stat['windspeed']['maxDayAvg'],$lng));
-			printf("Le <b>jour le moins venteux</b> &eacute;tait le <b>%s.%s</b> avec un vent moyen de <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['minDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['minDayAvgDate'], 5, 2), $stat["windspeed"]['minDayAvg']*3.6, beaufort($stat['windspeed']['minDayAvg'],$lng));
-			printf("Le vent venait le plus souvent du <b>%s (%2.2f)</b>.<br>", $windAvgTxt, $windAvg);
-		}
-
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{
-			printf("<p>La <b>pression relative moyenne</b> &eacute;tait de <b>%2.2f hPa</b>.<br>", $stat["rel_pressure"]['avg']);
-			printf("La <b>pression la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['maxTime'], 0, 5),
-				$stat["rel_pressure"]['max']);
-			printf("La <b>pression la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s.%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
-				dayLink(substr($stat["rel_pressure"]['minDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['minDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['minTime'], 0, 5),
-				$stat["rel_pressure"]['min']);
-		}
-		printf("");
+		printf("<p>");
+		printf($text['messages']['rain_month'], $rainMon, $rainPct, $mittel['rain']);
+		printf($text['messages']['max_rain_day'],
+			dayLink(substr($stat["rain_total"]['maxDayDiffDate'], 8, 2), $month, $year) . "." . substr($stat["rain_total"]['maxDayDiffDate'], 5, 2), $stat["rain_total"]['maxDayDiff']);
+		printf($text['messages']['no_rain_days'], $stat["rain_total"]['zeroDiffValDays'], $stat["rain_total"]['zeroDiffValText']);
+		printf("</p>");
 	}
-	else
-	{ 
-		// English version
-		printf("<p>The <b>average temperature</b> was <b>%2.2f &deg;C</b> in %s.<br>", $avgTemp, $monthName);
-		printf("This means it was <b> by %2.2f &deg;C %s </b> then in the long-time average of %2.2f &deg;C ", $avgTempDiff, $wcTxt, $mittel['temp']);
-		printf("<a href=\"http://www.dwd.de/de/FundE/Klima/KLIS/daten/online/nat/index_mittelwerte.htm\" target=\"_blank\">(read more)</a><br>");
-		printf("The <b>highest temperature</b> was measured on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['maxDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDate'], 5, 2), substr($stat["temp_out"]['maxTime'], 0, 5), $stat["temp_out"]['max']);
-		printf("The <b>lowest temperature</b> appeared on <b>%s.%s</b> at <b>%s</b> and was <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['minDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDate'], 5, 2), substr($stat["temp_out"]['minTime'], 0, 5), $stat["temp_out"]['min']);
-		printf("The <b>warmest day</b> has been the <b>%s.%s</b> with an average temperature of <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['maxDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['maxDayAvgDate'], 5, 2), $stat["temp_out"]['maxDayAvg']);
-		printf("The <b>coldest day</b> was the <b>%s.%s</b> with an average of <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["temp_out"]['minDayAvgDate'], 8, 2), $month, $year), substr($stat["temp_out"]['minDayAvgDate'], 5, 2), $stat["temp_out"]['minDayAvg']);
-	 
-		printSpecialDays($stat, $text);
-	 			
-		printf("<p>The <b>dewpoint</b> was in the average of the month at <b>%2.2f &deg;C</b>.<br>", $stat["dewpoint"]['avg']);		
-		printf("The <b>highest dewpoint</b> was reached on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["dewpoint"]['maxDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['maxDate'], 5, 2),  substr($stat["dewpoint"]['maxTime'], 0, 5), $stat["dewpoint"]['max']);
-		printf("The <b>lowest dewpoint</b> was measured on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
-			dayLink(substr($stat["dewpoint"]['minDate'], 8, 2), $month, $year), substr($stat["dewpoint"]['minDate'], 5, 2),  substr($stat["dewpoint"]['minTime'], 0, 5), $stat["dewpoint"]['min']);
-	
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("<p>There was a <b>precipitation of %2.2f mm</b>, <b>%2.2f %%</b> of the long-time average of <b>%s mm</b>.<br>", $rainMon, $rainPct, $mittel['rain']);
-			printf("The day with the <b>most precipitation</b> was <b>%s.%s</b> with <b>%2.2f mm</b>.<br>",
-			dayLink(substr($stat["rain_total"]['maxDayDiffDate'], 8, 2), $month, $year), substr($stat["rain_total"]['maxDayDiffDate'], 5, 2), $stat["rain_total"]['maxDayDiff']);
-			printf("<b>No precipitation</b> happened on <b>%d day(s)</b> (%s).<br>", $stat["rain_total"]['zeroDiffValDays'], $stat["rain_total"]['zeroDiffValText']);
-		}
-		
-		if(isDisplayEnabled(DISPLAY_WIND_INFO))
-		{
-			printf("<p>The <b>average windspeed</b> in <b>%s</b> was <b>%2.2f km/h (%s)</b>.<br>", $monthName,
-				$stat["windspeed"]['avg']*3.6, beaufort($stat['windspeed']['avg'], $lng));
-			printf("The <b>strongest wind</b> was measured on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['maxDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDate'], 5, 2), 
-				substr($stat["windspeed"]['maxTime'], 0, 5), $stat["windspeed"]['max']*3.6, beaufort($stat['windspeed']['max'], $lng));
-			printf("The <b>windiest day</b> was <b>%s.%s</b> with an average windspeed of <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['maxDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['maxDayAvgDate'], 5, 2), $stat["windspeed"]['maxDayAvg']*3.6, beaufort($stat['windspeed']['maxDayAvg'],$lng));
-			printf("The day with the <b>least wind</b> was <b>%s.%s</b> with an average of <b>%2.2f km/h (%s)</b>.<br>",
-				dayLink(substr($stat["windspeed"]['minDayAvgDate'], 8, 2), $month, $year),
-				substr($stat["windspeed"]['minDayAvgDate'], 5, 2), $stat["windspeed"]['minDayAvg']*3.6, beaufort($stat['windspeed']['minDayAvg'],$lng));
-			printf("The wind came most of the time from <b>%s (%2.2f)</b>.<br>", $windAvgTxt, $windAvg);
-		}
-		
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{
-			printf("<p>The <b>average, to normal zero reduced airpressure</b> was at <b>%2.2f hPa</b>.<br>", $stat["rel_pressure"]['avg']);
-			printf("The <b>highst airpressure</b> was measured on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f hPa</b>.<br>",
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['maxDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['maxTime'], 0, 5),
-				$stat["rel_pressure"]['max']);
-			printf("The <b>lowest airpressure</b> appeared on <b>%s.%s</b> at <b>%s</b> with <b>%2.2f hPa</b>.<br>",
-				dayLink(substr($stat["rel_pressure"]['minDate'], 8, 2), $month, $year),
-				dayLink(substr($stat["rel_pressure"]['minDate'], 5, 2), $month, $year),
-				substr($stat["rel_pressure"]['minTime'], 0, 5),
-				$stat["rel_pressure"]['min']);
-		}
-		
-		printf("");;
+
+	if(isDisplayEnabled(DISPLAY_WIND_INFO))
+	{
+		printf("<p>");
+		printf($text['messages']['avg_windspeed'], $monthName,
+			$stat["windspeed"]['avg']*3.6, beaufort($stat['windspeed']['avg'], $lng));
+		printf($text['messages']['max_windspeed'],
+			dayLink(substr($stat["windspeed"]['maxDate'], 8, 2), $month, $year) . "." . substr($stat["windspeed"]['maxDate'], 5, 2),
+			substr($stat["windspeed"]['maxTime'], 0, 5), $stat["windspeed"]['max']*3.6, beaufort($stat['windspeed']['max'], $lng));
+		printf($text['messages']['max_windspeed_day'],
+			dayLink(substr($stat["windspeed"]['maxDayAvgDate'], 8, 2), $month, $year) . "." . substr($stat["windspeed"]['maxDayAvgDate'], 5, 2),
+			$stat["windspeed"]['maxDayAvg']*3.6, beaufort($stat['windspeed']['maxDayAvg'],$lng));
+		printf($text['messages']['min_windspeed_day'],
+			dayLink(substr($stat["windspeed"]['minDayAvgDate'], 8, 2), $month, $year) . "." . substr($stat["windspeed"]['minDayAvgDate'], 5, 2),
+			$stat["windspeed"]['minDayAvg']*3.6, beaufort($stat['windspeed']['minDayAvg'],$lng));
+		printf($text['messages']['avg_wind_dir'], $windAvgTxt, $windAvg);
+		printf("</p>");
 	}
-			
+
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
+	{
+		printf("<p>");
+		printf($text['messages']['avg_pressure'], $stat["rel_pressure"]['avg']);
+		printf($text['messages']['max_pressure'],
+			dayLink(substr($stat["rel_pressure"]['maxDate'], 8, 2), $month, $year) . "." . substr($stat["rel_pressure"]['maxDate'], 5, 2),
+			substr($stat["rel_pressure"]['maxTime'], 0, 5),
+			$stat["rel_pressure"]['max']);
+		printf($text['messages']['min_pressure'],
+			dayLink(substr($stat["rel_pressure"]['minDate'], 8, 2), $month, $year) . "." . substr($stat["rel_pressure"]['minDate'], 5, 2),
+			substr($stat["rel_pressure"]['minTime'], 0, 5),
+			$stat["rel_pressure"]['min']);
+		printf("</p>");
+	}
+	printf("");
+
 	// Graphs
 	graphs("month", "{$text['graphs']} {$text['for']} $monthName $year.", $begin, $end, $text);
 

@@ -115,119 +115,50 @@ function displayExtremas()
 	$stat=MinMaxAvg::getExtremValues('DAY');
 	$statMonth=MinMaxAvg::getExtremValues('YEARMONTH');
 	
-	if($lang == "de")
-  {	
-		printf("Die <b>h&ouml;chste Temperatur</b> wurde am <b>%s</b> mit <b>%2.2f &deg;C</b> gemessen.<br>",
-						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
-		printf("Die <b>niedrigste Temperatur</b> trat am <b>%s</b> mit <b>%2.2f &deg;C</b> auf.<br><br>",	    	
-						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
-						
-		printf("Der <b>w&auml;rmste Tag</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
-						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
-		printf("Der <b>k&auml;lteste Tag</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
-						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+	printf("<p>");
+	printf($text['messages']['max_temp_short'],
+					dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
+	printf($text['messages']['min_temp_short'],
+					dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
+	printf("</p>");
 
-						
-		printf("Der <b>w&auml;rmste Monat</b> war der <b>%s</b> mit einer Durchschnittstemperatur von <b>%2.2f &deg;C</b>.<br>",				
-						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
-		printf("Der <b>k&auml;lteste Monat</b> war der <b>%s</b> mit durchschnittlich <b>%2.2f &deg;C</b>.<br><br>",				
-						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);						
+	printf("<p>");
+	printf($text['messages']['max_temp_day'],
+					dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
+	printf($text['messages']['min_temp_day'],
+					dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+	printf("</p>");
 
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{	
-			printf("Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
-							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
-			printf("Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br><br>",				
-							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
-		}
+	printf("<p>");
+	printf($text['messages']['max_temp_month'],
+					monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
+	printf($text['messages']['min_temp_month'],
+					monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);
+	printf("</p>");
 
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("Der <b>niederschlagsreichste Tag</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
-							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);	
-							
-			printf("Der <b>niederschlagsreichste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br>",					
-							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);						
-							
-			printf("Der <b>trockenste Monat</b> war der <b>%s</b> mit <b>%2.2f mm</b>.<br><br>",					
-							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
-		}
-	}
-	elseif($lang == "fr")
+	if(isDisplayEnabled(DISPLAY_PRES_INFO))
 	{
-		printf("La <b>temp&eacute;rature la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
-						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
-		printf("La <b>temp&eacute;rature la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br><br>",
-						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
-
-		printf("Le <b>jour le plus chaud</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
-						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
-		printf("Le <b>jour le plus froid</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br><br>",
-						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
-
-		printf("Le <b>mois le plus chaud</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
-						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
-		printf("Le <b>mois le plus froid</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br><br>",
-						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);
-
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{
-			printf("La <b>pression la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
-							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);
-			printf("La <b>pression la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br><br>",
-							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);
-		}
-
-
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("Le jour avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait le <b>%s</b> avec <b>%2.2f mm</b>.<br>",
-							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);
-
-			printf("Le mois avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br>",
-							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);
-
-			printf("Le mois <b>le plus sec</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br><br>",
-							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);
-		}
+		printf("<p>");
+		printf($text['messages']['max_pressure_short'],
+						dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);
+		printf($text['messages']['min_pressure_short'],
+						dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);
+		printf("</p>");
 	}
-	else
+
+
+	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
-		printf("The <b>highest temperature</b> was measured on <b>%s</b> with <b>%2.2f &deg;C</b>.<br>",
-						dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
-		printf("The <b>lowest temperature</b> appeared on <b>%s</b> and was <b>%2.2f &deg;C</b>.<br><br>",	    	
-						dateLink($stat['temp_out_min']['minDate']), $stat["temp_out_min"]['min']);
-						
-		printf("The <b>warmest day</b> has been the <b>%s</b> with an average temperature of <b>%2.2f &deg;C</b>.<br>",				
-						dateLink($stat['temp_out_avg']['maxDate']), $stat["temp_out_avg"]['max']);
-		printf("The <b>coldest day</b> was the <b>%s</b> with an average of <b>%2.2f &deg;C</b>.<br><br>",				
-						dateLink($stat['temp_out_avg']['minDate']), $stat["temp_out_avg"]['min']);
+		printf("<p>");
+		printf($text['messages']['max_rain_day'],
+						dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);
 
-		printf("The <b>warmest month</b> has been <b>%s</b> with an average temperature of <b>%2.2f &deg;C</b>.<br>",				
-						monthLink($statMonth['temp_out_avg']['maxDate']), $statMonth["temp_out_avg"]['max']);
-		printf("The <b>coldest month</b> was <b>%s</b> with an average of <b>%2.2f &deg;C</b>.<br><br>",				
-						monthLink($statMonth['temp_out_avg']['minDate']), $statMonth["temp_out_avg"]['min']);												
-						
-		if(isDisplayEnabled(DISPLAY_PRES_INFO))
-		{						
-			printf("The <b>highst airpressure</b> was measured on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
-							dateLink($stat['rel_pressure_max']['maxDate']), $stat["rel_pressure_max"]['max']);		
-			printf("The <b>lowest airpressure</b> appeared on <b>%s</b> with <b>%2.2f hPa</b>.<br><br>",				
-							dateLink($stat['rel_pressure_min']['minDate']), $stat["rel_pressure_min"]['min']);		
-		}															
+		printf($text['messages']['max_rain_month'],
+						monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);
 
-
-		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-		{
-			printf("The day with the <b>most precipitation</b> was <b>%s</b> with <b>%2.2f mm</b>.<br>",					
-							dateLink($stat['rain_total_max']['maxDate']), $stat["rain_total_max"]['max']);	
-							
-			printf("The month with the <b>most precipitation</b> was <b>%s</b> with <b>%2.2f mm</b>.<br>",					
-							monthLink($statMonth['rain_total_max']['maxDate']), $statMonth["rain_total_max"]['max']);						
-							
-			printf("The <b>dryest month</b> was <b>%s</b> with <b>%2.2f mm</b>.<br><br>",					
-							monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);								
-		}
+		printf($text['messages']['min_rain_month'],
+						monthLink($statMonth['rain_total_min']['minDate']), $statMonth["rain_total_min"]['min']);
+		printf("</p>");
 	}
 }
 

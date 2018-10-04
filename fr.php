@@ -25,6 +25,7 @@ $GLOBALS['text'] = array (
   'monthly_overview' => 'Aper&ccedil;u mensuel',
   'yearly_overview' => 'Aper&ccedil;u annuel',
   'yearly_overview_graph' => 'Aper&ccedil;u annuel',
+  'partial_values' => 'Donn&eacute;es provisoires au',
   'current_values' => 'Valeurs actuelles',
   'tendency' => 'Tendance',
   'temperature' => 'Temp&eacute;rature',
@@ -198,8 +199,75 @@ $GLOBALS['text'] = array (
   'Historic' => 'Historique',
   'Peak Value' => 'Valeur la plus haute',
   'Lowest Value' => 'Valeur la plus basse',
-  'Raindays' => 'Jours de pluie'
-  );
+  'Raindays' => 'Jours de pluie',
+
+  'sensors' => array (
+    'id' => "ID",
+    'name' => "Nom",
+    'filename' => "Nom de fichier",
+    'linenumber' => "Num&eacute;ro de ligne",
+    'unit' => "Unit&eacute;",
+    'active' => "Actif",
+    'value' => "Valeur Actuelle",
+    'new' => "Nouveau Capteur",
+    'add' => "Ajouter le Capteur",
+    'added' => "Capteur \"%s\" ajout&eacute;.",
+    'no_table' => "La table <b>\"%s\"</b> n'existe pas.",
+    'available' => "disponible (fichier pr&eacute;sent)",
+    'unavailable' => "non disponible (fichier absent)"),
+
+  'beaufort' => array(
+    'Calme',
+    'Tr&egrave;s l&eacute;g&egrave;re brise',
+    'L&eacute;g&egrave;re brise',
+    'Petite brise',
+    'Jolie brise',
+    'Bonne brise',
+    'Vent frais',
+    'Grand vent frais',
+    'Coup de vent',
+    'Fort coup de vent',
+    'Temp&ecirc;te',
+    'Veilente temp&ecirc;te',
+    'Ouragan'),
+
+  'messages' => array (
+    'avg_temp' => "La <b>temp&eacute;rature moyenne</b> est de <b>%2.2f &deg;C</b> en %s.<br>",
+    'avg_temp_diff' => "C'est &agrave; dire <b> %2.2f &deg;C %s </b> que la normale mensuelle de %2.2f &deg;C"
+      . " (<a href=\"http://www.meteofrance.com/climat/france/marignane/13054001/normales\" target=\"_blank\">M&eacute;t&eacute;o-France</a>,"
+      . " <a href=\"http://www.lameteo.org/index.php/climatologie/1633-normales-climatiques-1981-2010-marseille\" target=\"_blank\">Lam&eacute;t&eacute;o.org</a>)<br>",
+    'max_temp' => "La <b>temp&eacute;rature la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+    'max_temp_short' => "La <b>temp&eacute;rature la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+    'min_temp' => "La <b>temp&eacute;rature la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+    'min_temp_short' => "La <b>temp&eacute;rature la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+    'max_temp_day' => "Le <b>jour le plus chaud</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+    'min_temp_day' => "Le <b>jour le plus froid</b> &eacute;tait le <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+    'max_temp_month' => "Le <b>mois le plus chaud</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+    'min_temp_month' => "Le <b>mois le plus froid</b> &eacute;tait <b>%s</b> avec une temp&eacute;rature moyenne de <b>%2.2f &deg;C</b>.<br>",
+
+    'avg_dewpoint' => "Le <b>point de ros&eacute;e</b> &eacute;tait en moyenne de <b>%2.2f &deg;C</b>.<br>",
+    'max_dewpoint' => "Le <b>point de ros&eacute;e maximum</b>, atteint le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+    'min_dewpoint' => "Le <b>point de ros&eacute;e minimum</b>, atteint le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f &deg;C</b>.<br>",
+
+    'rain_month' => "Il y a eu <b>%2.2f mm de pr&eacute;cipitations</b>, soit <b>%2.2f %%</b> de la normale mensuelle de <b>%s mm</b>.<br>",
+    'max_rain_day' => "Le jour avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait le <b>%s</b> avec <b>%2.2f mm</b>.<br>",
+    'max_rain_month' => "Le mois avec <b>le plus de pr&eacute;cipitations</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br>",
+    'min_rain_month' => "Le mois <b>le plus sec</b> &eacute;tait <b>%s</b> avec <b>%2.2f mm</b>.<br>",
+    'no_rain_days' => "<b>Pas de pr&eacute;cipitation</b> pendant <b>%d jour(s)</b> (%s).<br>",
+
+    'avg_windspeed' => "La <b>vitesse moyenne du vent</b> en <b>%s</b> &eacute;tait de <b>%2.2f km/h (%s)</b>.<br>",
+    'max_windspeed' => "Le <b>vent le plus fort</b>, mesur&eacute; le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f km/h (%s)</b>.<br>",
+    'max_windspeed_day' => "Le <b>jour le plus venteux</b> &eacute;tait le <b>%s</b> avec un vent moyen de <b>%2.2f km/h (%s)</b>.<br>",
+    'min_windspeed_day' => "Le <b>jour le moins venteux</b> &eacute;tait le <b>%s</b> avec un vent moyen de <b>%2.2f km/h (%s)</b>.<br>",
+    'avg_wind_dir' => "Le vent venait le plus souvent du <b>%s (%2.2f)</b>.<br>",
+
+    'avg_pressure' => "La <b>pression relative moyenne</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+    'max_pressure' => "La <b>pression la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+    'max_pressure_short' => "La <b>pression la plus &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+    'min_pressure' => "La <b>pression la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &agrave; <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+    'min_pressure_short' => "La <b>pression la moins &eacute;lev&eacute;e</b>, mesur&eacute;e le <b>%s</b> &eacute;tait de <b>%2.2f hPa</b>.<br>",
+  )
+);
 
 // Now, also define alternative imgs for our use
 $GLOBALS['imgsrc'] = array (

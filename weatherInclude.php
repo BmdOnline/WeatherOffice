@@ -248,65 +248,18 @@ function windDir($degree, $text)
 
 function beaufort($windspeed, $lang)
 {
-	if($lang == "de")
-	{
-		$bftTxt = array("Windstille",
-		"Leiser Zug",
-		"Leichte Brise",
-		"Schwache Brise",
-		"M&auml;&szlig;ige Brise",
-		"Frische Brise",
-		"Starker Wind",
-		"Steifer Wind",
-		"St&uuml;rmischer Wind",
-		"Sturm",
-		"Schwerer Sturm",
-		"Orkanartiger Sturm",
-		"Orkan");
-	}
-	else if($lang == "fr")
-	{
-		$bftTxt = array("Calme",
-		"Tr&egrave;s l&eacute;g&egrave;re brise",
-		"L&eacute;g&egrave;re brise",
-		"Petite brise",
-		"Jolie brise",
-		"Bonne brise",
-		"Vent frais",
-		"Grand vent frais",
-		"Coup de vent",
-		"Fort coup de vent",
-		"Temp&ecirc;te",
-		"Veilente temp&ecirc;te",
-		"Ouragan");
-	}
-	else
-	{	
-		$bftTxt = array("Calm",
-		"Light Air",
-		"Light Breeze",
-		"Gentle Breeze",
-		"Moderate Breeze",
-		"Fresh Breeze",
-		"Strong Breeze",
-		"Near Gale",
-		"Gale",
-		"Strong Gale",
-		"Storm",
-		"Violent Storm",
-		"Hurricane");
-	}	
+    global $text;
 
 	$bftLim = array(0.5, 2.1, 3.6, 5.7, 8.2, 11.3, 14.4,
 							 17.5, 21.1, 24.7, 28.8, 32.9);
-	
+
 	$bft = 0;
 	while ($bft < count($bftLim) && $windspeed >= $bftLim[$bft])
 	{
 		$bft++;
 	}
-	   
-	$txt = $bft . " bft - " . $bftTxt[$bft];
+
+	$txt = $bft . " bft - " . $text['beaufort'][$bft];
 	return $txt;
 }
 
@@ -1557,26 +1510,25 @@ function rainbowColor($idx)
 
 function GetCurrentSensorValue($filename, $linenumber)
 {
+    global $text;
 	if(file_exists($filename) == false)
 	{
-		//$value = "nicht vorhanden";
-		$value = "unavailable (file not found)";
+		$value = $text['sensors']['unavailable'];
 	}
 	else
 	{
-		//$value = "vorhanden";
-		$value = "available (file ready)";
-		
+		$value = $text['sensors']['available'];
+
 		$handle = fopen($filename, "r");
-		
+
 		for($i=0; $i<$linenumber; $i++)
 		{
 			$value = fgets($handle);
 		}
-		
+
 		fclose($handle);
 	}
-	
+
 	return $value;
 }
 

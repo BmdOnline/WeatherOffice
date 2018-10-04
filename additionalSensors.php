@@ -63,13 +63,13 @@ if(TableExists($table))
 
 		// Sensorentabelle
 		echo "<hr><table border=\"1\"><tr>";
-		echo "<th>ID</th>";
-		echo "<th>Name</th>";
-		echo "<th>Datei</th>";
-		echo "<th>Zeilennummer</th>";
-		echo "<th>Aktueller Wert</th>";
-		echo "<th>Einheit</th>";
-		echo "<th>Aktiv</th></tr>";
+		echo "<th>" . $text['sensors']['id'] . "</th>";
+		echo "<th>" . $text['sensors']['name'] . "</th>";
+		echo "<th>" . $text['sensors']['filename'] . "</th>";
+		echo "<th>" . $text['sensors']['linenumber'] . "</th>";
+		echo "<th>" . $text['sensors']['value'] . "</th>";
+		echo "<th>" . $text['sensors']['unit'] . "</th>";
+		echo "<th>" . $text['sensors']['active'] . "</th></tr>";
 
 			
 		$result = SqlQuery("select * from $table ORDER BY id", false);
@@ -100,23 +100,23 @@ if(TableExists($table))
 		
 		
 		// New Sensor
-		echo "<p><hr><b>Neuer Sensor:</b></p>";
+		echo "<p><hr><b>" . $text['sensors']['new'] . ":</b></p>";
 		echo "<form action = \"additionalSensors.php\" method=\"post\" target=\"main\">";
-			
-		echo "Name: ";
+
+		echo " " . $text['sensors']['name'] . ": ";
 		printf( "<input type = \"text\" size=\"15\" maxlenght=\"30\" name=\"name\" value=\"\">");
 
-		echo "   Dateiname: ";
+		echo " " . $text['sensors']['filename'] . ": ";
 		printf( "<input type = \"text\" size=\"20\" maxlenght=\"255\" name=\"filename\" value=\"\">");
-			
-		echo "   Zeilennummer: ";
+
+		echo " " . $text['sensors']['linenumber'] . ": ";
 		printf( "<input type = \"text\" size=\"3\" name=\"linenumber\" value=\"\">");
 
-		echo "   Einheit: ";
+		echo " " . $text['sensors']['unit'] . ": ";
 		printf( "<input type = \"text\" size=\"7\"  maxlenght=\"20\" name=\"unit\" value=\"\">");
 
-		echo "<input type = \"submit\" value = \"Sensor hinzufügen\">";
-		
+		echo " <input type = \"submit\" value = \"" . $text['sensors']['add'] . "\">";
+
 		echo "<input type = \"hidden\" name=\"addSensor\" value=\"true\">";
 		echo "</form>";
 	}
@@ -135,12 +135,12 @@ if(TableExists($table))
 							\"$linenumber\",
 							\"$unit\",1);", false);
 
-		echo "Sensor \"$name\" hinzugefügt.<br>";
+		printf($text['sensors']['added'] . "<br>", $name);
 	}
 }
 else
 {
-	echo "mysql-Tabelle <b>\"$table\"</b> existiert nicht.<br>";
+	printf($text['sensors']['no_table'] . "<br>", $table);
 }
 
 mysql_close();

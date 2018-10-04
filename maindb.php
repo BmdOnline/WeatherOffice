@@ -61,17 +61,17 @@
 	$tab="~T205";
 	$tab2="~T380";
 	
-	echo "msgbox  title=\"Wetter in $STATION_NAME $day.$month.$year $hour:$minute\" msg=\"";
-	echo "Temperatur$tab$values[temp_out]C $tab2 Innen: $values[temp_in]C~n";
-	echo "Feuchtigkeit$tab$values[rel_hum_out]% $tab2 Innen: $values[rel_hum_in]%~n";
-	echo "Taupunkt$tab$values[dewpoint]C~n";
-	echo "Windgeschw.$tab$windkmh km/h ($bftTxt)~n";
-	echo "Windrichtung$tab$values[wind_direction] ($values[wind_angle])~n";
-	echo "Windkuehle$tab$values[wind_chill] C~n";
-	echo "Luftdruck$tab$values[rel_pressure] hPa  $tendName->$foreName~n";
-	echo "Regen 1h$tab$values[rain_1h] mm~n";
-	echo "Regen 24h$tab$values[rain_24h] mm~n";
-	echo "Regen Jahr$tab$values[rain_total] mm";	
+	echo "msgbox  title=\"${text['weatherstation_in']} $STATION_NAME $day.$month.$year $hour:$minute\" msg=\"";
+	echo "${text['temperature']}$tab$values[temp_out]C $tab2 ${text['indoor']}: $values[temp_in]C~n";
+	echo "${text['humidity']}$tab$values[rel_hum_out]% $tab2 ${text['indoor']}: $values[rel_hum_in]%~n";
+	echo "${text['dewpoint']}$tab$values[dewpoint]C~n";
+	echo "${text['windspeed']}$tab$windkmh km/h ($bftTxt)~n";
+	echo "${text['winddir']}$tab$values[wind_direction] ($values[wind_angle])~n";
+	echo "${text['windchill']}$tab$values[wind_chill] C~n";
+	echo "${text['pressure']}$tab$values[rel_pressure] hPa  $tendName->$foreName~n";
+	echo "${text['rain1h_table']}$tab$values[rain_1h] mm~n";
+	echo "${text['rain24h_table']}$tab$values[rain_24h] mm~n";
+	echo "${text['rainoverall_table']}$tab$values[rain_total] mm";
 	echo "\" timeout=\"180\" select=\"OK\"";
 	
 	$link->close();
