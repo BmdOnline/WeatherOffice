@@ -86,8 +86,7 @@ function getMonth($month, $year, $showVal, $text, $lng)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
-		//echo "Keine Daten f&uuml;r den $month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for the $month.$year. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
+		printf($text['messages']['no_data_found_m'], "$month.$year", "$firstDay.$firstMonth.$firstYear", "$lastDay.$lastMonth.$lastYear");
 		return $num;
 	}
 	

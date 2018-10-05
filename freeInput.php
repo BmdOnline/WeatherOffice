@@ -45,8 +45,7 @@ function getFreeInput($beginDay, $beginMonth, $beginYear, $endDay, $endMonth, $e
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
-		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for the $beginDay.$beginMonth.$beginYear. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
+		printf($text['messages']['no_data_found_d'], "$beginDay.$beginMonth.$beginYear", "$firstDay.$firstMonth.$firstYear", "$lastDay.$lastMonth.$lastYear");
 		return $num;
 	}
 	

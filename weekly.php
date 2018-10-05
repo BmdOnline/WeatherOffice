@@ -54,8 +54,7 @@ function getWeek($day, $month, $year, $showVal, $text)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
-		//echo "Keine Daten f&uuml;r den $day.$month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for the $day.$month.$year. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
+		printf($text['messages']['no_data_found_d'], "$day.$month.$year", "$firstDay.$firstMonth.$firstYear", "$lastDay.$lastMonth.$lastYear");
 		return $num;
 	}
 	

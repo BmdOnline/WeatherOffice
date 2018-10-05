@@ -49,8 +49,7 @@ function getYear($dispyear, $text)
 	{
 		getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 		getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
-		//echo "Keine Daten f&uuml;r den $month.$year gefunden. Daten sind ab dem $firstDay.$firstMonth.$firstYear verf&uuml;gbar.";
-		echo "No data found for $year. Data are available between the $firstDay.$firstMonth.$firstYear and the $lastDay.$lastMonth.$lastYear.";
+		printf($text['messages']['no_data_found_y'], "$year", "$firstDay.$firstMonth.$firstYear", "$lastDay.$lastMonth.$lastYear");
 		return $stat;
 	}
 	echo "<h2>{$text['yearly_overview']} {$text['for']} $year.</h2>";

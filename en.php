@@ -265,6 +265,10 @@ $GLOBALS['text'] = array (
     'max_pressure_short' => "The <b>highst airpressure</b> was measured on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
     'min_pressure' => "The <b>lowest airpressure</b> appeared on <b>%s</b> at <b>%s</b> with <b>%2.2f hPa</b>.<br>",
     'min_pressure_short' => "The <b>lowest airpressure</b> appeared on <b>%s</b> with <b>%2.2f hPa</b>.<br>",
+
+    'no_data_found_d' => "No data found for the %s. Data are available between the %s and the %s.",
+    'no_data_found_m' => "No data found for %s. Data are available between the %s and the %s.",
+    'no_data_found_y' => "No data found for %s. Data are available between the %s and the %s.",
   )
 );
 

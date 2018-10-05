@@ -261,6 +261,11 @@ $GLOBALS['text'] = array (
     'max_pressure_short' => "Der <b>h&ouml;chste Luftdruck</b> wurde am <b>%s</b> mit <b>%2.2f hPa</b> gemessen.<br>",
     'min_pressure' => "Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> um <b>%s</b> mit <b>%2.2f hPa</b> vor.<br>",
     'min_pressure_short' => "Der <b>niedrigste Luftdruck</b> kam am <b>%s</b> mit <b>%2.2f hPa</b> vor.<br>",
+
+    'no_data_found_d' => "Keine Daten f&uuml;r den %s gefunden. Daten sind ab dem %s und dem %s verf&uuml;gbar.",
+    'no_data_found_m' => "Keine Daten f&uuml;r %s gefunden. Daten sind ab dem %s und dem %s verf&uuml;gbar.",
+    'no_data_found_y' => "Keine Daten f&uuml;r %s gefunden. Daten sind ab dem %s und dem %s verf&uuml;gbar.",
+
   )
 );
 
