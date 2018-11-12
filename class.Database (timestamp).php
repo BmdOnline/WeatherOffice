@@ -46,11 +46,11 @@ require_once 'class.dbMySQL.php';
 
 class DATABASE
 {
-    private $tableWeather = "ws2300_ts_weather";
-    private $tableCache = "ws2300_ts_cache";
-    private $tableMinMaxAvg = "ws2300_ts_MinMaxAvg";
-    private $tableAdditionalSensors = "ws2300_ts_additionalsensors";
-    private $tableAdditionalValues = "ws2300_ts_additionalvalues";
+    private $tableWeather = "ws2300_weather";
+    private $tableCache = "ws2300_cache";
+    private $tableMinMaxAvg = "ws2300_MinMaxAvg";
+    private $tableAdditionalSensors = "ws2300_additionalsensors";
+    private $tableAdditionalValues = "ws2300_additionalvalues";
 
     private $currentDB;
 
