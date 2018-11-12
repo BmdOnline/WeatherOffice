@@ -15,24 +15,24 @@
 
 	 // Define Some Constants that can be used in Config File
 
-	 define('DISPLAY_ROOM_INFO', 0x1);
-	 define('DISPLAY_WIND_INFO', 0x2);
+   define('DISPLAY_ROOM_INFO', 0x1);
+   define('DISPLAY_WIND_INFO', 0x2);
    define('DISPLAY_RAIN_INFO', 0x4);
    define('DISPLAY_PRES_INFO', 0x8);
-   
+
    $ConfDisplay = 0xffffffff;
-   
+
    function SetDisplayValues($newValue)
    {
-			global $ConfDisplay;			
+			global $ConfDisplay;
 			$ConfDisplay = $newValue;
    }
 
    include("weatherDataInclude.php");
-   
+
    // Version
-   $WeatherOfficeVersion="1.1.3-dev";
-   
+   $WeatherOfficeVersion="1.1.5-dev";
+
    // Graph parameters
    $GraphWidth=850;
    $GraphHeight=300;
@@ -69,46 +69,26 @@
      $lang=$language;
 
    require_once 'language.php';
+   require_once 'class.Database.php';
 
-   global $link;
+
    //
    // connect to the database
    //
-   $link = new mysqli($weatherDatabaseHost, $weatherDatabaseUser, $weatherDatabasePW, $weatherDatabase);
-   if ($link->connect_errno) {
-	printf("Connection Failed.<br>Host:<font color=red>$databaseHost</font><br>Error: %s\n", $link->error);
-	exit();
-   }
-   
+   $database = new DATABASE($weatherDatabaseHost, $weatherDatabaseUser, $weatherDatabasePW, $weatherDatabase);
+   if (!$database->connected()) die();
+
    date_default_timezone_set($TimeZone);
    $now = time();
-   
+
   function isDisplayEnabled($item)
 	{
 		global $ConfDisplay;
-		
+
 		if($item & $ConfDisplay)
 			return true;
 		else
 			return false;
-	}
-  
-	function SqlQuery($query, $debug)
-	{
-		global $link;
-		if($debug == false)
-		$result = $link->query($query);
-		if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-		}
-		else
-		{
-			echo $query . "<br>";
-			return true;
-		}	
-		
-		return $result;
 	}
 
  function phpMajorVersion()
@@ -116,7 +96,7 @@
  	$version = explode('.', phpversion());
  	return (int)$version[0];
  }
-   
+
 function hourMinute($hour, $minute, $text)
 {
 	$str = "$hour:$minute{$text['uhr']}";
@@ -147,7 +127,7 @@ function absoluteHumidity($temp, $relHum)
   }
   else
   {
-    $a = 7.6; 
+    $a = 7.6;
 		$b = 240.7;
   }
 
@@ -161,7 +141,7 @@ function absoluteHumidity($temp, $relHum)
 	$absHum = 100000 * $mol_steam/$gas_const * $dd / $temp_k;
 
 	$absHum = (round($absHum * 10)) / 10;
-	
+
 	return $absHum;
 }
 
@@ -205,7 +185,7 @@ function heatIndex($temp, $hum, $text)
 	}
 	return (sprintf("%2.2f C - %s", $hiD, $hTxt));
 }
-   
+
 function windDir($degree, $text)
 {
 	if(($degree >= 0 && $degree < 22.5) || ($degree >= 337.5 && $degree <=360))
@@ -223,7 +203,7 @@ function windDir($degree, $text)
 	else if($degree >= 112.5 && $degree < 157.5)
 	{
 		return $text['southeast'];
-	}	
+	}
 	else if($degree >= 157.5 && $degree < 202.5)
 	{
 		return $text['south'];
@@ -231,7 +211,7 @@ function windDir($degree, $text)
 	else if($degree >= 202.5 && $degree < 247.5)
 	{
 		return $text['southwest'];
-	}	
+	}
 	else if($degree >= 247.5 && $degree < 292.5)
 	{
 		return $text['west'];
@@ -239,7 +219,7 @@ function windDir($degree, $text)
 	else if($degree >= 292.5 && $degree < 337.5)
 	{
 		return $text['northwest'];
-	}	
+	}
 	else
 	{
 		return $text['unknown'];
@@ -276,35 +256,35 @@ function getRequest($key)
 function getTableColumns()
 {
 	$cols = array("temp_in");
-	
+
 	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 	{
 		array_push($cols,"temp_out");
 	}
 	array_push($cols,"dewpoint");
-	
+
 	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 	{
 		array_push($cols,"rel_hum_in");
 	}
-	
+
 	array_push($cols,"rel_hum_out");
-	
+
 	if(isDisplayEnabled(DISPLAY_WIND_INFO))
 	{
 		array_push($cols,"windspeed", "wind_angle","wind_chill");
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_PRES_INFO))
 	{
 		array_push($cols,"rel_pressure");
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
 		array_push($cols, "rain_1h", "rain_24h", "rain_total");
 	}
-			
+
 	return $cols;
 }
 
@@ -314,9 +294,9 @@ function valueTable($stat, $value, $day, $month, $year, $text)
 	echo "<tr>";
 	printf("<td>$day.$month.$year</td>");
 	printf("<td>--:--:--</td>");
-	
+
 	$cols = getTableColumns();
-	
+
 	foreach($cols as $column)
 	{
 		printf("<td>%2.2f</td>", $stat[$column][$value]);
@@ -334,7 +314,7 @@ function valueTimeDateTable($stat, $value, $valueTime, $valueDate, $text)
 	echo "<tr>";
 	printf("<td></td>");
 	printf("<td></td>");
-	
+
 	foreach($cols as $column)
 	{
 		printf("<td>%2.2f</td>", $stat[$column][$value]);
@@ -344,15 +324,15 @@ function valueTimeDateTable($stat, $value, $valueTime, $valueDate, $text)
 	echo "<tr>";
 	printf("<td></td>");
 	printf("<td>{$text['time']}</td>");
-	
+
 	foreach($cols as $column)
 	{
 		printf("<td>%s</td>", $stat[$column][$valueTime]);
 	}
-	
+
 	echo "</tr>";
 	echo "<tr>";
-	
+
 	printf("<td>{$text['date']}</td>");
 	printf("<td></td>");
 	foreach($cols as $column)
@@ -367,7 +347,7 @@ function timeDiff($time1, $time2, $text)
 {
 	printf("<p>Dauer fr %s: %d Sekunden.<br>", $text, $time2['sec']-$time1['sec']);
 }
-	
+
 function dayLink($day, $month, $year)
 {
 	if(strlen($day)<2)
@@ -389,7 +369,7 @@ function dateLink($tag)
 	}
 	return("<a href=daily.php?day=$day&month=$month&year=$year&showVal=false target=\"main\">$day.$month.$year</a>");
 }
- 
+
 function monthLink($tag)
 {
 	global $text;
@@ -398,56 +378,48 @@ function monthLink($tag)
   $year = substr($tag, 0, 4);
 
   $monthText=monthName($month, $text);
-  
+
 	return("<a href=monthly.php?yearMonth=$year$month&showVal=false target=\"main\">$monthText $year</a>");
 }
 
- 
-function statArray($result, $num, $day, $startTime, $stopTime)
+
+function statArray($num, $day, $startTime, $stopTime)
 {
-	global $link;
+	global $database;
 	$minimalCacheRows = 200;
 
 	if($num > $minimalCacheRows)
 	{
-          // huge rown number have a look into the cache
+	  // huge rown number have a look into the cache
+	  $database->store("cache");
+	  $database->createTableCache();
 
-	  createCacheTable();
-	
-	  $query = "SELECT value FROM `cache` WHERE startTime=$startTime AND stopTime=$stopTime AND day=$day AND rows=$num";
-	  $cacheResult = $link->query($query);
-	   if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	   }
-	  $cacheNum = $cacheResult->num_rows;
-	
+	  $database->getCacheValues($startTime, $stopTime, $num, $day);
+	  $cacheNum = $database->getRowsCount();
 	  if($cacheNum > 0)
 	  {
-	   $value=$cacheResult->fetch_array();
-	   $st=unserialize($value[0]);
+	   $database->seekRow(0);
+	   $value = $database->getNextRow();
+   	   $database->restore("cache");
+	   $st=unserialize($value["value"]);
 
 	   // update access time
-	   
-   	   $now = time();
-	   $query = "UPDATE `cache` SET accessTime=$now WHERE startTime=$startTime AND stopTime=$stopTime AND day=$day AND rows=$num";;
-	   $result = $link->query($query);
-	   if (!$result) {
-	   	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	   }
-	   
+
+   	   $database->updateCacheTime($startTime, $stopTime, $num, $day);
 	   return $st;
+	  } else {
+   	   $database->restore("cache");
 	  }
 	}
-	
-	
+
+
 	$cols = array("temp_in", "temp_out", "dewpoint", "rel_hum_in", "rel_hum_out", "windspeed", "wind_angle",
 			"wind_chill", "rel_pressure", "rain_1h", "rain_24h", "rain_total");
-		
-			
-	$row = $result->fetch_assoc();
-	
+
+
+	$database->seekRow(0);
+	$row = $database->getNextRow();
+
 	foreach ($cols as $column)
 	{
 		$sum[$column]       	= 0;
@@ -466,7 +438,7 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 		$dayDiff[$column] 	= 0;
 		$dayMax[$column] 	= -9999999;
 		$dayMin[$column] 	= 99999999;
-		
+
 		$dayDiffMax[$column] 		= 0;
 		$dayBeginVal[$column] 		= $row[$column];
 		$zeroDiffValDays[$column] 	= 0;
@@ -482,21 +454,19 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 		$tropicalNights[$column] 	= 0;
 		$tropicalNightsText[$column]	= "";
 	}
-		
-	$result->data_seek(0);
-		
-	$currentRow = 0;	
-		
-	while($row = $result->fetch_assoc())
-	{	
+
+	$currentRow = 0;
+	$database->seekRow(0);
+	while($row = $database->getNextRow())
+	{
 		$currentRow++;
-	
+
 		foreach ($cols as $column)
-		{		
+		{
 			$value[$column] = $row[$column];
-			
+
 			//printf("<b>Row $i: </b>Value: $value<br>");
-			
+
 			// Neuer Tag ?
 			$rowDay[$column] = substr($row["timestamp"], 6, 2);
 			$rowMonth[$column] = substr($row["timestamp"], 4, 2);
@@ -506,28 +476,28 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 			{
 				// neuer Tag !!!
 				// Oder aber die letzte Row passiert am ersten Tag des Monats
-				
+
 				// Berechne Durchschnitt, min und max speichern
-			
+
 				if($dayNum[$column] != 0)
 					$dayAvg[$column] = $daySum[$column]/$dayNum[$column];
 				else
 					$dayAvg[$column] = 0;
-					
+
 				$dayNum[$column] = 1; // Erster Wert vom neuen Tag
 				$daySum[$column] = $value[$column];
-				
+
 				$dayEndVal[$column] = $prevVal[$column];
-				
+
 				/*
 				if($column == "rain_total")
 				{
 					printf("New Day: prevVal %s - dayDiff=dayEndVal:%s-dayBeginVal:%s<br>", $prevVal[$column], $dayEndVal[$column], $dayBeginVal[$column]);
 				}
 				*/
-				
+
 				$dayDiff[$column] = $dayEndVal[$column] - $dayBeginVal[$column];
-				
+
 				// Niederschlagsfreie Tage
 				if($dayDiff[$column] == 0)
 				{
@@ -536,8 +506,8 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 				}
 
 //				$curDay[$column] = $rowDay[$column];
-				
-				// Besondere Tage, abhaengig von der Temperatur				
+
+				// Besondere Tage, abhaengig von der Temperatur
 				if($column == "temp_out")
 				{
 					// Eistage (hoechsttemp. hoechstens 0
@@ -546,28 +516,28 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 						$zeroMaxDays[$column]++;
 						$zeroMaxDaysText[$column] = $zeroMaxDaysText[$column] . dayLink($rowDay[$column], $rowMonth[$column], $rowYear[$column]) . ",";
 					}
-				
+
 					// Frosttage: Tiefsttemp. hoechstens o
 					if($dayMin[$column] <= 0)
 					{
 						$zeroMinDays[$column]++;
 						$zeroMinDaysText[$column] = $zeroMinDaysText[$column] . dayLink($rowDay[$column], $rowMonth[$column], $rowYear[$column]) . ",";
 					}
-				
+
 					// Sommertage: Hoechsttemp. mind. 25
 					if($dayMax[$column] >= 25)
 					{
 						$summerDays[$column]++;
 						$summerDaysText[$column] = $summerDaysText[$column] . dayLink($rowDay[$column], $rowMonth[$column], $rowYear[$column]) . ",";
 					}
-				
+
 					// Hitzetage: Hoechsttemp. mind. 30
 					if($dayMax[$column] >= 30)
 					{
 						$heatDays[$column]++;
 						$heatDaysText[$column] = $heatDaysText[$column] . dayLink($curDay[$column], $rowMonth[$column], $rowYear[$column]) . ",";
 					}
-				
+
 					// Tropennaechte: Tiefsttemp. mind. 20
 					if($dayMin[$column] >= 20)
 					{
@@ -577,15 +547,15 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 				}
 
 				$curDay[$column] = $rowDay[$column];
-				
+
 				$dayBeginVal[$column] = $value[$column];
-				
+
 				if($dayAvg[$column] > $dayAvgMax[$column])
 				{
 					$dayAvgMax[$column] = $dayAvg[$column];
 					$dayAvgMaxDate[$column] = $prevDate[$column];
 				}
-				
+
 				if($dayAvg[$column] < $dayAvgMin[$column])
 				{
 					$dayAvgMin[$column] = $dayAvg[$column];
@@ -600,11 +570,11 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 						printf("%s: dayDiff[col]: %s dayDiffMax[col]:%s<br>", $curDay[$column], $dayDiff[$column], $dayDiffMax[$column]);
 					}
 					*/
-					
+
 					$dayDiffMax[$column] = $dayDiff[$column];
 					$dayDiffMaxDate[$column] = $prevDate[$column];
 				}
-				
+
 				// Zurcksetzen der max werte fr den neuen Tag
 				$dayMax[$column] = -9999999;
 				$dayMin[$column] = 99999999;
@@ -621,10 +591,10 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 				{
 					$dayMin[$column] = $value[$column];
 				}
-			
+
 				$dayNum[$column]++;
 			}
-			
+
 			$sum[$column] += $value[$column];
 			if($value[$column] < $min[$column])
 			{
@@ -642,7 +612,7 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 			$prevVal[$column]  = $value[$column];
 		}
 	}
-	
+
 	foreach ($cols as $column)
 	{
 		$st[$column]['sum'] = $sum[$column];
@@ -672,60 +642,21 @@ function statArray($result, $num, $day, $startTime, $stopTime)
 		$st[$column]['tropicalNights'] = $tropicalNights[$column];
 		$st[$column]['tropicalNightsText'] = substr($tropicalNightsText[$column], 0, strlen($tropicalNightsText[$column])-1);
 	}
-	
 
-	if($num > $minimalCacheRows)
-  	  storeStatInCache($startTime, $stopTime, $num, $day, $st);
-	
+
+	if($num > $minimalCacheRows) {
+  	  $database->storeCacheValues($startTime, $stopTime, $num, $day, $st);
+	}
+
 	return $st;
-}
-
-
-function storeStatInCache($startTime, $stopTime, $rows, $day, $stat)
-{
-	global $link;
-	$dataString = $link->real_escape_string(serialize($stat));
-	
-	createCacheTable();
-	
-	$now = time();
-	
-	$query = "REPLACE INTO `cache` SET startTime=$startTime, stopTime=$stopTime, 
-		  rows=$rows, day=$day, accessTime=$now, value=\"$dataString\"";
-		  
-	$result = $link->query($query);
-	if (!$result) {
-        	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	        exit();
-	}
-		
-}
-
-
-function createCacheTable()
-{
-	global $link;
-	$query = "CREATE TABLE IF NOT EXISTS `cache` (
-	   `startTime` bigint(14) unsigned NOT NULL default '0',
-	   `stopTime`  bigint(14) unsigned NOT NULL default '0',
-   	   `day`       int(10) unsigned NOT NULL default '0',	   	   
-   	   `rows`      int(10) unsigned NOT NULL default '0',
-      	   `accessTime` int(10) unsigned NOT NULL default '0',
-           `value`      TEXT default NULL,
-	   PRIMARY KEY  (`startTime`,`stopTime`, `day`));"; 
-	   
-  	$result = $link->query($query);
-	if (!$result) {
-        	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	        exit();
-	}
-
 }
 
 function graphs($type, $title, $begin, $end, $text)
 {
+    global $database;
+
 	echo "<a name=\"graph\"</a>";
-	echo "<hr><h3>$title</h3><p>";	
+	echo "<hr><h3>$title</h3><p>";
 
 	echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=dewpoint&col3=rel_hum_out&title=${text['temperature']}/${text['dewpoint']}/${text['humidity']}&unit1=%B0C&unit2=%B0C&unit3=%25&type=$type\">";
 
@@ -733,49 +664,44 @@ function graphs($type, $title, $begin, $end, $text)
 	{
 		echo "<p><img src=\"tripleLine.php?begin=$begin&end=$end&col1=temp_out&col2=temp_in&col3=rel_hum_in&title=${text['outside_temperature']}/${text['inside_temperature']}/${text['inside_humidity']}&unit1=%B0C&unit2=%B0C&unit3=%25&type=$type\">";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_PRES_INFO))
 	{
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rel_pressure&title=${text['pressure']}&unit=hPa&type=$type\">";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_WIND_INFO))
-	{	
+	{
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=windspeed&title=${text['windspeed']}&unit=km/h&type=$type\">";
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=wind_angle&title=${text['winddir']}&unit=%B0&type=$type\">";
 		echo "<p><img src=\"polar.php?begin=$begin&end=$end&col1=wind_angle&col2=windspeed&title=${text['winddist']}&unit=km/h&type=$type\">";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
-	{	
+	{
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_1h&title=${text['precipitation']} 1h&unit=mm&type=$type\">";
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_24h&title=${text['precipitation']} 24h&unit=mm&type=$type\">";
 		echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=rain_total&title=${text['precipitation']} ${text['total']} &unit=mm&type=$type\">";
 	}
-	
+
 	// Additional Sensors
-	if(TableExists("additionalsensors"))
+	$database->store("sensors"); // store previous queries
+	if($database->haveSensors(true))
 	{
-		$result = SqlQuery("select id,name,filename,linenumber,unit,Active from additionalsensors ORDER BY id", false);
-		$cnt=$result->num_rows;
-		for($i=0; $i<$cnt; $i++)
+		$database->listSensors(true);
+		while($datarow = $database->getNextRow())
 		{
-			$datarow = $result->fetch_array();
-			$active=$datarow['Active'];
-			if($active == 1)
-			{
-    			$id=$datarow['id'];
-    			$name=$datarow['name'];
-    			$filename=$datarow['filename'];
-    			$linenumber=$datarow['linenumber'];
-    			$unit=$datarow['unit'];
-			
+			$id=$datarow['id'];
+			$name=$datarow['name'];
+			$filename=$datarow['filename'];
+			$linenumber=$datarow['linenumber'];
+			$unit=$datarow['unit'];
+
 			echo "<p><img src=\"simpleLine.php?begin=$begin&end=$end&col=as$id&title=$name&unit=$unit&type=$type\">";
-}
 		}
-		$result->free();
 	}
-	
+	$database->restore("sensors"); // restore previous queries
+
 	echo "<br><a href=\"#top\">{$text['to_top']}</a>";
 	echo "<hr>";
 }
@@ -821,7 +747,7 @@ function tendencyName($tend, $text)
 		case "Falling": return $text['falling'];
 		case "Rising": return $text['rising'];
 		case "Steady": return $text['steady'];
-		
+
 		default: return $tend;
 	}
 }
@@ -833,7 +759,7 @@ function forecastName($fore, $text)
 		case "Cloudy": return $text['cloudy'];
 		case "Sunny": return $text['sunny'];
 		case "Rainy": return $text['rainy'];
-		
+
 		default: return $fore;
 	}
 }
@@ -844,31 +770,6 @@ function forecastSymbol($fore)
 }
 
 
-function weatherGetOneValue($query)
-{  
-   global $link;
-   //printf("<br>QUERY: $query<br>\n");
-   $result = $link->query($query);
-   if (!$result) {
-	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	exit();
-   }
-   $line = $result->fetch_array(MYSQL_NUM);
-   $result->free();
-   return $line[0];
-} // getOneValue
-
-function weatherSendCommand($query)
-{  
-   global $link;
-   //printf("<br>QUERY: $query<br>\n");
-   $result = $link->query($query);
-   if (!$result) {
-       printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-       exit();
-   }
-} // sendCommand
-
 function convertTimestamp($day, $month, $year, $hour, $minute, $second)
 {
 	$timestamp = $year;
@@ -876,7 +777,7 @@ function convertTimestamp($day, $month, $year, $hour, $minute, $second)
 		$timestamp = $timestamp . "0" . $month;
 	else
 		$timestamp = $timestamp . $month;
-		
+
 	if($day < 10)
 		$timestamp = $timestamp . "0" . $day;
 	else
@@ -913,33 +814,33 @@ function tableHeader($text)
 
 	echo "<td><b>{$text['temp_out_table']}</b></td>";
 	echo "<td><b>{$text['dew_table']}</b></td>";
-	
+
 	if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 	{
 		echo "<td><b>{$text['hum_in_table']}</b></td>";
 	}
-	
+
 	echo "<td><b>{$text['hum_out_table']}</b></td>";
-	
+
 	if(isDisplayEnabled(DISPLAY_WIND_INFO))
 	{
 		echo "<td><b>{$text['windspeed_table']}</b></td>";
 		echo "<td><b>{$text['windangle_table']}</b></td>";
 		echo "<td><b>{$text['windchill_table']}</b></td>";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_PRES_INFO))
 	{
 		echo "<td><b>{$text['airpressure_table']}</b></td>";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
 		echo "<td><b>{$text['rain1h_table']}</b></td>";
 		echo "<td><b>{$text['rain24h_table']}</b></td>";
 		echo "<td><b>{$text['rainoverall_table']}</b></td>";
 	}
-	
+
 	echo "</tr>";
 }
 
@@ -950,43 +851,42 @@ function tableFooter($text)
 }
 
 
-function printTableRows($result)
+function printTableRows($database)
 {
-	$result->data_seek(0);
-	
-	while($row = $result->fetch_assoc())
+	$database->seekRow(0);
+	while($row = $database->getNextRow())
 	{
 		printf("<tr><td>%s</td><td>%s</td>", $row["rec_date"],$row["rec_time"]);
-		
+
 		if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 		{
 			printf("<td>%2.2f</td>",$row["temp_in"]);
 		}
-		
+
 		printf("<td>%2.2f</td><td>%2.2f</td>",$row["temp_out"],$row["dewpoint"]);
-		
+
 		if(isDisplayEnabled(DISPLAY_ROOM_INFO))
 		{
 			printf("<td>%2.2f</td>",$row["rel_hum_in"]);
 		}
-		
+
 		printf("<td>%2.2f</td>",$row["rel_hum_out"]);
-		
+
 		if(isDisplayEnabled(DISPLAY_WIND_INFO))
 		{
 			printf("<td>%2.2f</td><td>%2.2f</td><td>%2.2f</td>",$row["windspeed"],$row["wind_angle"], $row["wind_chill"]);
 		}
-		
+
 		if(isDisplayEnabled(DISPLAY_PRES_INFO))
 		{
 			printf("<td>%2.2f</td>",$row["rel_pressure"]);
 		}
-		
+
 		if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 		{
 			printf("<td>%2.2f</td><td>%2.2f</td><td>%2.2f</td></tr>",	$row["rain_1h"],$row["rain_24h"],	$row["rain_total"]);
 		}
-		
+
 	}
 }
 
@@ -1004,135 +904,92 @@ function diffTime($timestamp, $diff)
 
 	$newtimestamp = convertTimestamp($newTime['mday'],$newTime['mon'],$newTime['year'],
 	       $newTime['hours'],$newTime['minutes'],$newTime['seconds']);
-	       
+
 	return $newtimestamp;
 }
 
 function diffTimestamps($t1, $t2)
 {
 	$timestamp=$t1;
-	
+
 	$day    = substr($timestamp, 6, 2);
 	$month  = substr($timestamp, 4, 2);
 	$year   = substr($timestamp, 0, 4);
 	$hour   = substr($timestamp, 8, 2);
 	$minute = substr($timestamp, 10, 2);
 	$second = substr($timestamp, 12, 4);
-	
+
 	$time1 = mktime($hour, $minute, $second, $month, $day, $year);
-	
+
 	$timestamp=$t2;
-	
+
 	$day    = substr($timestamp, 6, 2);
 	$month  = substr($timestamp, 4, 2);
 	$year   = substr($timestamp, 0, 4);
 	$hour   = substr($timestamp, 8, 2);
 	$minute = substr($timestamp, 10, 2);
 	$second = substr($timestamp, 12, 4);
-	
-	$time2 = mktime($hour, $minute, $second, $month, $day, $year);	
-	
+
+	$time2 = mktime($hour, $minute, $second, $month, $day, $year);
+
 	return $time2 - $time1;
 }
 
 function getStartYearAndMonth(&$year, &$month, &$day)
 {
-	global $link;
+	global $database;
 
-	$query = "select min(timestamp) from weather";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	        exit();
+	$timestamp = $database->getWeatherFirstDate();
+	if ($timestamp) {
+		$day   = substr($timestamp, 6, 2);
+		$month = substr($timestamp, 4, 2);
+		$year  = substr($timestamp, 0, 4);
 	}
-	$datarow = $result->fetch_array();
-	$timestamp = $datarow[0];
-	$result->free();
-	
-	$day   = substr($timestamp, 6, 2);
-	$month = substr($timestamp, 4, 2); 
-	$year  = substr($timestamp, 0, 4);
 }
+
 function getStopYearAndMonth(&$year, &$month, &$day)
 {
-	global $link;
+	global $database;
 
-	$query = "select max(timestamp) from weather";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	        exit();
+	$timestamp = $database->getWeatherLastDate();
+	if ($timestamp) {
+		$day   = substr($timestamp, 6, 2);
+		$month = substr($timestamp, 4, 2);
+		$year  = substr($timestamp, 0, 4);
 	}
-	$datarow = $result->fetch_array();
-	$timestamp = $datarow[0];
-	$result->free();
-	
-	$day   = substr($timestamp, 6, 2);
-	$month = substr($timestamp, 4, 2); 
-	$year  = substr($timestamp, 0, 4);
 }
 
 function tendency($timestamp)
 {
-	global $link;
+	global $database;
 	$starttime = diffTime($timestamp, "-65 minutes");
 	$stoptime = diffTime($timestamp, "-55 minutes");
-	
 
-	$query = "select * from weather where timestamp>$starttime and timestamp<$stoptime";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	        exit();
-	}
-	$oldValues = $result->fetch_assoc();
-	$numRows = $result->num_rows;
-	$result->free();
 
-	$query = "select * from weather where timestamp=$timestamp";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	}
-	$curValues = $result->fetch_assoc();
-	$result->free();
+	$oldValues = $database->getWeatherFromPeriod($starttime, $stoptime, 1); // Only first result
+	$curValues = $database->getWeatherFromDate($timestamp);
 
-	
-	if($numRows > 0)
+	if($oldValues)
 	{
 		//$diff = array_combine(array_keys($curValues), array_map(function ($x, $y) { return $y-$x; } , $oldValues, $curValues));
 		$diff = array_combine(array_keys($curValues), array_map(function ($x, $y) { return is_numeric($x)?$y-$x:0; } , $oldValues, $curValues));
-		/*foreach($oldValues as $key => $value)
-		{
-			$diff[$key] = $curValues[$key] - $value;
-			//echo "$key $value<BR>";
-		}*/
-		
+
 		$starttime = diffTime($timestamp, "-1450 minutes");
-		$stoptime = diffTime($timestamp, "-1435 minutes");	
-		
-		$query = "select rain_total from weather where timestamp>$starttime and timestamp<$stoptime";
-		$result = $link->query($query);
-		if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-		}
-		$oldValues = $result->fetch_assoc();
-		$numRows = $result->num_rows;
-		$result->free();
+		$stoptime = diffTime($timestamp, "-1435 minutes");
+
+		$oldValues = $database->getWeatherFromPeriod($starttime, $stoptime, 1); // Only first result
 
 		$diff['rain_last24'] = $curValues['rain_total'] - $oldValues['rain_total'];
 	}
 	else
-	  $diff=0;
-	
+		$diff=0;
+
 	return $diff;
 }
- 
+
 function displayTendency($value, $unit, $text)
 {
-  
+
    if($value > 0.0)
    {
      printf ("<td>+%.1f  $unit</td>",$value);
@@ -1149,7 +1006,7 @@ function displayTendency($value, $unit, $text)
 
 }
 
-/****************************************** 
+/******************************************
 this will return an array composed of a 4 item array for each language the os supports
 1. full language abbreviation, like en-ca
 2. primary language, like en
@@ -1170,7 +1027,7 @@ function get_languages( $feature, $spare='' )
 	$user_languages = array();
 
 	//check to see if language is set
-	if ( isset( $_SERVER["HTTP_ACCEPT_LANGUAGE"] ) ) 
+	if ( isset( $_SERVER["HTTP_ACCEPT_LANGUAGE"] ) )
 	{
 		//explode languages into array
 		$languages = strtolower( $_SERVER["HTTP_ACCEPT_LANGUAGE"] );
@@ -1179,8 +1036,8 @@ function get_languages( $feature, $spare='' )
 		foreach ( $languages as $language_list )
 		{
 			// pull out the language, place languages into array of full and primary
-			// string structure: 
-			$temp_array = array(); 
+			// string structure:
+			$temp_array = array();
 			// slice out the part before ; on first step, the part before - on second, place into array
 			$temp_array[0] = substr( $language_list, 0, strcspn( $language_list, ';' ) );//full language
 			$temp_array[1] = substr( $language_list, 0, 2 );// cut out primary language
@@ -1191,11 +1048,11 @@ function get_languages( $feature, $spare='' )
 		//start going through each one
 		for ( $i = 0; $i < count( $user_languages ); $i++ )
 		{
-			foreach ( $a_languages as $index => $complete ) 
+			foreach ( $a_languages as $index => $complete )
 			{
 				if ( $index == $user_languages[$i][0] )
 				{
-					// complete language, like english (canada) 
+					// complete language, like english (canada)
 					$user_languages[$i][2] = $complete;
 					// extract working language, like english
 					$user_languages[$i][3] = substr( $complete, 0, strcspn( $complete, ' (' ) );
@@ -1232,11 +1089,11 @@ function get_languages( $feature, $spare='' )
 		}
 		if ( $found )
 		{
-			header("Location: $location"); 
+			header("Location: $location");
 		}
 		else// make sure you have a default page to send them to
 		{
-			header("Location: default.php"); 
+			header("Location: default.php");
 		}
 	}
 }
@@ -1448,7 +1305,7 @@ function comfortText($temp, $hum, $text)
 function contains($x, $y, $xpoints, $ypoints, $npoints)
 {
 	$wn = 0;
-	
+
 	$x1 = $xpoints[$npoints - 1];
 	$y1 = $ypoints[$npoints - 1];
 
@@ -1530,18 +1387,6 @@ function GetCurrentSensorValue($filename, $linenumber)
 	}
 
 	return $value;
-}
-
-function TableExists($table)
-{
-	global $link;
-	$result = $link->query("SHOW TABLES LIKE '".$table."'");
-	if( $result->num_rows)
-	{
-		return true;
-	}
-
-	return false;
 }
 
 ?>

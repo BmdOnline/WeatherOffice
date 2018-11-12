@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="woffice.css">
 	</head>
 	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
-			
+
 <?PHP
 ////////////////////////////////////////////////////
 //
@@ -26,10 +26,10 @@ include("class.climatetable.php");
 
 function climaTable()
 {
-	global $link;
+	global $database;
 	global $text;
 	global $STATION_NAME, $STATION_LAT,  $STATION_LON;
-	
+
 	echo "<h2>{$text['Climate Table']}</h2>";
 
 	# Objekt für Klimatafel anlegen
@@ -41,29 +41,18 @@ function climaTable()
 	$arrMinTemp=MinMaxAvg::getRows('MONTH','temp_out_min');
 
 
-	$query= "SELECT substr(DAY,5,2)AS MONTH,".
-					"ROUND(AVG(DAY_TEMP_MAX),1) AS MEAN_TEMP_MAX,".
-					"ROUND(AVG(DAY_TEMP_MIN),1) AS MEAN_TEMP_MIN ".
-					"FROM (SELECT substr(timestamp, 1,8) as DAY, ".
-					"MAX(temp_out_max) AS DAY_TEMP_MAX, ".
-					"MIN(temp_out_min) AS DAY_TEMP_MIN  ".
-					"FROM MinMaxAvg WHERE Type='DAY' GROUP BY substr(timestamp, 1,8) )AS T1 group by substr(DAY,5,2)";
-
-	$result = $link->query($query);
-	    if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-    	}
-	while($row = $result->fetch_assoc())
-	{	
+	$database->getMinMaxAvgMeanValues();
+	$database->seekRow(0);
+	while($row = $database->getNextRow())
+	{
 		$arrMeanMaxTemp[] = $row['MEAN_TEMP_MAX'];
 		$arrMeanMinTemp[] = $row['MEAN_TEMP_MIN'];
 	}
 
-	
+
 	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
 	getStopYearAndMonth($lastYear, $lastMonth, $lastDay);
-	
+
 	# Titelzeile festlegen
 	$objClimateTable->setTitle("{$text['Monthly']}  {$text['Temperatures']} {$text['and']}  {$text['Precipations']} ($firstYear - $lastYear)");
 	# Name der Station/ des Messortes festlegen (optional)
@@ -75,33 +64,22 @@ function climaTable()
 	$objClimateTable->addRow("MEAN_TEMP_MIN","{$text['Average']} {$text['Minimum Temperature']} (&deg;C)",$arrMeanMinTemp);
 	$objClimateTable->addRow("TEMP_MAX","{$text['Historic']} {$text['Peak Value']} (&deg;C)",$arrMaxTemp);
 	$objClimateTable->addRow("TEMP_MIN","{$text['Historic']} {$text['Lowest Value']} (&deg;C)",$arrMinTemp);
-	
+
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
 		$arrAvgRainfall=MinMaxAvg::getRows('MONTH','rain_total_avg');
 
-		$query = "SELECT SUBSTR(YYYYDD,5,2) AS MONTH, ".
-						"ROUND(AVG(RAINDAYS)) AS RAINDAYS_AVG ".
-						"FROM (SELECT COUNT(DAY)AS RAINDAYS, SUBSTR(DAY,1,6) AS YYYYDD " .
-						"FROM (	SELECT DAY, RAINFALL FROM (select substr(timestamp,1,8) AS DAY, type AS Type, rain_total_max AS rainfall ".
-						"FROM MinMaxAvg group by substr(timestamp,1,8)) AS T1 WHERE Type='DAY' and rainfall > 0) AS T2 ".
-						"GROUP BY SUBSTR(DAY,1,6)) AS T3 GROUP BY SUBSTR(YYYYDD,5,2) ORDER BY SUBSTR(YYYYDD,5,2);";
-
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
-
-		while($row = $result->fetch_assoc())
-		{	
+		$database->getMinMaxAvgRainDaysValues();
+		$database->seekRow(0);
+		while($row = $database->getNextRow())
+		{
 			$arrAvgRaindays[intval($row['MONTH'])-1] = $row['RAINDAYS_AVG'];
 		}
-		
+
 		$objClimateTable->addRow("RAINFALL_AVG","{$text['Average']} {$text['precipation']} (mm)",$arrAvgRainfall);
-		$objClimateTable->addRow("RAINDAYS_AVG","{$text['Raindays']} (d)",$arrAvgRaindays);	
+		$objClimateTable->addRow("RAINDAYS_AVG","{$text['Raindays']} (d)",$arrAvgRaindays);
 	}
-	
+
 	$objClimateTable->getTable();
 
 }
@@ -114,7 +92,7 @@ function displayExtremas()
 
 	$stat=MinMaxAvg::getExtremValues('DAY');
 	$statMonth=MinMaxAvg::getExtremValues('YEARMONTH');
-	
+
 	printf("<p>");
 	printf($text['messages']['max_temp_short'],
 					dateLink($stat['temp_out_max']['maxDate']), $stat["temp_out_max"]['max']);
@@ -168,18 +146,21 @@ function climaGraphs()
 
 	echo "<h2>{$text['climagraph']} </h2>";
 
+	echo "<p><img src=\"climaGraph.php?title=${text['avg_temp']}&col=temp_out\">";
+	echo "<p><img src=\"climaGraph.php?title=${text['avg_prec']}&col=rain_total&unit=mm&avg=30\">";
+
 	echo "<p><img src=\"climaGraph2D.php?title=${text['avg_temp']}&col=temp_out_avg\">";
 
 	if(isDisplayEnabled(DISPLAY_RAIN_INFO))
 	{
 		echo "<p><img src=\"climaGraph2D.php?title=${text['precipation']}&col=rain_total_max\">";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_PRES_INFO))
 	{
 		echo "<p><img src=\"climaGraph2D.php?title=${text['pressure']}&col=rel_pressure_avg\">";
 	}
-	
+
 	if(isDisplayEnabled(DISPLAY_WIND_INFO))
 	{
 		echo "<p><img src=\"climaGraph2D.php?title=${text['wind']}&col=windspeed_max\">";
@@ -191,6 +172,6 @@ climaTable();
 displayExtremas();
 climaGraphs();
 
-$link->close();
+$database->close();
 ?>
 </html>

@@ -17,5 +17,5 @@ include("class.MinMaxAvg.php");
 
 MinMaxAvg::updateDbTables(false); // Force a full update
 
-$link->close();
+$database->close();
 ?>

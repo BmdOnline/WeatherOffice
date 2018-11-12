@@ -67,13 +67,9 @@ include ("jpgraphSetup.php");
 	$month = substr($begin, 4, 2);
 	$year    = substr($begin, 0, 4);
 
-	$query = "select $col1, $col2, $col3, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	}
-	$num = $result->num_rows;
+	$fields = "$col1, $col2, $col3, rec_time, rec_date";
+	$database->getWeatherFieldsFromPeriod($fields, $begin, $end);
+	$num = $database->getRowsCount();
 	if ($num>0) {
 		$graph = new Graph($GraphWidth, $GraphHeight);
 		$graph->SetMargin(50,50,10,90);
@@ -106,7 +102,7 @@ include ("jpgraphSetup.php");
 
 			case "week":
 				$title = $titleStr . " " . $text['in_the_week_from'] . " " . $day . "." . $month . "." . $year;
-				$graph ->xaxis->scale-> SetDateFormat( "d.m\nH:i");
+				$graph ->xaxis->scale->SetDateFormat( "d.m\nH:i");
 				// Force labels to only be displayed every 12 hours
 				$graph->xaxis->scale->ticks->Set(12*60*60);
 				$graph->xaxis->SetLabelAngle(0);
@@ -114,7 +110,7 @@ include ("jpgraphSetup.php");
 
 			case "month":
 				$title = $titleStr . " " .  monthName($month, $text) . " " . $year;
-				$graph ->xaxis->scale-> SetDateFormat("d.m\nH:i");
+				$graph ->xaxis->scale->SetDateFormat("d.m\nH:i");
 				// Force labels to only be displayed every 2 days
 				$graph->xaxis->scale->ticks->Set(2*24*60*60);
 				$graph->xaxis->SetLabelAngle(0);
@@ -160,7 +156,8 @@ include ("jpgraphSetup.php");
 
 		$idx = 0;
 		$i   = 0;
-		while($row = $result->fetch_assoc())
+		$database->seekRow(0);
+		while($row = $database->getNextRow())
 		{
 			if(($i % $factor) == 0)
 			{
@@ -177,8 +174,8 @@ include ("jpgraphSetup.php");
 			$i++;
 		}
 
-		$result->free();
-		$link->close();
+		$database->free();
+		$database->close();
 
 		$lineplot1=new LinePlot($ydata1, $xdata);
 		$graph->Add($lineplot1);

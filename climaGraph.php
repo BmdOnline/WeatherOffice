@@ -12,6 +12,7 @@
 //
 ////////////////////////////////////////////////////
 	include("jpgraphSetup.php");
+	include("class.MinMaxAvg.php");
 
 	if(array_key_exists("col",$_REQUEST))
 	   $col = $_REQUEST["col"];
@@ -35,15 +36,7 @@
 
 	$graph = new Graph($GraphWidth, $GraphHeight, "auto", 86400);
 
-	$query = "select max(timestamp) from weather";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	}
-	$datarow = $result->fetch_array();
-	$timestamp = $datarow[0];
-	$result->free();
+	$timestamp = $database->getMinMaxAvgLastDate('DAY');
 	$maxYear    = substr($timestamp, 0, 4);
 
 	$graph->SetMargin(50,100,10,90);
@@ -66,7 +59,7 @@
 
 	$graph->legend->SetPos( 0.03,0.4,"right" ,"center");
 	$graph->legend->SetColumns(1);
-	 
+
 	$xdata = array();
 	$ydata = array();
 	$ydata1 = array();
@@ -106,20 +99,10 @@
 	   $begin = convertTimestamp($day, $month, $year, 0, 0, 0);
    	   $end   = convertTimestamp($day, $month, $year, 23, 59, 59);
 
-	   $query = "select * from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
-	   $result = $link->query($query);
-	   if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	   }
-	   $num = $result->num_rows;
-
-	   if ($num > 0)
-	   {
-	     $stat=statArray($result, $num, $day, $begin, $end);
-
+	   $stat=MinMaxAvg::getStatArray('DAY', $year, $month, $day);
+	   if ($stat) {
 	      if($col == "rain_total")
-		     $ydata2[$idx] = $stat["rain_total"]["max"] - $stat["rain_total"]["min"];
+		     $ydata2[$idx] = $stat["rain_total"]["max"];// - $stat["rain_total"]["min"];
 	       else
 	     	 $ydata2[$idx] = $stat[$col]["avg"];
 
@@ -138,17 +121,14 @@
 		  $avg -= $ydata2[$idx - $numAvg];
 	     }
 
-     	     $idx++;
+	     $idx++;
 	     $idx2++;
-         }
+	   }
 
 	   $nextDay = getdate(strtotime("+1 day", mktime(0, 0, 0, $nextDay['mon'], $nextDay['mday'], $nextDay['year'])));
 	   $day   = $nextDay['mday'];
    	   $month = $nextDay['mon'];
 	   $year  = $nextDay['year'];
-
-   	   $result->free();
-
 	}
 
 	$num = 0;
@@ -183,3 +163,4 @@
 	$graph->SetShadow();
 	$graph->Stroke();
 ?>
+

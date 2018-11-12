@@ -38,13 +38,9 @@
 	$month   = substr($begin, 4, 2);
 	$year    = substr($begin, 0, 4);
 
-	$query = "select $col1, $col2, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end";
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	}
-	$num = $result->num_rows;
+	$fields = "$col1, $col2, rec_time, rec_date";
+	$database->getWeatherFieldsFromPeriod($fields, $begin, $end);
+	$num = $database->getRowsCount();
 
 	$margin = 40;
 
@@ -94,7 +90,8 @@
 	$idx = 0;
 	$i   = 0;
 
-	while($row = $result->fetch_assoc())
+	$database->seekRow(0);
+	while($row = $database->getNextRow())
 	{
 		if(($i % $factor) == 0)
 		{
@@ -116,8 +113,8 @@
 
 	$totalNumValues = $idx/2;
 
-	$result->free();
-	$link->close();
+	$database->free();
+	$database->close();
 
 
 	$p = new PolarPlot($data);

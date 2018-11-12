@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="woffice.css">
 	</head>
 	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
-			
+
 <?PHP
 ////////////////////////////////////////////////////
 //
@@ -43,24 +43,19 @@ include("weatherInclude.php");
 
 function GetNextSensorID()
 {
-	$query="SELECT max(id) FROM additionalsensors;";
-	$result = mysql_query($query) or die ("Abfrage fehlgeschlagen<br>Query:<font color=red>$query</font><br>Error:" . mysql_error());
-	$sensorID = mysql_result($result, 0) + 1;
-	mysql_free_result($result);
-	
+    global $database;
+	$sensorID = $database->getSensorLastId() + 1;
+
 	return $sensorID;
 }
 
-$table = "additionalsensors";
-
-if(TableExists($table))
+if($database->haveSensors())
 {
 
 	$addSensor = $_REQUEST["addSensor"];
 
 	if($addSensor == "false")
 	{
-
 		// Sensorentabelle
 		echo "<hr><table border=\"1\"><tr>";
 		echo "<th>" . $text['sensors']['id'] . "</th>";
@@ -71,19 +66,18 @@ if(TableExists($table))
 		echo "<th>" . $text['sensors']['unit'] . "</th>";
 		echo "<th>" . $text['sensors']['active'] . "</th></tr>";
 
-			
-		$result = SqlQuery("select * from $table ORDER BY id", false);
-		$cnt=mysql_num_rows($result);
-		for($i=0; $i<$cnt; $i++)
+
+		$database->listSensors();
+		while($datarow = $database->getNextRow())
 		{
-			$id=mysql_result($result, $i, 'id');
-			$name=mysql_result($result, $i, 'name');
-			$filename=mysql_result($result, $i, 'filename');
-			$linenumber=mysql_result($result, $i, 'linenumber');
-			$unit=mysql_result($result, $i, 'unit');
-			$active=mysql_result($result, $i, 'Active');
+			$id=$datarow['id'];
+			$name=$datarow['name'];
+			$filename=$datarow['filename'];
+			$linenumber=$datarow['linenumber'];
+			$unit=$datarow['unit'];
+			$active=$datarow['Active'];
 			$value=GetCurrentSensorValue($filename, $linenumber);
-		
+
 			echo "<tr>";
 			echo "<td>$id</td>";
 			echo "<td>$name</td>";
@@ -94,11 +88,11 @@ if(TableExists($table))
 			echo "<td>$active</td>";
 			echo "</tr>";
 		}
-		mysql_free_result($result);
-		
+		$database->free();
+
 		echo "</table>";
-		
-		
+
+
 		// New Sensor
 		echo "<p><hr><b>" . $text['sensors']['new'] . ":</b></p>";
 		echo "<form action = \"additionalSensors.php\" method=\"post\" target=\"main\">";
@@ -128,13 +122,7 @@ if(TableExists($table))
 		$unit = $_REQUEST["unit"];
 
 		$newSensorId = GetNextSensorID();
-		
-		SqlQuery("INSERT INTO $table Values($newSensorId,
-							\"$name\", 				
-							\"$filename\", 
-							\"$linenumber\",
-							\"$unit\",1);", false);
-
+		$database->addSensors($newSensorId, $name, $filename, $linenumber, $unit);
 		printf($text['sensors']['added'] . "<br>", $name);
 	}
 }
@@ -143,5 +131,5 @@ else
 	printf($text['sensors']['no_table'] . "<br>", $table);
 }
 
-mysql_close();
+$database->close();
 ?>

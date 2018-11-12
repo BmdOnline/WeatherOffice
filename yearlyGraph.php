@@ -82,7 +82,7 @@
 		$day   = $nextDay['mday'];
 		$month = $nextDay['mon'];
 		$year  = $nextDay['year'];
-		}
+	}
 
 	$lineplot1=new LinePlot($ydata1, $xdata);
 	$graph->Add($lineplot1);

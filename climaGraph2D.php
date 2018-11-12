@@ -3,7 +3,7 @@
 
 include ("jpgraphSetup.php");
 
-$width   = 1000;
+$width   = $GraphWidth;
 $PIX_PER_YEAR=15;
 
 $marginL = 50;
@@ -46,14 +46,8 @@ $dummyDay=0;
 getStartYearAndMonth($firstYear, $dummyMonth, $dummyDay);
 getStopYearAndMonth($lastYear, $dummyMonth, $dummyDay);
 
-//$query = "select timestamp, $col from MinMaxAvg where type='DAY' and timestamp >= $begin and timestamp <= $end order by timestamp";
-$query = "select timestamp, $col from MinMaxAvg where type='DAY' order by timestamp";
-$result = $link->query($query);
-    if (!$result) {
-	printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-	exit();
-}
-$num = $result->num_rows;
+$database->getMinMaxAvgFieldsFromType("timestamp, ". $col, 'DAY');
+$num = $database->getRowsCount();
 
 $height  = $marginT + $marginB + 2+($PIX_PER_YEAR * (($lastYear-$firstYear)+1));
 
@@ -177,7 +171,8 @@ while($year <= $lastYear)
 $lastX2 = 0;
 $firstYear=0;
 
-while($row = $result->fetch_array())
+$database->seekRow(0);
+while($row = $database->getNextRow())
 {
 	$recDate  = $row["timestamp"];
 	$year =  (int)substr($recDate, 0, 4);

@@ -25,7 +25,7 @@ function GetCurrentDate()
 	$today = getdate();
 	$mon = LeadingZero($today['mon']);
 	$mday = LeadingZero($today['mday']);
-	
+
 	return($today['year'] . "-" . $mon . "-" . $mday);
 }
 
@@ -42,7 +42,7 @@ function GetTimestamp($today)
 	$hour = LeadingZero($today['hours']);
 	$min = LeadingZero($today['minutes']);
 	$sec = LeadingZero($today['seconds']);
-	
+
 	return($today['year'] . $mon . $mday . $hour . $min . $sec);
 }
 
@@ -52,22 +52,18 @@ $ts = GetCurrentTimestamp();
 
 $id=$argv[1];
 
-$result = SqlQuery("select filename, linenumber,Active from additionalsensors where id=\"$id\"", false);
-$active = mysql_result($result, 0, 'Active');
+$result = $database->getSensorFromId($id);
+$database->free();
 
-if($active != 1)
+$active = $result['Active'];
+if($active)
 {
-  exit;
+  $filename = $result['filename'];
+  $linenumber = $result['linenumber'];
+
+  $value = GetCurrentSensorValue($filename, $linenumber);
+  $database->addSensorsValue($id, $ts, $value);
 }
+$database->close();
 
-$filename = mysql_result($result, 0, 'filename');
-$linenumber = mysql_result($result, 0, 'linenumber');
-
-mysql_free_result($result);
-
-$value = GetCurrentSensorValue($filename, $linenumber);	
-			
-SqlQuery("INSERT INTO additionalvalues Values($id,
-							\"$ts\", 				
-							\"$value\");", false);				
 ?>

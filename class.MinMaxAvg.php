@@ -43,7 +43,7 @@ class MinMaxAvg
 		$ops = array("min", "max", "avg");
 		return $ops;
 	}
-	
+
 	/**
 		* Create the MinMaxAvg Table in the database if it doesn't exist
 		*
@@ -52,47 +52,11 @@ class MinMaxAvg
 		*/
 	public static function createDbTable()
 	{
-		global $link;
-		$cols = MinMaxAvg::getSrcTableColumns();
-		$ops = MinMaxAvg::getOperations();
-	
-		$i=0;
-		$columnCreate = "";
-		
-		foreach ($cols as $col)
-		{
-			foreach ($ops as $op)
-			{
-				$precision="3,1";
-				
-				if($col == "rel_pressure")
-					$precision = "4,0";
+	    global $database;
+	    $cols = MinMaxAvg::getSrcTableColumns();
+	    $ops = MinMaxAvg::getOperations();
 
-				if($col == "wind_angle")
-					$precision = "4,1";	
-					
-				if($col == "rain_total")
-					$precision = "5,1";
-
-				if($i++ > 0)
-					$columnCreate = $columnCreate . ",";
-			
-				$columnCreate = $columnCreate . "${col}_$op decimal($precision) DEFAULT NULL\n";
-			}
-		}
-		
-		$query = "CREATE TABLE IF NOT EXISTS `MinMaxAvg` (" .
-						 "`timestamp` bigint(14) DEFAULT '0'," .
-						 "`type` char(10) NOT NULL DEFAULT '0'," .
-						 $columnCreate .
-						 ", PRIMARY KEY (`timestamp`) " .
-						 ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		//echo "$query";				 
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
+	    $database->createTableMinMaxAvg($cols, $ops);
 	}
 
 	/**
@@ -104,85 +68,33 @@ class MinMaxAvg
 	*/
 	static function updateDbTableDay($startDay)
 	{
-		global $link;
-		$Type = 'DAY';
-		
-		$tStampStart=1;
-		$tStampLenght=8;
-		$tRainStart=1;
-		$tRainLenght=8;
+	    global $database;
+	    $Type = 'DAY';
 
-		if($startDay > 0)
-			$startTS= (int) ($startDay . "000000");
-		else
-			$startTS=0;
-		
-		echo "Updating Table MinMaxAvg Entries $Type<br>\n";
+	    $tStampStart=1;
+	    $tStampLenght=8;
+	    $tRainStart=1;
+	    $tRainLenght=8;
 
-		$queryFields = "";
-		$targetCols = "";
-		
-		$cols = MinMaxAvg::getSrcTableColumns();
-		
-		$i=0;
-		foreach ($cols as $col)
-		{
-			if($col != "rain_total")
-			{
-				if($i > 0)
-				{
-					$queryFields = $queryFields . ", ";
-					$targetCols  = $targetCols  . ", ";
-				}
+	    if($startDay > 0)
+		$startTS= (int) ($startDay . "000000");
+	    else
+		$startTS=0;
 
-				$queryFields = $queryFields . "ROUND(AVG($col),1) AS ${col}_avg, ";
-				$targetCols  = $targetCols  . "${col}_avg,";
-				$queryFields = $queryFields . "ROUND(MIN($col),1) AS ${col}_min, ";
-				$targetCols  = $targetCols  . "${col}_min,";
-				$queryFields = $queryFields . "ROUND(MAX($col),1) AS ${col}_max ";
-				$targetCols  = $targetCols  . "${col}_max ";
-			
-				$i++;
-			}
-		}
-			
-		$query = "REPLACE INTO MinMaxAvg(timestamp, type, $targetCols) "
-							.	"SELECT substr(timestamp, $tStampStart, $tStampLenght) as timestamp, \"${Type}\" as Type ,"
-							. " $queryFields FROM weather WHERE timestamp > $startTS GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
-		//echo $query;
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
+	    echo "Updating Table MinMaxAvg Entries $Type<br>\n";
+
+	    $queryFields = "";
+	    $targetCols = "";
+
+	    $cols = MinMaxAvg::getSrcTableColumns();
+
+	    $database->calculateMinMaxAvg($cols, $Type, $tStampStart, $tStampLenght, $startTS);
 
 
-		//echo "Calculating Rain for $Type...<br>\n";
+	    //echo "Calculating Rain for $Type...<br>\n";
 
-		// Special Handling for Rain Required
-		
-
-		$query = "UPDATE MinMaxAvg AS tar ".
-						 "INNER JOIN ".
-						 "(SELECT SUBSTR(YYYYDD,$tStampStart, $tStampLenght) AS timestamp, ".
-						 "ROUND(AVG(rainfall),1) AS rain_total_avg, ".
-						 "ROUND(MIN(rainfall),1) AS rain_total_min, ".
-						 "ROUND(MAX(rainfall),1) AS rain_total_max ".
-						 "FROM ((SELECT MAX(rain_total)- MIN(rain_total) AS rainfall, ". 
-						 "substr(timestamp,$tRainStart, $tRainLenght) AS YYYYDD " .
-						 "FROM weather WHERE timestamp > $startTS GROUP BY substr(timestamp,$tRainStart, $tRainLenght) ) AS T1) " .
-						 "GROUP BY SUBSTR(YYYYDD,$tStampStart, $tStampLenght))" .
-						 " AS sor ON tar.timestamp = sor.timestamp ".
-						 "SET ".
-						 "tar.rain_total_avg=sor.rain_total_avg, ".
-						 "tar.rain_total_min=sor.rain_total_min, ".
-						 "tar.rain_total_max=sor.rain_total_max ";
-		
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
+	    // Special Handling for Rain Required
+	    $database->updateMinMaxAvg($tStampStart, $tStampLenght, $tRainStart, $tRainLenght, $startTS);
 	}
 	/**
 	* Calculate and update the Min Max Avg values the given entry type
@@ -194,97 +106,58 @@ class MinMaxAvg
 	*/
 	static function updateDbTableType($Type, $startDay)
 	{
-		global $link;
+		global $database;
 		$tStampStart=0;
 		$tStampLenght=0;
 
 		$tRainStart=0;
 		$tRainLenght=0;
-		
+
 		$dataSource="";
 
 		switch($Type)
 		{
-			case 'DAY';
-				MinMaxAvg::updateDbTableDay($startDay);
-				return;
-				break;
-			case 'YEARMONTH';
-				$tStampStart=1;
-				$tStampLenght=6;
-				$tRainStart=1;
-				$tRainLenght=8;
+		    case 'DAY';
+			    MinMaxAvg::updateDbTableDay($startDay);
+			    return;
+			    break;
+		    case 'YEARMONTH';
+			    $tStampStart=1;
+			    $tStampLenght=6;
+			    $tRainStart=1;
+			    $tRainLenght=8;
 			    $dataType="DAY";
-				break;
-			case 'MONTH';
-				$tStampStart=5;
-				$tStampLenght=2;
-				$tRainStart=1;
-				$tRainLenght=6;
+			    break;
+		    case 'MONTH';
+			    $tStampStart=5;
+			    $tStampLenght=2;
+			    $tRainStart=1;
+			    $tRainLenght=6;
 			    $dataType="YEARMONTH";
-				break;				
-			case 'YEAR';
-				$tStampStart=1;
-				$tStampLenght=4;
-				$tRainStart=1;
-				$tRainLenght=4;			
+			    break;
+		    case 'YEAR';
+			    $tStampStart=1;
+			    $tStampLenght=4;
+			    $tRainStart=1;
+			    $tRainLenght=4;
 			    $dataType="YEARMONTH";
-				break;
-			default;
-				echo "Error: generateMinMaxEntries Type $Type is not supported\n";
-				return;
+			    break;
+		    default;
+			    echo "Error: generateMinMaxEntries Type $Type is not supported\n";
+			    return;
 		}
 
 		echo "Updating Table MinMaxAvg Entries $Type<br>\n";
 
 		$queryFields = "";
 		$targetCols = "";
-		
+
 		$cols = MinMaxAvg::getSrcTableColumns();
-		
-		$i=0;
-		foreach ($cols as $col)
-		{
-				if($i > 0)
-				{
-					$queryFields = $queryFields . ", ";
-					$targetCols  = $targetCols  . ", ";
-				}
 
-				if($col == "rain_total" && $Type != 'MONTH')
-				{
-					$queryFields = $queryFields . "ROUND(SUM(${col}_avg),1) AS ${col}_avg, ";	
-					$queryFields = $queryFields . "ROUND(SUM(${col}_min),1) AS ${col}_min, ";
-					$queryFields = $queryFields . "ROUND(SUM(${col}_max),1) AS ${col}_max ";
-				}
-				else
-				{
-					$queryFields = $queryFields . "ROUND(AVG(${col}_avg),1) AS ${col}_avg, ";	
-					$queryFields = $queryFields . "ROUND(MIN(${col}_min),1) AS ${col}_min, ";
-					$queryFields = $queryFields . "ROUND(MAX(${col}_max),1) AS ${col}_max ";
-				}
-				
-				$targetCols  = $targetCols  . "${col}_avg,";
-				$targetCols  = $targetCols  . "${col}_min,";
-				$targetCols  = $targetCols  . "${col}_max ";
-				
-				$i++;
-			
-		}
-			
-		$query = "REPLACE INTO MinMaxAvg(timestamp, type, $targetCols) "
-							.	"SELECT substr(timestamp, $tStampStart, $tStampLenght) as timestamp, \"${Type}\" as Type ,"
-							. " $queryFields FROM MinMaxAvg WHERE $dataType GROUP BY substr(timestamp, $tStampStart, $tStampLenght)";													
-		//echo $query;
-
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
+		$database->aggregateMinMaxAvg($cols, $Type, $tStampStart, $tStampLenght, $dataType);
 
 	}
-	
+
 	/**
 	 * Update all MinMaxAvg Table entries. If incremental update is set checks what entries are missing
 	 *
@@ -294,9 +167,9 @@ class MinMaxAvg
 	 */
 	static function updateDbTables($incremental)
 	{
-		global $link;
-	
-		if(TableExists("MinMaxAvg") == false)
+		global $database;
+
+		if(!$database->haveMinMaxAvg())
 		{
 			echo "Table MinMaxAvg doesn't exist !<br>";
 			echo "I will create it for you this will take some time. Please be patient ...<br>";
@@ -304,26 +177,26 @@ class MinMaxAvg
 			MinMaxAvg::createDbTable();
 			$incremental = false;
 		}
-		
+
 		if($incremental)
 		{
-			// Check when last entry in MinMaxAvg Table was stored		
-			$lastEntryCal=MinMaxAvg::getLastEntryTs("DAY");
+			// Check when last entry in MinMaxAvg Table was stored
+			$lastEntryCal=$database->getMinMaxAvgLastDate("DAY");
 			getStopYearAndMonth($lyear, $lmonth, $lday);
 			$lastEntryData= (int) ($lyear . $lmonth . $lday);
-			
+
 			if($lastEntryData == $lastEntryCal)
-			{		
+			{
 				//echo "MinMaxAvg Table is up to date nothing to do\n";
 				return;
-			}			
+			}
 			$startDay=$lastEntryCal;
 		}
 		else
 		{
 			$startDay=0;
 		}
-		
+
 		MinMaxAvg::updateDbTableType("DAY", $startDay);
 		flush();
 		MinMaxAvg::updateDbTableType("YEARMONTH", $startDay);
@@ -333,92 +206,54 @@ class MinMaxAvg
 		MinMaxAvg::updateDbTableType("YEAR", $startDay);
 		flush();
 	}
-	
-	/**
-	 * Returns the latest timestamp entry
-	 *
-	 * @access 		public
-	 * @param 		string     $Type           'DAY', 'MONTH' ...
-	 * @return 		int				 The last entry of the slected type. 0 If no entry exists
-	 */
-	 
-	static public function getLastEntryTs($type)
-	{
-		global $link;
-		$query = "SELECT MAX(timestamp) AS timestamp FROM MinMaxAvg WHERE type='$type'";
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
 
-		if($row = $result->fetch_array())
-		{	
-			return $row['timestamp'];
-		}
 
-		return 0;
-	}
-	
 	/**
 	 * Return all values of the given colum
 	 *
 	 * @access 		public
 	 * @param 		string     $Type           'DAY', 'MONTH' ...
 	 * @param 		string     $column         Name of column to return
-	 * @return 		array of strings 				 
+	 * @return 		array of strings
 	 */
 	static public function getRows($filter, $column)
 	{
-		global $link;
-		$query = "SELECT ${column} FROM MinMaxAvg WHERE type='$filter'";
-		$result = $link->query($query);
-		    if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
-
-		while($row = $result->fetch_array())
-		{	
+		global $database;
+		$database->getMinMaxAvgFieldsFromType($column, $filter);
+		$database->seekRow(0);
+		while($row = $database->getNextRow())
+		{
 			$rows[] = $row[$column];
 		}
-
+		$database->free();
 		return $rows;
 	}
-	
+
 	/**
 	 * Return the extreme values for the given entry type
 	 *
 	 * @access 		public
 	 * @param 		string     $filter         'DAY', 'MONTH' ...
-	 * @return 		two dimensional associative array			 
+	 * @return 		two dimensional associative array
 	 */
 	static public function getExtremValues($filter)
 	{
-		global $link;
+		global $database;
 		$cols['temp_out_min'] = array('min');
 		$cols['temp_out_max'] = array('max');
 		$cols['temp_out_avg'] = array('min','max');
 		$cols['rel_pressure_max'] = array('max');
-		$cols['rel_pressure_min'] = array('min');		
+		$cols['rel_pressure_min'] = array('min');
 		$cols['rain_total_max'] = array('max');
-		$cols['rain_total_min'] = array('min');		
-		
+		$cols['rain_total_min'] = array('min');
+
 		foreach ($cols as $column => $operations)
 		{
 			foreach($operations as $op)
 			{
-				$query = "SELECT timestamp, ${column}  FROM MinMaxAvg WHERE type='$filter' AND ${column}="
-							 . "(SELECT $op(${column}) FROM MinMaxAvg WHERE type='$filter');";	
-				$result = $link->query($query);
-				    if (!$result) {
-					printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-					exit();
-			    	}
-
-				if($row = $result->fetch_array())
-				{		
-				
+				$row = $database->getMinMaxAvgExtremeValue($column, $op, $filter);
+				if ($row)
+				{
 					$st["$column"]["$op"]=$row[$column];
 					$st["$column"]["${op}Date"]=$row['timestamp'];
 					/*
@@ -430,24 +265,24 @@ class MinMaxAvg
 					*/
 				}
 			}
-					
-			
+
+
 		}
-		
+
 		return $st;
 	}
-	
+
 	/**
 	 * Return the values for the given entry
 	 *
 	 * @access 		public
 	 * @param 		string     $Type         				'DAY', 'MONTH' ...
 	 * @param			int				 $year, $month, $day	 selected entry
-	 * @return 		two dimensional associative array			 
+	 * @return 		two dimensional associative array
 	 */
 	static public function getStatArray($Type, $year, $month, $day)
 	{
-		global $link;
+		global $database;
 		$timeStamp = 0;
 		switch($Type)
 		{
@@ -459,42 +294,36 @@ class MinMaxAvg
 				break;
 			case 'MONTH';
 				$timeStamp=sprintf("%02d", $month);
-				break;				
+				break;
 			case 'YEAR';
-				$timeStamp=sprintf("%024", $year);
+				$timeStamp=sprintf("%04d", $year);
 				break;
 			default;
 				echo "Error: getStatArray Type $Type is not supported\n";
 				return;
 		}
-		
-		//echo "TS $Type $timeStamp<br>";
-		
-		$query = "SELECT *  FROM MinMaxAvg WHERE type='$Type' AND timestamp='$timeStamp'";
-		
-		$result = $link->query($query);
-		if (!$result) {
-			printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-			exit();
-	    	}
 
-		if($row = $result->fetch_array())
+		//echo "TS $Type $timeStamp<br>";
+
+		$row = $database->getMinMaxAvgFromDate($Type, $timeStamp);
+		$database->free();
+		if($row)
 		{
 			$cols = MinMaxAvg::getSrcTableColumns();
 			$ops  = MinMaxAvg::getOperations();
-			
+
 			foreach ($cols as $col)
-			{	
+			{
 				foreach($ops as $op)
-				{			
-						$col_name="${col}_${op}";						
+				{
+						$col_name="${col}_${op}";
 						$st[$col][$op]=$row[$col_name];
 				}
 			}
-			
+
 			return $st;
 		}
-		
+
 		return NULL;
 	}
 }

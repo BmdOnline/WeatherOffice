@@ -6,7 +6,7 @@
 	<meta http-equiv="Refresh" CONTENT="600">
 	</head>
 	<body bgcolor="#d6e5ca" marginheight="25" marginwidth="20" topmargin="25" leftmargin="0">
-	
+
 <?PHP
 ////////////////////////////////////////////////////
 //
@@ -40,8 +40,8 @@
 include("weatherInclude.php");
 
 	$today = getdate();
-	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);	
-	
+	getStartYearAndMonth($firstYear, $firstMonth, $firstDay);
+
 	//
 	// Webcam
 	//
@@ -70,8 +70,8 @@ include("weatherInclude.php");
 	echo "<hr><p><b>{$text['daily_overview']}</b></p>";
 	echo "<form action = \"daily.php\" method=\"get\" target=\"main\">";
 	echo "<select name=\"day\">";
-	
-	
+
+
 	for($i=1; $i<=31; $i++)
 	{
 		if($i == $today['mday'])
@@ -123,17 +123,17 @@ include("weatherInclude.php");
 	// Weekly Overview
 	//
 	echo "<p><hr><a href=\"weekly.php?showVal=false&day={$today['mday']}&month={$today['mon']}&year={$today['year']}\" target=\"main\">{$text['weekly_overview']}</a>";
-	
-	// 
+
+	//
 	// Monthly Overview
 	//
 	echo "<p><hr><b>{$text['monthly_overview']}</b></p>";
 	echo "<form action = \"monthly.php?lng={$language}\" method = \"get\" target=\"main\">";
 	echo "<select name=\"yearMonth\">";
 
-	
+
 	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
-	{	
+	{
 		for($curMonth=1; $curMonth <= 12; $curMonth ++)
 		{
 			$curMonthName=monthName($curMonth, $text);
@@ -152,14 +152,14 @@ include("weatherInclude.php");
 			}
 		}
 	}
-	
+
 	echo "</select>";
 	echo "<p><input type = \"submit\" value = \"OK\">";
 	echo "<input type = \"hidden\" name=\"showVal\" value=\"false\">";
 	echo "<input type = \"hidden\" name=\"lng\" value=\"$language\">";
 	echo "</form>";
-	
-	// 
+
+	//
 	// Yearly Overview
 	//
 	echo "<p><hr><b>{$text['yearly_overview']}</b></p>";
@@ -167,10 +167,10 @@ include("weatherInclude.php");
 	echo "<select name=\"year\">";
 
 	$today = getdate();
-	
-	
+
+
 	for($curYear=$firstYear; $curYear <= $today['year']; $curYear++)
-	{	
+	{
 		if($curYear == $today['year'])
 		{
 			echo "<option value=\"$curYear\" selected>  $curYear";
@@ -179,27 +179,27 @@ include("weatherInclude.php");
 		{
 			echo "<option value=\"$curYear\"> $curYear";
 		}
-		
+
 	}
-	
+
 	echo "</select>";
 	echo "  <input type = \"submit\" value = \"OK\">";
 	echo "<input type = \"hidden\" name=\"showVal\" value=\"false\">";
 	echo "</form>";
-	
+
 	//
 	// Climagraph
 	//
 	echo "<p><hr><a href=\"clima.php\" target=\"main\">{$text['clima']}</a>";
 
-	
+
 	//
 	// Range
 	//
 	echo "<p><hr><b>{$text['range']}</b></p>";
 	echo "<form action = \"freeInput.php\" method=\"get\" target=\"main\">";
 	echo "<select name=\"beginDay\">";
-	
+
 	for($i=1; $i<=31; $i++)
 	{
 		if($i == $today['mday'])
@@ -243,9 +243,9 @@ include("weatherInclude.php");
 	}
 
 	echo "</select><p>";
-	
+
 		echo "<select name=\"endDay\">";
-	
+
 	for($i=1; $i<=31; $i++)
 	{
 		if($i == $today['mday'])
@@ -289,18 +289,17 @@ include("weatherInclude.php");
 	}
 
 	echo "</select><p>";
-	
+
 	echo "<p><input type = \"submit\" value = \"OK\">";
 	echo "<input type = \"hidden\" name=\"showVal\" value=\"false\">";
 	echo "</form>";
 
 	// Additional Sensors
-	
-	if(TableExists("additionalsensors"))
+	if($database->haveSensors(true))
 	{
 		echo "<p><hr><a href=\"additionalSensors.php?addSensor=false\" target=\"main\">{$text['additionalSensors']}</a></p>";
 	}
-	
+
 	// Weblinks
 	weatherWebLinks();
 ?>

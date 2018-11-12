@@ -52,20 +52,15 @@
 	{
 		$addSensor = true;
 		$addSensorNum = substr($col, 2, 1); // Hack: bis stringende abfragen
-		$query = "select value,timestamp from additionalvalues where timestamp >= $begin and timestamp <= $end and id = $addSensorNum order by timestamp";
+		$database->getSensorValuesFromPeriod($addSensorNum, $begin, $end, false);
 	}
 	else
 	{
-		$query = "select $col, rec_time, rec_date from weather where timestamp >= $begin and timestamp <= $end order by timestamp";
+		$fields = "$col, rec_time, rec_date";
+		$database->getWeatherFieldsFromPeriod($fields, $begin, $end);
 	}
 
-	$result = $link->query($query);
-	if (!$result) {
-		printf("Query Failed.<br>Query:<font color=red>$query</font><br>Error: %s\n", $link->error);
-		exit();
-	}
-	$num = $result->num_rows;
-
+	$num = $database->getRowsCount();
 	if ($num>0) {
 		$graph = new Graph($GraphWidth, $GraphHeight);
 		$graph->SetMargin(50,50,10,90);
@@ -145,7 +140,8 @@
 
 		$lastValue = -1;
 
-		while($row = $result->fetch_assoc())
+		$database->seekRow(0);
+		while($row = $database->getNextRow())
 		{
 			if(($i % $factor) == 0)
 			{
@@ -192,12 +188,12 @@
 
 		$totalNumValues = $idx;
 
-	    $result->free();
-	    $link->close();
+		$database->free();
+		$database->close();
 
 		if($col == "wind_angle" || $col == "windspeed")
 		{
-		  if($col == "windspeed")	  
+		  if($col == "windspeed")
 			$scatplot= new LinePlot($ydata, $xdata);
 		  else
 			$scatplot= new ScatterPlot($ydata, $xdata);
